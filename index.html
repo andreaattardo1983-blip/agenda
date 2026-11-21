@@ -46,7 +46,7 @@
         <div>
           <div class="flex items-center gap-2">
             <h1 class="text-lg font-extrabold tracking-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">OmniDesk</h1>
-            <span id="syncStatusBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-white/10 font-semibold">Locale</span>
+            <span id="syncStatusBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-white/10 font-semibold">Connessione...</span>
           </div>
           <p id="liveClock" class="text-xs text-slate-400">Caricamento orario...</p>
         </div>
@@ -59,10 +59,10 @@
           <input id="globalSearch" type="text" placeholder="Cerca ovunque..." oninput="renderAll()"
             class="bg-slate-900/90 border border-white/10 rounded-xl pl-9 pr-3 py-1.5 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 w-44 lg:w-56" />
         </div>
-        <button onclick="openModal('cloudModal')" title="Configura Cloud Firebase (Sync Tempo Reale)"
+        <button onclick="openModal('cloudModal')" title="Impostazioni Spazio Cloud Firebase"
           class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600/25 hover:bg-indigo-600/40 border border-indigo-400/30 text-xs font-semibold text-indigo-200 transition">
           <i data-lucide="cloud" class="w-3.5 h-3.5 text-indigo-300"></i>
-          <span class="hidden md:inline">Cloud Sync</span>
+          <span class="hidden md:inline">Spazio Cloud</span>
         </button>
         <button onclick="exportData()" title="Esporta Backup JSON"
           class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-white/10 text-xs font-medium text-slate-200 transition">
@@ -289,37 +289,27 @@
 
   <!-- ==================== MODALI ==================== -->
 
-  <!-- Modal Cloud Firebase Sync -->
+  <!-- Modal Spazio Cloud Firebase -->
   <div id="cloudModal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bento-card rounded-2xl p-5 w-full max-w-lg space-y-4">
+    <div class="bento-card rounded-2xl p-5 w-full max-w-md space-y-4">
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-2">
           <i data-lucide="cloud" class="w-5 h-5 text-indigo-400"></i>
-          <h3 class="font-bold text-lg">Sincronizzazione Cloud (Firebase)</h3>
+          <h3 class="font-bold text-lg">Spazio Cloud (agenda-f2631)</h3>
         </div>
         <button onclick="closeModal('cloudModal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <p class="text-xs text-slate-300 leading-relaxed">
-        Incolla qui la configurazione JSON del tuo progetto <strong>Firebase</strong> (con <em>Firestore Database</em> attivo) e un <strong>Codice Spazio</strong> segreto. Usa lo stesso codice su PC e telefono per aggiornamenti in tempo reale!
+        Il progetto Firebase <strong>agenda-f2631</strong> è già collegato nel codice. Inserisci lo stesso <strong>Codice Spazio</strong> su PC e telefono per sincronizzare tutto in tempo reale.
       </p>
-      <form onsubmit="saveCloudConfig(event)" class="space-y-3">
+      <form onsubmit="saveRoomOnly(event)" class="space-y-3">
         <div>
-          <label class="block text-xs text-slate-400 mb-1">Codice Spazio Personale (es. casa-2026-xyz)</label>
-          <input id="cloudRoomInput" required placeholder="Inserisci codice spazio..." class="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2 text-sm text-white" />
+          <label class="block text-xs text-slate-400 mb-1">Codice Spazio Personale</label>
+          <input id="cloudRoomInput" required placeholder="es. agenda-casa-2026" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2 text-sm text-white" />
         </div>
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Firebase Config (JSON)</label>
-          <textarea id="cloudConfigInput" rows="5" required placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}'
-            class="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs font-mono text-emerald-200"></textarea>
-        </div>
-        <div class="flex items-center justify-between gap-2 pt-1">
-          <button type="button" onclick="disconnectCloud()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-slate-300">
-            Disconnetti Cloud
-          </button>
-          <button type="submit" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white">
-            Connetti e Sincronizza
-          </button>
-        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white">
+          Applica Codice Spazio
+        </button>
       </form>
     </div>
   </div>
@@ -437,8 +427,19 @@
     import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getFirestore, doc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-    const STORAGE_KEY = 'omnidesk_data_v3';
-    const CLOUD_KEY = 'omnidesk_firebase_cloud_v1';
+    // Configurazione Firebase collegata al tuo progetto agenda-f2631
+    const FIREBASE_CONFIG = {
+      apiKey: "AIzaSyAmxzeE4N_2f0Rj8Uw7azx6p43JXJiOJ6g",
+      authDomain: "agenda-f2631.firebaseapp.com",
+      projectId: "agenda-f2631",
+      storageBucket: "agenda-f2631.firebasestorage.app",
+      messagingSenderId: "586746089395",
+      appId: "1:586746089395:web:ee7a2fcbc0e0fc685905c6",
+      measurementId: "G-DCV37CLG95"
+    };
+
+    const STORAGE_KEY = 'omnidesk_data_v4';
+    const ROOM_KEY = 'omnidesk_room_id_v1';
 
     let vaultUnlocked = false;
     let currentExpFilter = 'all';
@@ -470,42 +471,46 @@
       photos: []
     };
 
+    function getActiveRoom() {
+      return localStorage.getItem(ROOM_KEY) || 'spazio-principale';
+    }
+
     function updateSyncBadge(mode, text) {
       const badge = document.getElementById('syncStatusBadge');
       if (!badge) return;
       if (mode === 'live') {
         badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-semibold';
       } else {
-        badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-white/10 font-semibold';
+        badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold';
       }
       badge.textContent = text;
     }
 
     async function pushStateToCloud() {
-      const cloudSaved = JSON.parse(localStorage.getItem(CLOUD_KEY) || 'null');
-      if (!db || !cloudSaved?.room || isApplyingRemoteUpdate) return;
+      if (!db || isApplyingRemoteUpdate) return;
+      const roomId = getActiveRoom();
       try {
-        await setDoc(doc(db, 'omnidesk_spaces', cloudSaved.room), {
+        await setDoc(doc(db, 'omnidesk_spaces', roomId), {
           payload: state,
           updatedAt: Date.now()
         }, { merge: true });
       } catch (err) {
         console.error('Errore sync cloud:', err);
+        updateSyncBadge('warn', 'Cloud Offline');
       }
     }
 
-    function connectFirebaseCloud(configObj, roomId) {
+    function connectCloud(roomId) {
       if (unsubscribeCloud) {
         unsubscribeCloud();
         unsubscribeCloud = null;
       }
-      const appName = 'omnidesk_sync_' + roomId;
-      const existing = getApps().find(a => a.name === appName);
-      const app = existing || initializeApp(configObj, appName);
+      const existing = getApps().find(a => a.name === 'omnidesk_app');
+      const app = existing || initializeApp(FIREBASE_CONFIG, 'omnidesk_app');
       db = getFirestore(app);
 
       const spaceRef = doc(db, 'omnidesk_spaces', roomId);
-      updateSyncBadge('live', 'Live Cloud');
+      updateSyncBadge('live', `Live Cloud (${roomId})`);
 
       unsubscribeCloud = onSnapshot(spaceRef, (snap) => {
         if (snap.exists()) {
@@ -516,42 +521,25 @@
             localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
             renderAll();
             isApplyingRemoteUpdate = false;
+            updateSyncBadge('live', `Live Cloud (${roomId})`);
           }
         } else {
           setDoc(spaceRef, { payload: state, updatedAt: Date.now() }).catch(() => {});
         }
       }, () => {
-        updateSyncBadge('local', 'Errore Cloud');
+        updateSyncBadge('warn', 'Controlla Regole Firestore');
       });
     }
 
-    window.saveCloudConfig = function(e) {
+    window.saveRoomOnly = function(e) {
       e.preventDefault();
-      const room = document.getElementById('cloudRoomInput').value.trim();
-      const rawCfg = document.getElementById('cloudConfigInput').value.trim();
-      try {
-        const parsedCfg = JSON.parse(rawCfg);
-        if (!parsedCfg.apiKey || !parsedCfg.projectId) {
-          showToast('Configurazione Firebase incompleta.');
-          return;
-        }
-        localStorage.setItem(CLOUD_KEY, JSON.stringify({ room, config: parsedCfg }));
-        connectFirebaseCloud(parsedCfg, room);
-        closeModal('cloudModal');
-        showToast(`Connesso allo spazio "${room}" in tempo reale!`);
-      } catch {
-        showToast('Il JSON Firebase non è valido.');
-      }
-    };
-
-    window.disconnectCloud = function() {
-      if (unsubscribeCloud) unsubscribeCloud();
-      unsubscribeCloud = null;
-      db = null;
-      localStorage.removeItem(CLOUD_KEY);
-      updateSyncBadge('local', 'Locale');
+      const newRoom = document.getElementById('cloudRoomInput').value.trim();
+      if (!newRoom) return;
+      localStorage.setItem(ROOM_KEY, newRoom);
+      connectCloud(newRoom);
+      pushStateToCloud();
       closeModal('cloudModal');
-      showToast('Sincronizzazione cloud disconnessa.');
+      showToast(`Spazio cloud impostato su "${newRoom}"`);
     };
 
     function persist() {
@@ -643,9 +631,7 @@
     // ==================== MODALI ====================
     window.openModal = function(id) {
       if (id === 'cloudModal') {
-        const saved = JSON.parse(localStorage.getItem(CLOUD_KEY) || 'null');
-        if (saved?.room) document.getElementById('cloudRoomInput').value = saved.room;
-        if (saved?.config) document.getElementById('cloudConfigInput').value = JSON.stringify(saved.config, null, 2);
+        document.getElementById('cloudRoomInput').value = getActiveRoom();
       }
       document.getElementById(id).classList.remove('hidden');
     };
@@ -1037,13 +1023,9 @@
       lucide.createIcons();
     };
 
-    const savedCloud = JSON.parse(localStorage.getItem(CLOUD_KEY) || 'null');
-    if (savedCloud?.config && savedCloud?.room) {
-      connectFirebaseCloud(savedCloud.config, savedCloud.room);
-    }
-
+    connectCloud(getActiveRoom());
     updateClock();
     renderAll();
   </script>
 </body>
-</html
+</html>
