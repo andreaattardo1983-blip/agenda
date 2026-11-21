@@ -203,6 +203,12 @@
       color: #fff;
     }
 
+    button.active-folder {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
     .icon-btn {
       padding: 8px 10px;
       display: inline-flex;
@@ -445,6 +451,7 @@
       font-size: 0.78rem;
       color: var(--text-muted);
       margin-top: 3px;
+      word-break: break-word;
     }
 
     .tag-row {
@@ -476,6 +483,18 @@
       color: #a5b4fc;
     }
 
+    .pill-tag.pdf {
+      background: rgba(239, 68, 68, 0.14);
+      border-color: rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
+    }
+
+    .pill-tag.foto {
+      background: rgba(16, 185, 129, 0.14);
+      border-color: rgba(16, 185, 129, 0.35);
+      color: #6ee7b7;
+    }
+
     .item-actions {
       display: flex;
       gap: 6px;
@@ -486,6 +505,39 @@
     .item-actions button {
       padding: 5px 9px;
       font-size: 0.76rem;
+    }
+
+    .doc-search-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      margin-bottom: 10px;
+    }
+
+    .doc-search-icon {
+      font-size: 0.92rem;
+      line-height: 1;
+      opacity: 0.85;
+      user-select: none;
+    }
+
+    .doc-search-box input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-size: 0.84rem;
+      padding: 3px 4px;
+      outline: none;
+    }
+
+    .doc-search-clear {
+      padding: 2px 7px !important;
+      font-size: 0.74rem !important;
     }
 
     .vault-box {
@@ -540,6 +592,16 @@
     @keyframes pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.7; }
+    }
+
+    .preview-panel {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .preview-panel.hidden {
+      display: none;
     }
 
     .preview-surface {
@@ -773,7 +835,7 @@
           <span>Vocale</span>
         </button>
         <button type="button" class="quick-tile tile-file" id="tileFotoPdf">
-          <span>📄</span>
+          <span>📁</span>
           <span>+ Foto/PDF</span>
         </button>
         <button type="button" class="quick-tile tile-password" id="tilePassword">
@@ -783,7 +845,7 @@
       </div>
 
       <form class="quick-bar" id="formRapido">
-        <input type="text" id="inputRapido" placeholder="Scrivi un promemoria veloce o premi Invio (avviso tra 10 min)..." required>
+        <input type="text" id="inputRapido" placeholder="Scrivi un promemoria veloce o premi Invio..." required>
         <button type="submit" class="btn-primary">Aggiungi</button>
       </form>
     </section>
@@ -907,32 +969,54 @@
           </div>
         </section>
 
-        <section class="bento-card print-target-card">
+        <section class="bento-card print-target-card" id="sezioneCartelleFile">
           <div class="card-header">
             <div class="card-title-group">
-              <h2 class="card-title">📄 Foto, PDF &amp; Ricevute</h2>
+              <h2 class="card-title">📁 Cartelle PDF &amp; Foto</h2>
+              <span class="count-badge" id="conteggioDocumenti">0</span>
             </div>
             <div class="item-actions">
-              <button type="button" id="btnCaricaFotoPdf">+ Carica Foto/PDF</button>
-              <button type="button" class="btn-primary" id="btnStampaAnteprima" disabled>Stampa</button>
+              <button type="button" class="btn-primary" id="btnCaricaFotoPdf">+ Carica File</button>
             </div>
           </div>
 
-          <input type="file" id="inputFileStampa" accept="image/*,application/pdf" class="hidden-file">
+          <input type="file" id="inputFileStampa" accept="image/*,application/pdf" multiple class="hidden-file">
 
-          <div class="inline-form" style="margin-bottom: 8px; padding: 8px;">
-            <input type="url" id="inputUrlFile" placeholder="Oppure incolla URL di foto o PDF...">
-            <button type="button" id="btnApriUrlFile">Apri URL</button>
+          <div class="filter-buttons" style="margin-bottom: 10px;" id="filtriCartellaDocumenti">
+            <button type="button" class="active-folder" data-doc-folder="pdf">📕 Cartella PDF (<span id="countFolderPdf">0</span>)</button>
+            <button type="button" data-doc-folder="foto">🖼️ Cartella Foto (<span id="countFolderFoto">0</span>)</button>
+            <button type="button" data-doc-folder="tutti">📂 Tutti (<span id="countFolderTutti">0</span>)</button>
           </div>
 
-          <div class="item-meta" id="etichettaAnteprima">Nessun file o allegato collegato selezionato.</div>
+          <div class="doc-search-box">
+            <span class="doc-search-icon" aria-hidden="true">🔍</span>
+            <input type="search" id="inputRicercaDocumenti" placeholder="Search per nome file (es. bolletta, carta, ricevuta)...">
+            <button type="button" id="btnPulisciRicercaDoc" class="doc-search-clear" title="Pulisci ricerca">✕</button>
+          </div>
 
-          <div class="preview-surface" id="previewSurface">
-            <div class="empty-hint" id="previewPlaceholder">
-              Collega una foto o un PDF a un impegno oppure caricalo qui per visualizzarlo e stamparlo.
+          <div class="inline-form" style="margin-bottom: 10px; padding: 8px;">
+            <input type="text" id="inputNomeUrlFile" placeholder="Nome file opzionale (es. contratto_2026.pdf)">
+            <input type="url" id="inputUrlFile" placeholder="URL foto o PDF...">
+            <button type="button" id="btnApriUrlFile">Salva URL</button>
+          </div>
+
+          <div class="list-stack" id="listaDocumenti"></div>
+
+          <div class="preview-panel hidden" id="previewPanel">
+            <div class="card-header" style="margin-bottom: 6px;">
+              <div class="item-meta" id="etichettaAnteprima" style="margin-top: 0;">Anteprima selezionata</div>
+              <div class="item-actions">
+                <button type="button" class="btn-primary" id="btnStampaAnteprima" disabled>Stampa</button>
+                <button type="button" id="btnChiudiAnteprima">Chiudi</button>
+              </div>
             </div>
-            <img id="previewImg" alt="Anteprima immagine">
-            <iframe id="previewPdf" title="Anteprima PDF"></iframe>
+            <div class="preview-surface" id="previewSurface">
+              <div class="empty-hint" id="previewPlaceholder">
+                Clicca su "Anteprima" o "Stampa" su un file della cartella per aprirlo qui.
+              </div>
+              <img id="previewImg" alt="Anteprima immagine">
+              <iframe id="previewPdf" title="Anteprima PDF"></iframe>
+            </div>
           </div>
         </section>
       </div>
@@ -989,7 +1073,7 @@
       </div>
 
       <div class="item-meta" style="margin: 8px 0 14px;">
-        Usa lo stesso <strong>Codice Stanza</strong> e <strong>Codice / Password di Sincronizzazione</strong> su PC e cellulare[cite: 4, 8]. Ogni aggiunta o eliminazione aggiorna subito il cloud per evitare che elementi cancellati ritornino.
+        Usa lo stesso <strong>Codice Stanza</strong> e <strong>Codice / Password di Sincronizzazione</strong> su PC e cellulare. Ogni aggiunta o eliminazione aggiorna subito il cloud per evitare che elementi cancellati ritornino.
       </div>
 
       <div class="item-actions" style="justify-content: space-between;">
@@ -1048,6 +1132,7 @@
         }
       ],
       vocali: [],
+      documenti: [],
       pinVault: '1234',
       updatedAt: Date.now()
     };
@@ -1066,15 +1151,17 @@
 
     let filtroTemporale = 'giornaliero';
     let categoriaScadenzaAttiva = 'Tutte';
+    let cartellaDocumentiAttiva = 'pdf';
     let vaultSbloccato = false;
     let elementoAnteprima = null;
     let mediaRecorder = null;
     let chunkVocali = [];
     let pollTimer = null;
     let isSyncingFromRemote = false;
-    let localLockUntil = 0; // Protegge modifiche/eliminazioni locali per 12s da sovrascritture ritardate
+    let localLockUntil = 0;
 
     const inputRicerca = document.getElementById('inputRicerca');
+    const inputRicercaDocumenti = document.getElementById('inputRicercaDocumenti');
     const badgeCloud = document.getElementById('badgeCloud');
     const testoBadgeCloud = document.getElementById('testoBadgeCloud');
     const dataOraHeader = document.getElementById('dataOraHeader');
@@ -1102,7 +1189,10 @@
     const listaVocali = document.getElementById('listaVocali');
 
     const inputFileStampa = document.getElementById('inputFileStampa');
+    const inputNomeUrlFile = document.getElementById('inputNomeUrlFile');
     const inputUrlFile = document.getElementById('inputUrlFile');
+    const listaDocumenti = document.getElementById('listaDocumenti');
+    const previewPanel = document.getElementById('previewPanel');
     const btnStampaAnteprima = document.getElementById('btnStampaAnteprima');
     const etichettaAnteprima = document.getElementById('etichettaAnteprima');
     const previewPlaceholder = document.getElementById('previewPlaceholder');
@@ -1157,6 +1247,7 @@
       merged.scadenze = normalizeArrayField(incoming.scadenze, []);
       merged.password = normalizeArrayField(incoming.password, []);
       merged.vocali = normalizeArrayField(incoming.vocali, []);
+      merged.documenti = normalizeArrayField(incoming.documenti, []);
       if (typeof incoming.pinVault === 'string' && incoming.pinVault) {
         merged.pinVault = incoming.pinVault;
       }
@@ -1235,6 +1326,7 @@
           scadenze: state.scadenze || [],
           password: state.password || [],
           vocali: state.vocali || [],
+          documenti: state.documenti || [],
           updatedAt: Number(state.updatedAt || Date.now())
         };
         const res = await fetch(getFirebaseRoomUrl(), {
@@ -1313,19 +1405,48 @@
       document.getElementById('testoSpazioCloud').textContent = `Spazio locale utilizzato: ${kb} KB (${pct}% di 5 MB stimati)`;
     }
 
+    function rilevaTipoDocumento(fileOrUrl, mimeType = '') {
+      const lowerMime = (mimeType || '').toLowerCase();
+      const lowerName = (fileOrUrl || '').toLowerCase();
+      if (lowerMime.includes('pdf') || lowerName.endsWith('.pdf') || lowerName.includes('.pdf?')) {
+        return 'pdf';
+      }
+      return 'foto';
+    }
+
     function leggiFileComeDataUrl(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => {
           resolve({
             nome: file.name,
-            tipo: file.type.includes('pdf') ? 'pdf' : 'foto',
+            tipo: rilevaTipoDocumento(file.name, file.type),
             dataUrl: reader.result
           });
         };
         reader.onerror = () => reject(new Error('Errore lettura file'));
         reader.readAsDataURL(file);
       });
+    }
+
+    function aggiungiDocumentoInCartella({ nome, tipo, dataUrl, origine = 'Archivio' }) {
+      const docItem = {
+        id: 'doc-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+        nome,
+        tipo: tipo === 'pdf' ? 'pdf' : 'foto',
+        dataUrl,
+        origine,
+        dataCaricamento: new Date().toLocaleString('it-IT')
+      };
+      state.documenti = state.documenti || [];
+      state.documenti.unshift(docItem);
+      cartellaDocumentiAttiva = docItem.tipo;
+      document.querySelectorAll('[data-doc-folder]').forEach((btn) => {
+        btn.classList.toggle('active-folder', btn.dataset.docFolder === cartellaDocumentiAttiva);
+      });
+      saveState(true, true);
+      renderDocumenti();
+      return docItem;
     }
 
     function filtraPerPeriodo(items, filtro, dataRifStr) {
@@ -1362,8 +1483,9 @@
       });
     }
 
-    function mostraAnteprima(el, etichetta) {
+    function apriAnteprimaSuRichiesta(el, etichetta) {
       elementoAnteprima = el;
+      previewPanel.classList.remove('hidden');
       previewPlaceholder.style.display = 'none';
       previewImg.style.display = 'none';
       previewPdf.style.display = 'none';
@@ -1381,6 +1503,19 @@
       etichettaAnteprima.textContent = etichetta;
       btnStampaAnteprima.disabled = false;
       renderImpegni();
+      renderDocumenti();
+    }
+
+    function chiudiAnteprima() {
+      elementoAnteprima = null;
+      previewPanel.classList.add('hidden');
+      previewImg.style.display = 'none';
+      previewPdf.style.display = 'none';
+      previewImg.src = '';
+      previewPdf.src = '';
+      btnStampaAnteprima.disabled = true;
+      renderImpegni();
+      renderDocumenti();
     }
 
     function stampaElemento(el) {
@@ -1425,6 +1560,131 @@
         `);
         win.document.close();
       }
+    }
+
+    function renderDocumenti() {
+      const allDocs = state.documenti || [];
+      const pdfCount = allDocs.filter((d) => d.tipo === 'pdf').length;
+      const fotoCount = allDocs.filter((d) => d.tipo !== 'pdf').length;
+
+      document.getElementById('countFolderPdf').textContent = String(pdfCount);
+      document.getElementById('countFolderFoto').textContent = String(fotoCount);
+      document.getElementById('countFolderTutti').textContent = String(allDocs.length);
+
+      const qDoc = inputRicercaDocumenti.value.trim().toLowerCase();
+      const qGlobal = inputRicerca.value.trim().toLowerCase();
+
+      const filtrati = allDocs.filter((doc) => {
+        const folderOk =
+          cartellaDocumentiAttiva === 'tutti' ||
+          (cartellaDocumentiAttiva === 'pdf' && doc.tipo === 'pdf') ||
+          (cartellaDocumentiAttiva === 'foto' && doc.tipo !== 'pdf');
+        const nomeLower = (doc.nome || '').toLowerCase();
+        const origineLower = (doc.origine || '').toLowerCase();
+        const searchDocOk = !qDoc || nomeLower.includes(qDoc) || origineLower.includes(qDoc);
+        const searchGlobalOk = !qGlobal || nomeLower.includes(qGlobal) || origineLower.includes(qGlobal);
+        return folderOk && searchDocOk && searchGlobalOk;
+      });
+
+      document.getElementById('conteggioDocumenti').textContent = String(filtrati.length);
+      listaDocumenti.innerHTML = '';
+
+      if (filtrati.length === 0) {
+        const nomeCartella =
+          cartellaDocumentiAttiva === 'pdf'
+            ? 'Cartella PDF'
+            : cartellaDocumentiAttiva === 'foto'
+              ? 'Cartella Foto'
+              : 'archivio';
+        listaDocumenti.innerHTML = `<div class="empty-hint">Nessun file trovato in ${nomeCartella}.</div>`;
+        return;
+      }
+
+      filtrati.forEach((doc) => {
+        const row = document.createElement('div');
+        const isSelected = elementoAnteprima && elementoAnteprima.docId === doc.id;
+        row.className = `row-item ${isSelected ? 'selected' : ''}`;
+
+        const info = document.createElement('div');
+        info.style.flex = '1';
+        info.style.minWidth = '0';
+
+        const tags = document.createElement('div');
+        tags.className = 'tag-row';
+        tags.style.marginTop = '0';
+        tags.style.marginBottom = '4px';
+
+        const typeBadge = document.createElement('span');
+        typeBadge.className = `pill-tag ${doc.tipo === 'pdf' ? 'pdf' : 'foto'}`;
+        typeBadge.textContent = doc.tipo === 'pdf' ? 'PDF' : 'FOTO';
+
+        const origBadge = document.createElement('span');
+        origBadge.className = 'pill-tag';
+        origBadge.textContent = doc.origine || 'Archivio';
+
+        tags.appendChild(typeBadge);
+        tags.appendChild(origBadge);
+
+        const title = document.createElement('div');
+        title.className = 'item-title';
+        title.textContent = doc.nome;
+
+        const meta = document.createElement('div');
+        meta.className = 'item-meta';
+        meta.textContent = doc.dataCaricamento || '';
+
+        info.appendChild(tags);
+        info.appendChild(title);
+        info.appendChild(meta);
+
+        const actions = document.createElement('div');
+        actions.className = 'item-actions';
+
+        const el = {
+          tipo: doc.tipo,
+          src: doc.dataUrl,
+          nome: doc.nome,
+          docId: doc.id
+        };
+
+        const btnAnt = document.createElement('button');
+        btnAnt.type = 'button';
+        btnAnt.textContent = 'Anteprima';
+        btnAnt.addEventListener('click', () => {
+          apriAnteprimaSuRichiesta(el, `${doc.tipo === 'pdf' ? 'PDF' : 'Foto'}: ${doc.nome}`);
+        });
+
+        const btnStampa = document.createElement('button');
+        btnStampa.type = 'button';
+        btnStampa.className = 'btn-primary';
+        btnStampa.textContent = 'Stampa';
+        btnStampa.addEventListener('click', () => {
+          apriAnteprimaSuRichiesta(el, `${doc.tipo === 'pdf' ? 'PDF' : 'Foto'}: ${doc.nome}`);
+          stampaElemento(el);
+        });
+
+        const btnDel = document.createElement('button');
+        btnDel.type = 'button';
+        btnDel.className = 'btn-danger';
+        btnDel.textContent = 'Elimina';
+        btnDel.addEventListener('click', () => {
+          if (elementoAnteprima && elementoAnteprima.docId === doc.id) {
+            chiudiAnteprima();
+          }
+          state.documenti = (state.documenti || []).filter((x) => x.id !== doc.id);
+          saveState(true, true);
+          renderDocumenti();
+          mostraToast('File eliminato dalla cartella.');
+        });
+
+        actions.appendChild(btnAnt);
+        actions.appendChild(btnStampa);
+        actions.appendChild(btnDel);
+
+        row.appendChild(info);
+        row.appendChild(actions);
+        listaDocumenti.appendChild(row);
+      });
     }
 
     function renderImpegni() {
@@ -1487,14 +1747,14 @@
           const btnAnt = document.createElement('button');
           btnAnt.type = 'button';
           btnAnt.textContent = 'Anteprima';
-          btnAnt.addEventListener('click', () => mostraAnteprima(el, `Impegno "${item.titolo}" — ${item.allegato.nome}`));
+          btnAnt.addEventListener('click', () => apriAnteprimaSuRichiesta(el, `Impegno "${item.titolo}" — ${item.allegato.nome}`));
 
           const btnStampa = document.createElement('button');
           btnStampa.type = 'button';
           btnStampa.className = 'btn-primary';
           btnStampa.textContent = 'Stampa';
           btnStampa.addEventListener('click', () => {
-            mostraAnteprima(el, `Impegno "${item.titolo}" — ${item.allegato.nome}`);
+            apriAnteprimaSuRichiesta(el, `Impegno "${item.titolo}" — ${item.allegato.nome}`);
             stampaElemento(el);
           });
 
@@ -1587,7 +1847,7 @@
           btnDoc.type = 'button';
           btnDoc.textContent = 'Apri Doc';
           btnDoc.addEventListener('click', () => {
-            mostraAnteprima({ tipo: sc.allegato.tipo, src: sc.allegato.dataUrl, nome: sc.allegato.nome }, `Scadenza "${sc.titolo}" — ${sc.allegato.nome}`);
+            apriAnteprimaSuRichiesta({ tipo: sc.allegato.tipo, src: sc.allegato.dataUrl, nome: sc.allegato.nome }, `Scadenza "${sc.titolo}" — ${sc.allegato.nome}`);
           });
           actions.appendChild(btnDoc);
         } else {
@@ -1695,6 +1955,7 @@
       renderScadenze();
       renderVault();
       renderVocali();
+      renderDocumenti();
       aggiornaIndicatoreSpazio();
       aggiornaDataOraHeader();
     }
@@ -1735,6 +1996,12 @@
       let allegato = null;
       if (file) {
         allegato = await leggiFileComeDataUrl(file);
+        aggiungiDocumentoInCartella({
+          nome: allegato.nome,
+          tipo: allegato.tipo,
+          dataUrl: allegato.dataUrl,
+          origine: `Impegno: ${titolo}`
+        });
       }
 
       const nuovo = {
@@ -1752,9 +2019,7 @@
       formImpegnoCompleto.reset();
       formImpegnoCompleto.classList.add('hidden');
       renderImpegni();
-      if (allegato) {
-        mostraAnteprima({ tipo: allegato.tipo, src: allegato.dataUrl, nome: allegato.nome, impegnoId: nuovo.id }, `Impegno "${nuovo.titolo}" — ${allegato.nome}`);
-      }
+      mostraToast(allegato ? `Salvato in cartella ${allegato.tipo.toUpperCase()}: ${allegato.nome}` : 'Impegno salvato.');
     });
 
     inputAllegaVoceItem.addEventListener('change', async (e) => {
@@ -1763,10 +2028,17 @@
       if (!file || !id) return;
       const target = state.impegni.find((x) => x.id === id);
       if (!target) return;
-      target.allegato = await leggiFileComeDataUrl(file);
+      const allegato = await leggiFileComeDataUrl(file);
+      target.allegato = allegato;
+      aggiungiDocumentoInCartella({
+        nome: allegato.nome,
+        tipo: allegato.tipo,
+        dataUrl: allegato.dataUrl,
+        origine: `Impegno: ${target.titolo}`
+      });
       saveState(true, true);
       renderImpegni();
-      mostraAnteprima({ tipo: target.allegato.tipo, src: target.allegato.dataUrl, nome: target.allegato.nome, impegnoId: target.id }, `Impegno "${target.titolo}" — ${target.allegato.nome}`);
+      mostraToast(`Salvato in cartella ${allegato.tipo.toUpperCase()}: ${allegato.nome}`);
     });
 
     document.querySelectorAll('[data-time-filter]').forEach((btn) => {
@@ -1782,6 +2054,7 @@
     inputRicerca.addEventListener('input', () => {
       renderImpegni();
       renderScadenze();
+      renderDocumenti();
     });
 
     document.getElementById('btnToggleFormScadenza').addEventListener('click', () => {
@@ -1811,10 +2084,17 @@
       if (!file || !id) return;
       const sc = state.scadenze.find((x) => x.id === id);
       if (!sc) return;
-      sc.allegato = await leggiFileComeDataUrl(file);
+      const allegato = await leggiFileComeDataUrl(file);
+      sc.allegato = allegato;
+      aggiungiDocumentoInCartella({
+        nome: allegato.nome,
+        tipo: allegato.tipo,
+        dataUrl: allegato.dataUrl,
+        origine: `Scadenza: ${sc.titolo}`
+      });
       saveState(true, true);
       renderScadenze();
-      mostraAnteprima({ tipo: sc.allegato.tipo, src: sc.allegato.dataUrl, nome: sc.allegato.nome }, `Scadenza "${sc.titolo}" — ${sc.allegato.nome}`);
+      mostraToast(`Salvato in cartella ${allegato.tipo.toUpperCase()}: ${allegato.nome}`);
     });
 
     document.querySelectorAll('[data-cat-scadenza]').forEach((btn) => {
@@ -1897,22 +2177,76 @@
       }
     });
 
-    document.getElementById('btnCaricaFotoPdf').addEventListener('click', () => inputFileStampa.click());
+    document.getElementById('btnCaricaFotoPdf').addEventListener('click', () => {
+      inputFileStampa.value = '';
+      inputFileStampa.click();
+    });
+
     inputFileStampa.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const dati = await leggiFileComeDataUrl(file);
-      mostraAnteprima({ tipo: dati.tipo, src: dati.dataUrl, nome: dati.nome }, `File locale: ${dati.nome}`);
+      const files = Array.from(e.target.files || []);
+      if (files.length === 0) return;
+      let ultimoTipo = 'pdf';
+      for (const file of files) {
+        const dati = await leggiFileComeDataUrl(file);
+        ultimoTipo = dati.tipo;
+        aggiungiDocumentoInCartella({
+          nome: dati.nome,
+          tipo: dati.tipo,
+          dataUrl: dati.dataUrl,
+          origine: 'Caricamento diretto'
+        });
+      }
+      mostraToast(
+        files.length === 1
+          ? `Salvato in Cartella ${ultimoTipo.toUpperCase()} (anteprima chiusa).`
+          : `${files.length} file salvati nelle rispettive cartelle.`
+      );
     });
 
     document.getElementById('btnApriUrlFile').addEventListener('click', () => {
       const url = inputUrlFile.value.trim();
       if (!url) return;
-      const isPdf = url.toLowerCase().includes('.pdf');
-      mostraAnteprima({ tipo: isPdf ? 'pdf' : 'foto', src: url, nome: url }, `URL (${isPdf ? 'PDF' : 'FOTO'}): ${url}`);
+      const customName = inputNomeUrlFile.value.trim();
+      let derivedName = customName;
+      if (!derivedName) {
+        try {
+          const parsedUrl = new URL(url);
+          const lastSeg = parsedUrl.pathname.split('/').filter(Boolean).pop();
+          derivedName = lastSeg ? decodeURIComponent(lastSeg) : url;
+        } catch (err) {
+          derivedName = url;
+        }
+      }
+      const tipo = rilevaTipoDocumento(derivedName || url);
+      aggiungiDocumentoInCartella({
+        nome: derivedName,
+        tipo,
+        dataUrl: url,
+        origine: 'Link URL'
+      });
+      inputUrlFile.value = '';
+      inputNomeUrlFile.value = '';
+      mostraToast(`Link salvato in Cartella ${tipo.toUpperCase()} (anteprima chiusa).`);
+    });
+
+    document.querySelectorAll('[data-doc-folder]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-doc-folder]').forEach((b) => b.classList.remove('active-folder'));
+        btn.classList.add('active-folder');
+        cartellaDocumentiAttiva = btn.dataset.docFolder;
+        renderDocumenti();
+      });
+    });
+
+    inputRicercaDocumenti.addEventListener('input', renderDocumenti);
+    document.getElementById('btnPulisciRicercaDoc').addEventListener('click', () => {
+      inputRicercaDocumenti.value = '';
+      renderDocumenti();
+      inputRicercaDocumenti.focus();
     });
 
     btnStampaAnteprima.addEventListener('click', () => stampaElemento(elementoAnteprima));
+    document.getElementById('btnChiudiAnteprima').addEventListener('click', chiudiAnteprima);
 
     document.getElementById('tileNuovoImpegno').addEventListener('click', () => {
       formImpegnoCompleto.classList.remove('hidden');
@@ -1926,7 +2260,10 @@
     });
     document.getElementById('tileNuovaNota').addEventListener('click', () => inputRapido.focus());
     document.getElementById('tileVocale').addEventListener('click', () => btnRegistrazioneVocale.click());
-    document.getElementById('tileFotoPdf').addEventListener('click', () => inputFileStampa.click());
+    document.getElementById('tileFotoPdf').addEventListener('click', () => {
+      inputFileStampa.value = '';
+      inputFileStampa.click();
+    });
     document.getElementById('tilePassword').addEventListener('click', () => {
       vaultSbloccato = true;
       renderVault();
@@ -2024,6 +2361,7 @@
 
     document.getElementById('btnResetDati').addEventListener('click', () => {
       state = structuredClone(defaultState);
+      chiudiAnteprima();
       saveState(true, true);
       renderAll();
       mostraToast('Dati reimpostati ai valori iniziali.');
