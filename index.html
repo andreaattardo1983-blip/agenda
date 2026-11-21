@@ -3,2294 +3,1973 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OmniDesk — Agenda, Scadenze &amp; Stampa Foto/PDF</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>OmniDesk — Agenda, Vault & Cloud Sync</title>
   <style>
-    /* Tema scuro moderno e personalizzazioni per OmniDesk */
     :root {
-      color-scheme: dark;
+      --bg-main: #070b14;
+      --bg-card: #0e1626;
+      --bg-card-soft: #131e33;
+      --bg-input: #0a101d;
+      --border: #1e2d4a;
+      --border-soft: #172238;
+      --text-main: #eef3ff;
+      --text-muted: #8a9bb8;
+      --accent: #5b5cff;
+      --accent-hover: #494af5;
+      --accent-soft: rgba(91, 92, 255, 0.16);
+      --ok: #10b981;
+      --ok-soft: rgba(16, 185, 129, 0.14);
+      --warn: #f59e0b;
+      --warn-soft: rgba(245, 158, 11, 0.16);
+      --danger: #ef4444;
+      --danger-soft: rgba(239, 68, 68, 0.16);
+      --pink: #e11d48;
+      --radius: 14px;
+      --radius-sm: 9px;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #060911;
-      color: #e6edf7;
       margin: 0;
-      padding: 0;
-      overflow-x: hidden;
+      padding: 18px;
+      background: radial-gradient(circle at top left, #111b33 0%, var(--bg-main) 55%);
+      color: var(--text-main);
+      min-height: 100vh;
     }
 
-    /* Scrollbar discreta per tema scuro */
-    ::-webkit-scrollbar {
-      width: 8px;
+    .app-shell {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Topbar */
+    .topbar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 3px;
+      padding: 8px;
+      flex-shrink: 0;
+    }
+
+    .brand-logo span {
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 2px;
+    }
+
+    .brand-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .brand-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .cloud-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      background: var(--ok-soft);
+      color: #34d399;
+      cursor: pointer;
+    }
+
+    .cloud-pill.offline {
+      border-color: rgba(245, 158, 11, 0.4);
+      background: var(--warn-soft);
+      color: #fbbf24;
+    }
+
+    .cloud-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .brand-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      width: 210px;
+    }
+
+    button {
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 8px 13px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text-main);
+      background: var(--bg-card-soft);
+      border: 1px solid var(--border);
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    button:hover:not(:disabled) {
+      background: #1a2844;
+      border-color: #2d426c;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    button.btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    button.btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+    }
+
+    button.btn-danger {
+      background: var(--danger-soft);
+      border-color: rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
+    }
+
+    button.btn-danger:hover:not(:disabled) {
+      background: rgba(239, 68, 68, 0.28);
+    }
+
+    button.active-filter {
+      background: var(--warn);
+      border-color: var(--warn);
+      color: #090d16;
+    }
+
+    button.active-time-filter {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .icon-btn {
+      padding: 8px 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Quick Actions Bento */
+    .bento-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .card-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 0.96rem;
+      font-weight: 700;
+    }
+
+    .count-badge {
+      background: var(--accent-soft);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(110px, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 980px) {
+      .quick-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 520px) {
+      .quick-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .quick-tile {
+      border-radius: 11px;
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      cursor: pointer;
+    }
+
+    .tile-impegno { background: linear-gradient(160deg, #1b2350, #121735); }
+    .tile-scadenza { background: linear-gradient(160deg, #3a2716, #241910); }
+    .tile-nota { background: linear-gradient(160deg, #2d2b14, #1b1a0e); }
+    .tile-vocale { background: linear-gradient(160deg, #3b172a, #240e1a); }
+    .tile-file { background: linear-gradient(160deg, #132944, #0d1a2c); }
+    .tile-password { background: linear-gradient(160deg, #11322c, #0b1f1c); }
+
+    .quick-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    @media (max-width: 640px) {
+      .quick-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+
+    .quick-bar input {
+      flex: 1;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+    }
+
+    /* Main 2-Column Bento Grid */
+    .main-bento {
+      display: grid;
+      grid-template-columns: 1.55fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    @media (max-width: 980px) {
+      .main-bento {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .left-stack,
+    .right-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Filters & Forms */
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 8px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+    }
+
+    .filter-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .filter-buttons button {
+      padding: 6px 10px;
+      font-size: 0.78rem;
+    }
+
+    .ref-date-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .ref-date-wrap input {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-radius: 7px;
+      padding: 5px 8px;
+      font-size: 0.78rem;
+    }
+
+    .inline-form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 12px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+    }
+
+    .inline-form.hidden {
+      display: none;
+    }
+
+    .inline-form input,
+    .inline-form select,
+    .inline-form textarea {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-radius: 7px;
+      padding: 8px 10px;
+      font-size: 0.83rem;
+    }
+
+    .list-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .row-item {
+      background: var(--bg-input);
+      border: 1px solid var(--border-soft);
+      border-radius: 11px;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .row-item.selected {
+      border-color: var(--accent);
+      background: rgba(91, 92, 255, 0.08);
+    }
+
+    .row-item.done .item-title {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .item-main {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .item-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      word-break: break-word;
+    }
+
+    .item-meta {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .pill-tag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--bg-card-soft);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .pill-tag.ok {
+      background: var(--ok-soft);
+      border-color: rgba(16, 185, 129, 0.35);
+      color: #34d399;
+    }
+
+    .pill-tag.file {
+      background: var(--accent-soft);
+      border-color: rgba(99, 102, 241, 0.35);
+      color: #a5b4fc;
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .item-actions button {
+      padding: 5px 9px;
+      font-size: 0.76rem;
+    }
+
+    /* Vault & Voice */
+    .vault-box {
+      background: var(--bg-input);
+      border: 1px solid var(--border-soft);
+      border-radius: 11px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .pin-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pin-row input {
+      width: 115px;
+      text-align: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.88rem;
+    }
+
+    .voice-btn {
+      width: 100%;
+      background: var(--pink);
+      border-color: var(--pink);
+      color: #fff;
+      padding: 11px 14px;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .voice-btn:hover:not(:disabled) {
+      background: #be123c;
+    }
+
+    .voice-btn.recording {
+      background: #dc2626;
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    /* Preview Box */
+    .preview-surface {
+      margin-top: 10px;
+      background: var(--bg-input);
+      border: 1px dashed var(--border);
+      border-radius: 11px;
+      padding: 12px;
+      min-height: 190px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .preview-surface img {
+      max-width: 100%;
+      max-height: 360px;
+      object-fit: contain;
+      display: none;
+      border-radius: 6px;
+    }
+
+    .preview-surface iframe {
+      width: 100%;
+      height: 360px;
+      border: none;
+      display: none;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .empty-hint {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      text-align: center;
+    }
+
+    .status-toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      color: var(--text-main);
+      padding: 11px 14px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+      z-index: 60;
+      max-width: 340px;
+      display: none;
+    }
+
+    /* Modal Cloud */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 6, 12, 0.76);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      max-width: 620px;
+      width: 100%;
+      padding: 20px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    @media (max-width: 580px) {
+      .modal-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .field-group label {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .field-group input {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.84rem;
+    }
+
+    .progress-bar {
       height: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #0b101d;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #1f2a44;
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #2f3f64;
+      background: var(--bg-input);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--border-soft);
+      margin: 8px 0 12px;
     }
 
-    .glass-panel {
-      background: linear-gradient(180deg, rgba(15, 22, 38, 0.94) 0%, rgba(10, 15, 27, 0.96) 100%);
-      border: 1px solid rgba(51, 68, 104, 0.45);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    .progress-fill {
+      height: 100%;
+      width: 12%;
+      background: linear-gradient(90deg, #10b981, #6366f1);
+      transition: width 0.25s ease;
     }
 
-    .quick-card {
-      transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
-    }
-    .quick-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    .hidden-file {
+      display: none;
     }
 
-    /* Regole dedicate alla stampa */
     @media print {
       body {
-        background: #ffffff !important;
-        color: #000000 !important;
-        padding: 0 !important;
+        background: #fff;
+        padding: 0;
       }
-      .no-print {
+      .topbar,
+      .bento-card:not(.print-target-card),
+      .main-bento > .left-stack,
+      .main-bento > .right-stack > .bento-card:not(.print-target-card),
+      .status-toast,
+      .modal-backdrop {
         display: none !important;
       }
-      #print-area {
+      .main-bento,
+      .right-stack {
         display: block !important;
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
       }
-      #print-area img {
-        max-width: 100%;
-        max-height: 96vh;
-        object-fit: contain;
-        display: block;
-        margin: 0 auto;
-        page-break-inside: avoid;
+      .print-target-card {
+        border: none;
+        padding: 0;
+        background: #fff;
+      }
+      .preview-surface {
+        border: none;
+        padding: 0;
+        background: #fff;
       }
     }
   </style>
 </head>
-<body class="min-h-screen antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
-  <!-- Contenitore principale dell'applicazione -->
-  <div id="app" class="no-print max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-5">
-
-    <!-- 1. HEADER / TOPBAR -->
-    <header class="glass-panel rounded-2xl px-4 sm:px-6 py-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-      <div class="flex items-center justify-between sm:justify-start gap-3.5">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 shrink-0">
-            <!-- Icona griglia OmniDesk -->
-            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
-              <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
-              <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
-              <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
-            </svg>
+<body>
+  <div class="app-shell">
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="brand-group">
+        <div class="brand-logo" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div>
+          <div class="brand-title-row">
+            <span class="brand-title">OmniDesk</span>
+            <button type="button" id="badgeCloud" class="cloud-pill offline" title="Stato e configurazione Cloud">
+              <span class="cloud-dot"></span>
+              <span id="testoBadgeCloud">Cloud Locale</span>
+            </button>
           </div>
-          <div>
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="text-lg font-bold tracking-tight text-white">OmniDesk</span>
-              <span id="sync-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-                <span id="sync-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span id="sync-badge-text">Live Cloud Sync Attivo</span>
-              </span>
-            </div>
-            <p id="current-datetime" class="text-xs text-slate-400 mt-0.5">Sabato 21 Novembre • Caricamento ora...</p>
-          </div>
+          <div class="brand-subtitle" id="dataOraHeader">Sabato 21 novembre 2026 • Sincronizzazione pronta</div>
         </div>
       </div>
 
-      <!-- Ricerca avanzata + Spazio & Cloud + Export/Import -->
-      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full lg:w-auto">
-        <div class="relative flex-1 sm:w-72 md:w-80">
-          <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="m21 21-4.35-4.35"></path>
-          </svg>
-          <input
-            id="global-search"
-            type="search"
-            placeholder="Cerca ovunque..."
-            aria-label="Cerca ovunque"
-            class="w-full pl-10 pr-8 py-2 rounded-xl bg-slate-900/90 border border-slate-700/70 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-          >
-          <button
-            id="btn-clear-search"
-            type="button"
-            title="Pulisci ricerca"
-            class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs px-1"
-          >✕</button>
-        </div>
-
-        <button
-          id="btn-space-cloud"
-          type="button"
-          class="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-200 border border-indigo-400/30 transition"
-        >
-          <svg class="w-4 h-4 text-indigo-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
-          </svg>
-          <span id="space-label">Spazio Cloud</span>
-        </button>
-
-        <div class="flex items-center gap-2">
-          <button
-            id="btn-export-json"
-            type="button"
-            title="Esporta backup JSON"
-            class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700/70 transition"
-          >
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            <span>JSON</span>
-          </button>
-
-          <button
-            id="btn-import-json"
-            type="button"
-            title="Importa backup JSON"
-            class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700/70 transition"
-          >
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="17 8 12 3 7 8"></polyline>
-              <line x1="12" y1="3" x2="12" y2="15"></line>
-            </svg>
-            <span>Importa</span>
-          </button>
-          <input id="input-import-json" type="file" accept="application/json,.json" class="hidden">
-        </div>
+      <div class="topbar-actions">
+        <input type="search" id="inputRicerca" class="search-input" placeholder="Cerca ovunque...">
+        <button type="button" id="btnApriCloud">Spazio Cloud</button>
+        <button type="button" class="icon-btn" id="btnExportJson" title="Esporta Backup JSON">⬇</button>
+        <button type="button" class="icon-btn" id="btnImportJson" title="Importa Backup JSON">⬆</button>
+        <input type="file" id="inputFileJson" accept="application/json,.json" class="hidden-file">
+        <input type="file" id="inputAllegaVoceItem" accept="image/*,application/pdf" class="hidden-file">
+        <input type="file" id="inputAllegaScadenzaItem" accept="image/*,application/pdf" class="hidden-file">
       </div>
     </header>
 
-    <!-- 2. SEZIONE AZIONI RAPIDE (1-TAP) -->
-    <section class="glass-panel rounded-2xl p-4 sm:p-5 space-y-4">
-      <div class="flex items-center justify-between gap-2">
-        <div class="flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-          <h2 class="text-sm font-semibold text-slate-100">Azioni Rapide (1-Tap)</h2>
+    <!-- AZIONI RAPIDE (1-TAP) -->
+    <section class="bento-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="cloud-dot" style="background: var(--ok);"></span>
+          <h2 class="card-title">Azioni Rapide (1-Tap)</h2>
         </div>
-        <button
-          id="btn-reset-demo"
-          type="button"
-          class="text-xs text-slate-400 hover:text-indigo-300 transition"
-        >↻ Ripristina Demo</button>
+        <button type="button" id="btnSincronizzaOra" style="padding: 5px 10px; font-size: 0.78rem;">↻ Sync Ora</button>
       </div>
 
-      <!-- Griglia 6 Azioni Rapide -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        <button type="button" data-quick-action="impegno" class="quick-card group rounded-xl p-3.5 text-center bg-gradient-to-b from-indigo-950/80 to-slate-900/90 border border-indigo-500/30 hover:border-indigo-400/70 flex flex-col items-center justify-center gap-2">
-          <div class="w-9 h-9 rounded-lg bg-indigo-500/20 text-indigo-300 flex items-center justify-center group-hover:scale-105 transition">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-          </div>
-          <span class="text-xs font-semibold text-indigo-100">+ Impegno</span>
+      <div class="quick-grid">
+        <button type="button" class="quick-tile tile-impegno" id="tileNuovoImpegno">
+          <span>🗓️</span>
+          <span>+ Impegno</span>
         </button>
-
-        <button type="button" data-quick-action="scadenza" class="quick-card group rounded-xl p-3.5 text-center bg-gradient-to-b from-amber-950/70 to-slate-900/90 border border-amber-500/30 hover:border-amber-400/70 flex flex-col items-center justify-center gap-2">
-          <div class="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center group-hover:scale-105 transition">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
-          </div>
-          <span class="text-xs font-semibold text-amber-100">+ Scadenza</span>
+        <button type="button" class="quick-tile tile-scadenza" id="tileNuovaScadenza">
+          <span>💳</span>
+          <span>+ Scadenza</span>
         </button>
-
-        <button type="button" data-quick-action="nota" class="quick-card group rounded-xl p-3.5 text-center bg-gradient-to-b from-yellow-950/60 to-slate-900/90 border border-yellow-500/30 hover:border-yellow-400/70 flex flex-col items-center justify-center gap-2">
-          <div class="w-9 h-9 rounded-lg bg-yellow-500/20 text-yellow-300 flex items-center justify-center group-hover:scale-105 transition">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-          </div>
-          <span class="text-xs font-semibold text-yellow-100">+ Nota</span>
+        <button type="button" class="quick-tile tile-nota" id="tileNuovaNota">
+          <span>📝</span>
+          <span>+ Nota</span>
         </button>
-
-        <button type="button" data-quick-action="vocale" class="quick-card group rounded-xl p-3.5 text-center bg-gradient-to-b from-rose-950/70 to-slate-900/90 border border-rose-500/30 hover:border-rose-400/70 flex flex-col items-center justify-center gap-2">
-          <div class="w-9 h-9 rounded-lg bg-rose-500/20 text-rose-300 flex items-center justify-center group-hover:scale-105 transition">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
-          </div>
-          <span class="text-xs font-semibold text-rose-100">+ Vocale</span>
+        <button type="button" class="quick-tile tile-vocale" id="tileVocale">
+          <span>🎙️</span>
+          <span>Vocale</span>
         </button>
-
-        <button type="button" data-quick-action="fotopdf" class="quick-card group rounded-xl p-3.5 text-center bg-gradient-to-b from-sky-950/75 to-slate-900/90 border border-sky-500/30 hover:border-sky-400/70 flex flex-col items-center justify-center gap-2">
-          <div class="w-9 h-9 rounded-lg bg-sky-500/20 text-sky-300 flex items-center justify-center group-hover:scale-105 transition">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-          </div>
-          <span class="text-xs font-semibold text-sky-100">+ Foto/PDF</span>
+        <button type="button" class="quick-tile tile-file" id="tileFotoPdf">
+          <span>📄</span>
+          <span>+ Foto/PDF</span>
         </button>
-
-        <button type="button" data-quick-action="password" class="quick-card group rounded-xl p-3.5 text-center bg-gradient-to-b from-emerald-950/70 to-slate-900/90 border border-emerald-500/30 hover:border-emerald-400/70 flex flex-col items-center justify-center gap-2">
-          <div class="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-300 flex items-center justify-center group-hover:scale-105 transition">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><circle cx="12" cy="11" r="2"></circle></svg>
-          </div>
-          <span class="text-xs font-semibold text-emerald-100">+ Password</span>
+        <button type="button" class="quick-tile tile-password" id="tilePassword">
+          <span>🔑</span>
+          <span>+ Password</span>
         </button>
       </div>
 
-      <!-- Barra inserimento rapido o comando (es. avvisa tra 15 min) -->
-      <form id="quick-command-form" class="flex flex-col sm:flex-row gap-2.5">
-        <input
-          id="quick-command-input"
-          type="text"
-          placeholder="Scrivi un promemoria veloce o comando rapido (es. avvisa tra 15 min)..."
-          class="flex-1 px-4 py-2.5 rounded-xl bg-slate-900/95 border border-slate-700/80 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-        >
-        <button
-          type="submit"
-          class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white text-sm font-semibold shadow-lg shadow-indigo-600/25 transition shrink-0"
-        >
-          Aggiungi
-        </button>
+      <form class="quick-bar" id="formRapido">
+        <input type="text" id="inputRapido" placeholder="Scrivi un promemoria veloce o premi Invio (avviso tra 10 min)..." required>
+        <button type="submit" class="btn-primary">Aggiungi</button>
       </form>
     </section>
 
-    <!-- LAYOUT PRINCIPALE A DUE COLONNE SU DESKTOP -->
-    <div class="grid grid-cols-1 xl:grid-cols-12 gap-5 items-start">
-
-      <!-- COLONNA SINISTRA (7/12): IMPEGNI & PROMEMORIA + SCADENZE -->
-      <div class="xl:col-span-7 space-y-5">
-
-        <!-- 3. SEZIONE IMPEGNI & PROMEMORIA -->
-        <section id="section-reminders" class="glass-panel rounded-2xl p-4 sm:p-5 space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div class="flex items-center gap-2.5">
-              <span class="text-indigo-400">
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-              </span>
-              <h2 class="text-base font-bold text-white">Impegni &amp; Promemoria</h2>
-              <span id="reminders-count" class="px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">0</span>
+    <!-- CORPO PRINCIPALE BENTO -->
+    <div class="main-bento">
+      <!-- COLONNA SINISTRA -->
+      <div class="left-stack">
+        <!-- IMPEGNI & PROMEMORIA -->
+        <section class="bento-card" id="sezioneImpegni">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2 class="card-title">📅 Impegni &amp; Promemoria</h2>
+              <span class="count-badge" id="conteggioImpegni">0</span>
             </div>
-
-            <div class="flex items-center gap-2">
-              <button
-                id="btn-notify-reminders"
-                type="button"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700/70 transition"
-              >
-                <span>🔔</span>
-                <span>Avvisa</span>
-              </button>
-              <button
-                id="btn-new-reminder"
-                type="button"
-                class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition"
-              >
-                <span>+ Nuovo</span>
-              </button>
+            <div class="item-actions">
+              <button type="button" id="btnToggleFormImpegno">+ Nuovo</button>
             </div>
           </div>
 
-          <!-- Filtri Temporali: Giornaliero, Settimanale, Mensile, Tutti + Data Riferimento -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-2.5 rounded-xl bg-slate-900/75 border border-slate-800">
-            <div id="period-filters" class="flex flex-wrap items-center gap-1.5" role="group" aria-label="Filtro periodo promemoria">
-              <button type="button" data-period="giornaliero" class="period-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition">Giornaliero</button>
-              <button type="button" data-period="settimanale" class="period-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Settimanale</button>
-              <button type="button" data-period="mensile" class="period-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Mensile</button>
-              <button type="button" data-period="tutti" class="period-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Tutti</button>
+          <div class="filter-row">
+            <div class="filter-buttons" role="group" aria-label="Filtro temporale promemoria">
+              <button type="button" class="active-time-filter" data-time-filter="giornaliero">Giornaliero</button>
+              <button type="button" data-time-filter="settimanale">Settimanale</button>
+              <button type="button" data-time-filter="mensile">Mensile</button>
+              <button type="button" data-time-filter="tutti">Tutti</button>
             </div>
-
-            <div class="flex items-center gap-2 text-xs text-slate-300">
-              <label for="reference-date" class="text-slate-400 shrink-0">Rif:</label>
-              <input
-                id="reference-date"
-                type="date"
-                class="px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
-              >
+            <div class="ref-date-wrap">
+              <label for="inputDataRiferimento">Rif.:</label>
+              <input type="date" id="inputDataRiferimento">
             </div>
           </div>
 
-          <!-- Form espandibile / rapido per nuovo impegno o modifica -->
-          <form id="reminder-form" class="hidden grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 p-3.5 rounded-xl bg-slate-900/90 border border-indigo-500/30">
-            <input type="hidden" id="reminder-edit-id">
-            <input
-              id="reminder-title"
-              type="text"
-              placeholder="Titolo impegno o promemoria..."
-              required
-              class="sm:col-span-2 px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500"
-            >
-            <input
-              id="reminder-date"
-              type="date"
-              required
-              class="px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-indigo-500"
-            >
-            <input
-              id="reminder-time"
-              type="time"
-              class="px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-indigo-500"
-            >
-            <input
-              id="reminder-location"
-              type="text"
-              placeholder="Luogo / Note (es. Studio • Telefono)"
-              class="sm:col-span-2 px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500"
-            >
-            <input
-              id="reminder-alert"
-              type="text"
-              placeholder="Avviso (es. Avviso 15m prima)"
-              class="px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500"
-            >
-            <input
-              id="reminder-file"
-              type="file"
-              accept="image/*,application/pdf"
-              class="px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-xs text-slate-300 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-indigo-600 file:text-white"
-            >
-            <div class="sm:col-span-2 lg:col-span-4 flex items-center justify-end gap-2 pt-1">
-              <button type="button" id="btn-cancel-reminder" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300">Annulla</button>
-              <button type="submit" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white">Salva Impegno</button>
-            </div>
+          <form class="inline-form hidden" id="formImpegnoCompleto">
+            <input type="text" id="impegnoTitolo" placeholder="Titolo impegno o promemoria..." required>
+            <input type="date" id="impegnoData" required>
+            <input type="time" id="impegnoOra">
+            <input type="text" id="impegnoLuogo" placeholder="Luogo (es. Studio, Casa)">
+            <input type="file" id="impegnoAllegato" accept="image/*,application/pdf">
+            <button type="submit" class="btn-primary">Salva Impegno</button>
           </form>
 
-          <!-- Input file nascosto per allegare foto/PDF a un impegno esistente -->
-          <input id="attach-reminder-file" type="file" accept="image/*,application/pdf" class="hidden">
-
-          <!-- Lista impegni & promemoria -->
-          <ul id="reminders-list" class="space-y-2.5"></ul>
+          <div class="list-stack" id="listaImpegni"></div>
         </section>
 
-        <!-- 4. SEZIONE SCADENZE CARTE, POLIZZE & DOC -->
-        <section id="section-deadlines" class="glass-panel rounded-2xl p-4 sm:p-5 space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div class="flex items-center gap-2.5">
-              <span class="text-amber-400">
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-              </span>
-              <h2 class="text-base font-bold text-white">Scadenze Carte, Polizze &amp; Doc</h2>
-              <span id="deadlines-count" class="px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-400/30">0</span>
+        <!-- SCADENZE CARTE, POLIZZE & DOC -->
+        <section class="bento-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2 class="card-title">⚠️ Scadenze Carte, Polizze &amp; Doc</h2>
+              <span class="count-badge" id="conteggioScadenze">0</span>
             </div>
-
-            <button
-              id="btn-new-deadline"
-              type="button"
-              class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-400/40 transition"
-            >
-              <span>+ Scadenza</span>
-            </button>
+            <button type="button" id="btnToggleFormScadenza">+ Scadenza</button>
           </div>
 
-          <!-- Filtri per categoria -->
-          <div id="deadline-filters" class="flex flex-wrap items-center gap-1.5" role="group" aria-label="Filtro categoria scadenze">
-            <button type="button" data-category="Tutte" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 text-slate-950 transition">Tutte</button>
-            <button type="button" data-category="Carte" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Carte</button>
-            <button type="button" data-category="Assicurazioni" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Assicurazioni</button>
-            <button type="button" data-category="Documenti" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Documenti</button>
-            <button type="button" data-category="Ricevute" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Ricevute</button>
+          <div class="filter-buttons" style="margin-bottom: 12px;" id="filtriCategoriaScadenze">
+            <button type="button" class="active-filter" data-cat-scadenza="Tutte">Tutte</button>
+            <button type="button" data-cat-scadenza="Carte">Carte</button>
+            <button type="button" data-cat-scadenza="Assicurazioni">Assicurazioni</button>
+            <button type="button" data-cat-scadenza="Documenti">Documenti</button>
+            <button type="button" data-cat-scadenza="Abbonamenti">Abbonamenti</button>
           </div>
 
-          <!-- Form nuova/modifica scadenza -->
-          <form id="deadline-form" class="hidden grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 p-3.5 rounded-xl bg-slate-900/90 border border-amber-500/30">
-            <input type="hidden" id="deadline-edit-id">
-            <input
-              id="deadline-title"
-              type="text"
-              placeholder="Nome (es. Assicurazione Auto RC)"
-              required
-              class="sm:col-span-2 px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-amber-400"
-            >
-            <select
-              id="deadline-category"
-              class="px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-amber-400"
-            >
+          <form class="inline-form hidden" id="formScadenza">
+            <input type="text" id="scadenzaTitolo" placeholder="Es. Assicurazione Auto RC" required>
+            <select id="scadenzaCategoria">
               <option value="Assicurazioni">Assicurazioni</option>
               <option value="Carte">Carte</option>
               <option value="Documenti">Documenti</option>
-              <option value="Ricevute">Ricevute</option>
+              <option value="Abbonamenti">Abbonamenti</option>
             </select>
-            <input
-              id="deadline-date"
-              type="date"
-              required
-              class="px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-amber-400"
-            >
-            <input
-              id="deadline-code"
-              type="text"
-              placeholder="Riferimento / Numero (es. POL-954021)"
-              class="sm:col-span-2 px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-amber-400"
-            >
-            <input
-              id="deadline-file"
-              type="file"
-              accept="image/*,application/pdf"
-              class="sm:col-span-2 px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-xs text-slate-300 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-amber-500 file:text-slate-950 file:font-semibold"
-            >
-            <div class="sm:col-span-2 lg:col-span-4 flex items-center justify-end gap-2 pt-1">
-              <button type="button" id="btn-cancel-deadline" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300">Annulla</button>
-              <button type="submit" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-slate-950">Salva Scadenza</button>
-            </div>
+            <input type="date" id="scadenzaData" required>
+            <input type="text" id="scadenzaDettaglio" placeholder="Dettaglio / Polizza / IBAN">
+            <button type="submit" class="btn-primary">Salva Scadenza</button>
           </form>
 
-          <input id="attach-deadline-file" type="file" accept="image/*,application/pdf" class="hidden">
-
-          <!-- Lista scadenze -->
-          <div id="deadlines-list" class="space-y-2.5"></div>
-        </section>
-
-        <!-- Note rapide salvate in localStorage (collegato a + Nota) -->
-        <section id="section-notes" class="glass-panel rounded-2xl p-4 sm:p-5 space-y-3">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="text-yellow-300">📝</span>
-              <h2 class="text-sm font-bold text-white">Note Rapide</h2>
-              <span id="notes-count" class="px-2 py-0.5 rounded-full text-xs font-semibold bg-yellow-500/15 text-yellow-200 border border-yellow-500/30">0</span>
-            </div>
-            <button id="btn-new-note" type="button" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-yellow-500/15 hover:bg-yellow-500/25 text-yellow-200 border border-yellow-400/30 transition">+ Nuova Nota</button>
-          </div>
-
-          <form id="note-form" class="hidden flex flex-col sm:flex-row gap-2">
-            <input id="note-text" type="text" placeholder="Scrivi una nota rapida..." required class="flex-1 px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-yellow-400">
-            <button type="submit" class="px-4 py-2 rounded-lg text-xs font-semibold bg-yellow-500 hover:bg-yellow-400 text-slate-950">Salva</button>
-          </form>
-
-          <ul id="notes-list" class="space-y-2"></ul>
+          <div class="list-stack" id="listaScadenze"></div>
         </section>
       </div>
 
-      <!-- COLONNA DESTRA (5/12): CASSAFORTE PASSWORD + REGISTRAZIONI VOCALI + FOTO, PDF & RICEVUTE -->
-      <div class="xl:col-span-5 space-y-5">
-
-        <!-- 5. SEZIONE CASSAFORTE PASSWORD -->
-        <section id="section-vault" class="glass-panel rounded-2xl p-4 sm:p-5 space-y-4">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2.5">
-              <span class="text-emerald-400">
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-              </span>
-              <h2 class="text-base font-bold text-white">Cassaforte Password</h2>
+      <!-- COLONNA DESTRA -->
+      <div class="right-stack">
+        <!-- CASSAFORTE PASSWORD -->
+        <section class="bento-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2 class="card-title">🔒 Cassaforte Password</h2>
             </div>
-            <div class="flex items-center gap-2">
-              <button id="btn-change-pin" type="button" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">Cambia PIN</button>
-              <span id="vault-status-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">PIN</span>
+            <span class="pill-tag" id="statoVaultPill">PIN</span>
+          </div>
+
+          <div id="vaultBloccata" class="vault-box">
+            <div style="font-size: 1.5rem; margin-bottom: 6px;">🛡️</div>
+            <div class="item-meta">Inserisci il PIN per accedere ai tuoi account</div>
+            <div class="pin-row">
+              <input type="password" id="inputPinVault" placeholder="PIN (default 1234)" maxlength="12">
+              <button type="button" class="btn-primary" id="btnSbloccaVault">Sblocca</button>
             </div>
           </div>
 
-          <!-- Schermata bloccata -->
-          <div id="vault-locked" class="rounded-xl bg-slate-900/75 border border-slate-800 p-5 text-center space-y-3.5">
-            <div class="w-11 h-11 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
-            </div>
-            <p class="text-xs text-slate-400">Inserisci il PIN per accedere alle password <span class="text-slate-300 font-medium">(demo: 1234)</span></p>
-            <form id="vault-unlock-form" class="flex items-center justify-center gap-2 max-w-xs mx-auto">
-              <input
-                id="vault-pin-input"
-                type="password"
-                inputmode="numeric"
-                maxlength="12"
-                placeholder="PIN..."
-                aria-label="Inserisci PIN cassaforte"
-                class="w-32 px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-center text-sm tracking-widest text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
-              >
-              <button
-                type="submit"
-                class="px-4 py-2 rounded-lg text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition"
-              >
-                Sblocca
-              </button>
+          <div id="vaultSbloccata" style="display: none;">
+            <form class="inline-form" id="formPassword">
+              <input type="text" id="pwdServizio" placeholder="Servizio / Account" required>
+              <input type="text" id="pwdUtente" placeholder="Username / Email" required>
+              <input type="text" id="pwdValore" placeholder="Password" required>
+              <button type="submit" class="btn-primary">Salva</button>
             </form>
-            <p id="vault-error" class="text-xs text-rose-400 min-h-[16px]"></p>
-          </div>
-
-          <!-- Area sbloccata -->
-          <div id="vault-unlocked" class="hidden space-y-3">
-            <div class="flex items-center justify-between gap-2">
-              <span class="text-xs text-emerald-300 font-medium">🔓 Cassaforte sbloccata</span>
-              <button id="btn-lock-vault" type="button" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">Blocca</button>
+            <div class="list-stack" id="listaPassword"></div>
+            <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
+              <button type="button" id="btnBloccaVault">Blocca Cassaforte</button>
             </div>
-
-            <form id="vault-add-form" class="grid grid-cols-1 sm:grid-cols-3 gap-2 p-3 rounded-xl bg-slate-900/90 border border-slate-800">
-              <input id="vault-service" type="text" placeholder="Servizio (es. Banca)" required class="px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-400">
-              <input id="vault-user" type="text" placeholder="Utente / Email" required class="px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-400">
-              <div class="flex gap-1.5">
-                <input id="vault-pass" type="text" placeholder="Password" required class="flex-1 min-w-0 px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-400">
-                <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-slate-950 shrink-0">+</button>
-              </div>
-            </form>
-
-            <ul id="vault-list" class="space-y-2"></ul>
           </div>
         </section>
 
-        <!-- 6. SEZIONE REGISTRAZIONI VOCALI -->
-        <section id="section-voice" class="glass-panel rounded-2xl p-4 sm:p-5 space-y-3.5">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="text-rose-400">🎤</span>
-              <h2 class="text-base font-bold text-white">Registrazioni Vocali</h2>
+        <!-- REGISTRAZIONI VOCALI -->
+        <section class="bento-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2 class="card-title">🎙️ Registrazioni Vocali</h2>
             </div>
-            <span id="voice-count" class="text-xs text-slate-400">0 salvate</span>
           </div>
-
-          <button
-            id="btn-toggle-voice"
-            type="button"
-            class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-rose-600/20 flex items-center justify-center gap-2 transition"
-          >
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3"></circle></svg>
-            <span id="voice-btn-label">Avvia Registrazione Vocale</span>
+          <button type="button" class="voice-btn" id="btnRegistrazioneVocale">
+            <span>●</span>
+            <span id="testoBtnVocale">Avvia Registrazione Vocale</span>
           </button>
-
-          <p id="voice-live-status" class="text-xs text-slate-400 text-center min-h-[16px]">Nessuna registrazione avviata.</p>
-
-          <ul id="voice-list" class="space-y-2"></ul>
+          <div class="list-stack" id="listaVocali" style="margin-top: 10px;">
+            <div class="empty-hint">Nessuna registrazione salvata.</div>
+          </div>
         </section>
 
-        <!-- 7. SEZIONE FOTO, PDF & RICEVUTE + STAMPA FOTO/PDF -->
-        <section id="section-files" class="glass-panel rounded-2xl p-4 sm:p-5 space-y-4">
-          <div class="flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2">
-              <span class="text-sky-400">📄</span>
-              <h2 class="text-base font-bold text-white">Foto, PDF &amp; Ricevute</h2>
+        <!-- FOTO, PDF & RICEVUTE -->
+        <section class="bento-card print-target-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2 class="card-title">📄 Foto, PDF &amp; Ricevute</h2>
             </div>
-            <button
-              id="btn-upload-file"
-              type="button"
-              class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-sky-500/20 hover:bg-sky-500/30 text-sky-200 border border-sky-400/40 transition"
-            >
-              <span>+ Carica Foto/PDF</span>
-            </button>
-            <input id="input-file-local" type="file" accept="image/*,application/pdf" class="hidden">
-          </div>
-
-          <!-- Stampa / Caricamento da URL -->
-          <div class="flex flex-col sm:flex-row gap-2">
-            <input
-              id="input-file-url"
-              type="url"
-              placeholder="URL foto o PDF (es. https://esempio.it/ricevuta.pdf)..."
-              class="flex-1 px-3 py-2 rounded-xl bg-slate-950 border border-slate-700/80 text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-sky-500"
-            >
-            <button
-              id="btn-load-url"
-              type="button"
-              class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-sky-200 border border-slate-700 transition shrink-0"
-            >
-              Anteprima &amp; Stampa URL
-            </button>
-          </div>
-
-          <!-- Barra elemento attivo + pulsanti stampa -->
-          <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800 flex flex-wrap items-center justify-between gap-2">
-            <div id="active-preview-label" class="text-xs text-slate-300 truncate max-w-full sm:max-w-[220px]">
-              Nessun file in anteprima
-            </div>
-            <div class="flex items-center gap-1.5">
-              <button
-                id="btn-print-active"
-                type="button"
-                disabled
-                class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-800 disabled:text-slate-500 text-white transition"
-              >
-                🖨️ Stampa
-              </button>
-              <button
-                id="btn-clear-preview"
-                type="button"
-                disabled
-                class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-slate-300 transition"
-              >
-                Chiudi
-              </button>
+            <div class="item-actions">
+              <button type="button" id="btnCaricaFotoPdf">+ Carica Foto/PDF</button>
+              <button type="button" class="btn-primary" id="btnStampaAnteprima" disabled>Stampa</button>
             </div>
           </div>
 
-          <!-- Riquadro anteprima live (foto o PDF) -->
-          <div id="preview-container" class="rounded-xl border border-dashed border-slate-700/80 bg-slate-950/80 min-h-[240px] flex items-center justify-center p-3 overflow-hidden">
-            <p id="preview-placeholder" class="text-xs text-slate-400 text-center">
-              Carica una foto o un PDF, inserisci un URL oppure seleziona l'allegato di un impegno o una scadenza per visualizzarlo e stamparlo.
-            </p>
-            <img id="preview-img" alt="Anteprima immagine" class="hidden max-w-full max-h-[360px] object-contain rounded-lg">
-            <iframe id="preview-pdf" title="Anteprima PDF" class="hidden w-full h-[360px] rounded-lg bg-white"></iframe>
+          <input type="file" id="inputFileStampa" accept="image/*,application/pdf" class="hidden-file">
+
+          <div class="inline-form" style="margin-bottom: 8px; padding: 8px;">
+            <input type="url" id="inputUrlFile" placeholder="Oppure incolla URL di foto o PDF...">
+            <button type="button" id="btnApriUrlFile">Apri URL</button>
           </div>
 
-          <!-- Archivio file / ricevute salvate -->
-          <ul id="files-list" class="space-y-2"></ul>
+          <div class="item-meta" id="etichettaAnteprima">Nessun file o allegato collegato selezionato.</div>
+
+          <div class="preview-surface" id="previewSurface">
+            <div class="empty-hint" id="previewPlaceholder">
+              Collega una foto o un PDF a un impegno oppure caricalo qui per visualizzarlo e stamparlo.
+            </div>
+            <img id="previewImg" alt="Anteprima immagine">
+            <iframe id="previewPdf" title="Anteprima PDF"></iframe>
+          </div>
         </section>
       </div>
     </div>
   </div>
 
-  <!-- Area dedicata alla stampa pulita di immagini -->
-  <div id="print-area" class="hidden"></div>
-
-  <!-- Toast / Notifica in basso a destra -->
-  <div
-    id="toast-box"
-    role="status"
-    aria-live="polite"
-    class="no-print fixed bottom-4 right-4 z-50 max-w-sm w-[calc(100%-2rem)] sm:w-auto translate-y-20 opacity-0 pointer-events-none transition-all duration-300 rounded-xl bg-slate-900/95 border border-indigo-400/40 shadow-2xl px-4 py-3 flex items-start gap-3"
-  >
-    <span class="text-indigo-400 text-base mt-0.5">🔔</span>
-    <div class="flex-1 min-w-0">
-      <p id="toast-title" class="text-xs font-bold text-white">Avviso OmniDesk</p>
-      <p id="toast-message" class="text-xs text-slate-300 mt-0.5 break-words"></p>
-    </div>
-    <button id="btn-close-toast" type="button" aria-label="Chiudi notifica" class="text-slate-400 hover:text-white text-xs">✕</button>
-  </div>
-
-  <!-- Modale leggero per cambi PIN o inserimento nota/vocale -->
-  <div id="modal-backdrop" class="no-print fixed inset-0 z-40 hidden bg-black/75 backdrop-blur-xs items-center justify-center p-4">
-    <div class="glass-panel rounded-2xl max-w-md w-full p-5 space-y-4">
-      <div class="flex items-center justify-between">
-        <h3 id="modal-title" class="text-sm font-bold text-white">OmniDesk</h3>
-        <button id="btn-close-modal" type="button" class="text-slate-400 hover:text-white text-sm">✕</button>
+  <!-- MODALE CLOUD & SYNC (FIREBASE + BACKUP LOCALE) -->
+  <div class="modal-backdrop" id="modalCloud" role="dialog" aria-modal="true" aria-labelledby="titoloModalCloud">
+    <div class="modal-card">
+      <div class="card-header">
+        <h2 class="card-title" id="titoloModalCloud">☁️ Cloud Sync tra PC e Cellulare</h2>
+        <button type="button" id="btnChiudiModalCloud">✕</button>
       </div>
-      <div id="modal-body" class="space-y-3 text-xs text-slate-300"></div>
-      <div id="modal-footer" class="flex justify-end gap-2 pt-2"></div>
+
+      <div class="item-meta">
+        Stato attuale: <strong id="statoDettagliatoCloud">Locale</strong>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="barraSpazioCloud"></div>
+      </div>
+      <div class="item-meta" id="testoSpazioCloud" style="margin-bottom: 12px;">Spazio locale utilizzato: 0 KB</div>
+
+      <div class="field-group">
+        <label for="cloudRoomCode">Codice Stanza Cloud Condiviso (usa lo stesso codice su PC e cellulare)</label>
+        <input type="text" id="cloudRoomCode" placeholder="es. casa-omni-2026">
+      </div>
+
+      <div class="modal-grid">
+        <div class="field-group" style="margin-bottom: 0;">
+          <label for="fbApiKey">Firebase API Key</label>
+          <input type="text" id="fbApiKey" placeholder="AIzaSy...">
+        </div>
+        <div class="field-group" style="margin-bottom: 0;">
+          <label for="fbDatabaseUrl">Firebase Database URL</label>
+          <input type="url" id="fbDatabaseUrl" placeholder="https://tuo-progetto-default-rtdb.firebaseio.com">
+        </div>
+        <div class="field-group" style="margin-bottom: 0;">
+          <label for="fbProjectId">Firebase Project ID</label>
+          <input type="text" id="fbProjectId" placeholder="tuo-progetto">
+        </div>
+        <div class="field-group" style="margin-bottom: 0;">
+          <label for="fbAppId">Firebase App ID</label>
+          <input type="text" id="fbAppId" placeholder="1:123456:web:abcdef">
+        </div>
+      </div>
+
+      <div class="item-meta" style="margin: 8px 0 14px;">
+        Per sincronizzare PC e cellulare in tempo reale via Firebase: crea un progetto su Firebase, attiva il <strong>Realtime Database</strong> (con regole di lettura/scrittura per il tuo test) e incolla qui il <strong>Database URL</strong> e gli altri campi. Senza un URL Firebase valido, i dati restano salvati in locale e puoi trasferirli con Esporta/Importa JSON.
+      </div>
+
+      <div class="item-actions" style="justify-content: space-between;">
+        <div class="item-actions">
+          <button type="button" class="btn-primary" id="btnSalvaConfigCloud">Salva e Connetti Cloud</button>
+          <button type="button" id="btnForzaPullCloud">Scarica da Cloud</button>
+          <button type="button" id="btnForzaPushCloud">Invia a Cloud</button>
+        </div>
+        <button type="button" class="btn-danger" id="btnResetDati">Reset Dati</button>
+      </div>
     </div>
   </div>
+
+  <div class="status-toast" id="statusToast"></div>
 
   <script>
-    (function () {
-      'use strict';
+    const STORAGE_KEY = 'omnidesk_stato_v1';
+    const CLOUD_CFG_KEY = 'omnidesk_cloud_cfg_v1';
 
-      const STORAGE_KEY = 'omnidesk_state_v1';
-      const CLOUD_SNAPSHOT_KEY = 'omnidesk_cloud_snapshot_v1';
-      let toastTimer = null;
-
-      // Data odierna in formato YYYY-MM-DD (rispetta il fuso locale)
-      function getTodayISO() {
-        const now = new Date();
-        const y = now.getFullYear();
-        const m = String(now.getMonth() + 1).padStart(2, '0');
-        const d = String(now.getDate()).padStart(2, '0');
-        return `${y}-${m}-${d}`;
-      }
-
-      function addDaysISO(baseISO, deltaDays) {
-        const [y, m, d] = baseISO.split('-').map(Number);
-        const dt = new Date(y, m - 1, d);
-        dt.setDate(dt.getDate() + deltaDays);
-        return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
-      }
-
-      // Dati precaricati al primo avvio
-      function createDefaultState() {
-        const oggi = getTodayISO();
-        return {
-          pin: '1234',
-          cloud: {
-            enabled: true,
-            autoSync: true,
-            lastSync: `${oggi} • ${new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}`,
-            quotaKb: 5120
-          },
-          reminders: [
-            {
-              id: 'rem-1',
-              title: 'Chiamare commercialista',
-              date: oggi,
-              timeStart: '10:00',
-              timeEnd: '10:30',
-              location: 'Studio • Telefono',
-              alert: 'Avviso 15m prima',
-              completed: false,
-              attachment: null
-            },
-            {
-              id: 'rem-2',
-              title: 'Revisione documenti fiscali settimanali',
-              date: addDaysISO(oggi, 2),
-              timeStart: '15:30',
-              timeEnd: '16:15',
-              location: 'Ufficio',
-              alert: 'Promemoria attivo',
-              completed: false,
-              attachment: null
-            },
-            {
-              id: 'rem-3',
-              title: 'Controllo estratti conto mensili',
-              date: addDaysISO(oggi, 12),
-              timeStart: '09:30',
-              timeEnd: '10:00',
-              location: 'Home Banking',
-              alert: 'Avviso mensile',
-              completed: false,
-              attachment: null
-            }
-          ],
-          deadlines: [
-            {
-              id: 'dl-1',
-              title: 'Assicurazione Auto RC',
-              category: 'Assicurazioni',
-              date: addDaysISO(oggi, 14),
-              code: 'POL-954021',
-              attachment: null
-            },
-            {
-              id: 'dl-2',
-              title: 'Carta di Credito Principale',
-              category: 'Carte',
-              date: addDaysISO(oggi, 28),
-              code: '**** 4829',
-              attachment: null
-            }
-          ],
-          notes: [
-            {
-              id: 'note-1',
-              text: 'Chiedere fattura proforma per rinnovo polizza e archiviare ricevuta in PDF.',
-              createdAt: oggi
-            }
-          ],
-          vaultItems: [
-            {
-              id: 'vault-1',
-              service: 'Portale Assicurazioni',
-              username: 'mario.rossi@email.it',
-              password: 'RcAuto#2026!'
-            },
-            {
-              id: 'vault-2',
-              service: 'Home Banking',
-              username: 'utente_4829',
-              password: 'BankSecure#4829'
-            }
-          ],
-          voiceNotes: [],
-          files: []
-        };
-      }
-
-      let state = loadState();
-      let activePeriod = 'giornaliero';
-      let activeCategory = 'Tutte';
-      let searchQuery = '';
-      let vaultUnlocked = false;
-      let visiblePasswords = {};
-      let currentPreview = null; // { type: 'foto' | 'pdf', src: string, name: string, sourceId?: string }
-      let pendingAttachTarget = null; // { kind: 'reminder' | 'deadline', id: string }
-
-      // Registrazione vocale (Web Speech API / MediaRecorder)
-      let recognition = null;
-      let mediaRecorder = null;
-      let audioChunks = [];
-      let isRecording = false;
-      let liveTranscript = '';
-
-      function loadState() {
-        try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (!raw) {
-            const initial = createDefaultState();
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
-            return initial;
-          }
-          const parsed = JSON.parse(raw);
-          return {
-            ...createDefaultState(),
-            ...parsed,
-            cloud: {
-              ...createDefaultState().cloud,
-              ...(parsed.cloud || {})
-            }
-          };
-        } catch (err) {
-          return createDefaultState();
+    const defaultState = {
+      impegni: [
+        {
+          id: 'imp-1',
+          titolo: 'Chiamare commercialista',
+          data: '2026-11-21',
+          ora: '16:30',
+          luogo: 'Studio / Telefono',
+          completato: false,
+          allegato: null
         }
-      }
-
-      function getUsedBytes() {
-        try {
-          return new Blob([JSON.stringify(state)]).size;
-        } catch (_) {
-          return JSON.stringify(state).length;
+      ],
+      scadenze: [
+        {
+          id: 'sc-1',
+          titolo: 'Assicurazione Auto RC',
+          categoria: 'Assicurazioni',
+          data: '2026-12-20',
+          dettaglio: 'POL-954021',
+          completato: false
+        },
+        {
+          id: 'sc-2',
+          titolo: 'Carta di Credito Principale',
+          categoria: 'Carte',
+          data: '2027-03-15',
+          dettaglio: 'VISA •••• 4820',
+          completato: false
         }
-      }
-
-      function pushCloudSnapshot(reason = 'Auto-Sync') {
-        if (!state.cloud.enabled) {
-          updateCloudUi();
-          return;
+      ],
+      password: [
+        {
+          id: 'pwd-1',
+          servizio: 'Email Principale',
+          utente: 'utente@esempio.it',
+          valore: '••••••••'
         }
-        const nowStamp = `${getTodayISO()} • ${new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
-        state.cloud.lastSync = nowStamp;
-        try {
-          const snapshotPayload = {
-            syncedAt: nowStamp,
-            reason,
-            data: state
-          };
-          localStorage.setItem(CLOUD_SNAPSHOT_KEY, JSON.stringify(snapshotPayload));
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        } catch (_) {}
-        updateCloudUi();
-      }
-
-      function restoreCloudSnapshot() {
-        try {
-          const rawSnap = localStorage.getItem(CLOUD_SNAPSHOT_KEY);
-          if (!rawSnap) {
-            showToast('Nessuno snapshot cloud', 'Esegui prima una sincronizzazione manuale per creare un punto di ripristino.');
-            return;
-          }
-          const snap = JSON.parse(rawSnap);
-          if (snap && snap.data) {
-            state = {
-              ...createDefaultState(),
-              ...snap.data,
-              cloud: {
-                ...createDefaultState().cloud,
-                ...(snap.data.cloud || {}),
-                enabled: true
-              }
-            };
-            saveState(true, false);
-            renderAll();
-            showToast('Snapshot ripristinato', `Stato recuperato (${snap.syncedAt || 'Cloud'}).`);
-          }
-        } catch (_) {
-          showToast('Errore ripristino', 'Impossibile leggere lo snapshot cloud.');
-        }
-      }
-
-      function saveState(silent = false, triggerAutoSync = true) {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-          if (triggerAutoSync && state.cloud.enabled && state.cloud.autoSync) {
-            pushCloudSnapshot('Auto-Sync');
-          } else {
-            updateCloudUi();
-          }
-        } catch (err) {
-          if (!silent) {
-            showToast('Spazio locale quasi pieno', 'Alcuni allegati pesanti restano nella sessione attuale.');
-          }
-          updateCloudUi();
-        }
-      }
-
-      function updateCloudUi() {
-        const bytes = getUsedBytes();
-        const kb = Number((bytes / 1024).toFixed(1));
-        const quotaKb = state.cloud.quotaKb || 5120;
-        const pct = Math.min(100, Math.max(1, Number(((kb / quotaKb) * 100).toFixed(1))));
-        const online = navigator.onLine;
-
-        const spaceLabel = document.getElementById('space-label');
-        if (spaceLabel) {
-          spaceLabel.textContent = `Spazio Cloud (${pct}%)`;
-        }
-
-        const badge = document.getElementById('sync-badge');
-        const dot = document.getElementById('sync-dot');
-        const badgeText = document.getElementById('sync-badge-text');
-        if (badge && dot && badgeText) {
-          if (!state.cloud.enabled) {
-            badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700';
-            dot.className = 'w-1.5 h-1.5 rounded-full bg-slate-400';
-            badgeText.textContent = 'Cloud Sync in Pausa';
-          } else if (!online) {
-            badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500/15 text-amber-300 border border-amber-500/30';
-            dot.className = 'w-1.5 h-1.5 rounded-full bg-amber-400';
-            badgeText.textContent = 'Offline • Cache Locale Attiva';
-          } else {
-            badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30';
-            dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse';
-            badgeText.textContent = 'Live Cloud Sync Attivo';
-          }
-        }
-      }
-
-      function openCloudPanel() {
-        const bytes = getUsedBytes();
-        const kb = Number((bytes / 1024).toFixed(2));
-        const quotaKb = state.cloud.quotaKb || 5120;
-        const pct = Math.min(100, Math.max(1, Number(((kb / quotaKb) * 100).toFixed(1))));
-        const online = navigator.onLine;
-        const hasSnapshot = Boolean(localStorage.getItem(CLOUD_SNAPSHOT_KEY));
-
-        openModal(
-          'Pannello Cloud & Sincronizzazione',
-          `
-            <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="text-slate-400">Stato Rete:</span>
-                <span class="font-semibold ${online ? 'text-emerald-400' : 'text-amber-400'}">${online ? 'Connesso (Online)' : 'Modalità Offline'}</span>
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="text-slate-400">Ultima Sincronizzazione:</span>
-                <span class="font-mono text-slate-200">${escapeHtml(state.cloud.lastSync || 'Mai')}</span>
-              </div>
-              <div class="space-y-1 pt-1">
-                <div class="flex items-center justify-between">
-                  <span class="text-slate-400">Spazio Utilizzato:</span>
-                  <span class="font-semibold text-indigo-300">${kb} KB / ${quotaKb} KB (${pct}%)</span>
-                </div>
-                <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
-                  <div class="h-full bg-gradient-to-r from-indigo-500 to-emerald-400" style="width: ${pct}%"></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="space-y-2 pt-1">
-              <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/70 border border-slate-800 cursor-pointer">
-                <span>Abilita Cloud Sync</span>
-                <input id="modal-cloud-enabled" type="checkbox" ${state.cloud.enabled ? 'checked' : ''} class="w-4 h-4 accent-indigo-500">
-              </label>
-              <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/70 border border-slate-800 cursor-pointer">
-                <span>Sincronizzazione Automatica (Auto-Sync)</span>
-                <input id="modal-cloud-autosync" type="checkbox" ${state.cloud.autoSync ? 'checked' : ''} class="w-4 h-4 accent-indigo-500">
-              </label>
-            </div>
-
-            <div class="flex flex-wrap gap-2 pt-1">
-              <button id="modal-btn-sync-now" type="button" class="flex-1 px-3 py-2 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white">↻ Sincronizza Ora</button>
-              <button id="modal-btn-restore-snap" type="button" ${hasSnapshot ? '' : 'disabled'} class="flex-1 px-3 py-2 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-emerald-300 border border-slate-700">⤢ Ripristina Snapshot</button>
-            </div>
-          `,
-          [
-            {
-              label: 'Salva Impostazioni',
-              className: 'px-4 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-slate-950',
-              onClick: () => {
-                const en = document.getElementById('modal-cloud-enabled').checked;
-                const auto = document.getElementById('modal-cloud-autosync').checked;
-                state.cloud.enabled = en;
-                state.cloud.autoSync = auto;
-                saveState(true, en && auto);
-                closeModal();
-                showToast('Impostazioni Cloud salvate', en ? 'Cloud Sync attivo.' : 'Cloud Sync messo in pausa.');
-              }
-            },
-            {
-              label: 'Chiudi',
-              className: 'px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300',
-              onClick: closeModal
-            }
-          ]
-        );
-
-        setTimeout(() => {
-          const syncNowBtn = document.getElementById('modal-btn-sync-now');
-          const restoreBtn = document.getElementById('modal-btn-restore-snap');
-          if (syncNowBtn) {
-            syncNowBtn.addEventListener('click', () => {
-              state.cloud.enabled = true;
-              pushCloudSnapshot('Sincronizzazione Manuale');
-              closeModal();
-              showToast('Sincronizzazione completata', 'Snapshot cloud aggiornato con successo.');
-            });
-          }
-          if (restoreBtn) {
-            restoreBtn.addEventListener('click', () => {
-              closeModal();
-              restoreCloudSnapshot();
-            });
-          }
-        }, 0);
-      }
-
-      function showToast(title, message) {
-        const box = document.getElementById('toast-box');
-        const titleEl = document.getElementById('toast-title');
-        const msgEl = document.getElementById('toast-message');
-        if (!box || !titleEl || !msgEl) return;
-
-        titleEl.textContent = title;
-        msgEl.textContent = message;
-        box.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
-        box.classList.add('translate-y-0', 'opacity-100');
-
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => {
-          hideToast();
-        }, 4500);
-      }
-
-      function hideToast() {
-        const box = document.getElementById('toast-box');
-        if (!box) return;
-        box.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
-        box.classList.remove('translate-y-0', 'opacity-100');
-      }
-
-      function openModal(title, bodyHtml, buttons = []) {
-        const backdrop = document.getElementById('modal-backdrop');
-        const titleEl = document.getElementById('modal-title');
-        const bodyEl = document.getElementById('modal-body');
-        const footerEl = document.getElementById('modal-footer');
-        if (!backdrop || !titleEl || !bodyEl || !footerEl) return;
-
-        titleEl.textContent = title;
-        bodyEl.innerHTML = bodyHtml;
-        footerEl.innerHTML = '';
-
-        buttons.forEach((btnCfg) => {
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = btnCfg.className || 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white';
-          btn.textContent = btnCfg.label;
-          btn.addEventListener('click', () => {
-            if (typeof btnCfg.onClick === 'function') {
-              btnCfg.onClick();
-            }
-          });
-          footerEl.appendChild(btn);
-        });
-
-        backdrop.classList.remove('hidden');
-        backdrop.classList.add('flex');
-      }
-
-      function closeModal() {
-        const backdrop = document.getElementById('modal-backdrop');
-        if (!backdrop) return;
-        backdrop.classList.add('hidden');
-        backdrop.classList.remove('flex');
-      }
-
-      // Aggiornamento data e ora nell'header
-      function updateDateTime() {
-        const el = document.getElementById('current-datetime');
-        if (!el) return;
-        const now = new Date();
-        const weekday = now.toLocaleDateString('it-IT', { weekday: 'long' });
-        const day = now.getDate();
-        const month = now.toLocaleDateString('it-IT', { month: 'long' });
-        const time = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-        const capWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
-        const capMonth = month.charAt(0).toUpperCase() + month.slice(1);
-        el.textContent = `${capWeekday} ${day} ${capMonth} • ore ${time}`;
-      }
-
-      // Lettura file locale come Data URL
-      function readFileAsAttachment(file) {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
-            resolve({
-              name: file.name,
-              mimeType: file.type || (isPdf ? 'application/pdf' : 'image/png'),
-              type: isPdf ? 'pdf' : 'foto',
-              dataUrl: reader.result
-            });
-          };
-          reader.onerror = () => reject(new Error('Errore nella lettura del file'));
-          reader.readAsDataURL(file);
-        });
-      }
-
-      // Anteprima live di foto o PDF
-      function setPreview(item) {
-        currentPreview = item;
-        const placeholder = document.getElementById('preview-placeholder');
-        const img = document.getElementById('preview-img');
-        const iframe = document.getElementById('preview-pdf');
-        const label = document.getElementById('active-preview-label');
-        const btnPrint = document.getElementById('btn-print-active');
-        const btnClear = document.getElementById('btn-clear-preview');
-
-        if (!item) {
-          placeholder.classList.remove('hidden');
-          img.classList.add('hidden');
-          iframe.classList.add('hidden');
-          img.src = '';
-          iframe.src = '';
-          label.textContent = 'Nessun file in anteprima';
-          btnPrint.disabled = true;
-          btnClear.disabled = true;
-          return;
-        }
-
-        placeholder.classList.add('hidden');
-        label.textContent = `${item.type === 'pdf' ? 'PDF' : 'FOTO'}: ${item.name}`;
-        btnPrint.disabled = false;
-        btnClear.disabled = false;
-
-        if (item.type === 'pdf') {
-          img.classList.add('hidden');
-          img.src = '';
-          iframe.src = item.src;
-          iframe.classList.remove('hidden');
-        } else {
-          iframe.classList.add('hidden');
-          iframe.src = '';
-          img.src = item.src;
-          img.classList.remove('hidden');
-        }
-      }
-
-      // Stampa dedicata per foto o PDF
-      function printItem(item) {
-        if (!item) {
-          showToast('Nessun file selezionato', 'Seleziona una foto o un PDF da stampare.');
-          return;
-        }
-
-        if (item.type === 'pdf') {
-          const printFrame = document.createElement('iframe');
-          printFrame.style.position = 'fixed';
-          printFrame.style.right = '0';
-          printFrame.style.bottom = '0';
-          printFrame.style.width = '1px';
-          printFrame.style.height = '1px';
-          printFrame.style.opacity = '0.01';
-          printFrame.src = item.src;
-
-          printFrame.onload = () => {
-            try {
-              printFrame.contentWindow.focus();
-              printFrame.contentWindow.print();
-            } catch (err) {
-              // Fallback su nuova scheda per PDF esterni bloccati da CORS o iframe
-              window.open(item.src, '_blank', 'noopener,noreferrer');
-              showToast('Apertura PDF', 'PDF aperto in una nuova scheda per la stampa.');
-            }
-          };
-
-          document.body.appendChild(printFrame);
-          setTimeout(() => {
-            if (printFrame.parentNode) {
-              printFrame.parentNode.removeChild(printFrame);
-            }
-          }, 8000);
-          return;
-        }
-
-        // Stampa foto tramite finestra dedicata (con fallback su #print-area se popup bloccati)
-        const win = window.open('', '_blank', 'width=850,height=650');
-        if (win) {
-          win.document.write(`
-            <!DOCTYPE html>
-            <html lang="it">
-            <head>
-              <meta charset="UTF-8">
-              <title>Stampa - ${escapeHtml(item.name)}</title>
-              <style>
-                @page { margin: 10mm; }
-                body {
-                  margin: 0;
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
-                  min-height: 100vh;
-                  background: #fff;
-                }
-                img {
-                  max-width: 100%;
-                  max-height: 95vh;
-                  object-fit: contain;
-                }
-              </style>
-            </head>
-            <body>
-              <img id="fotoStampa" src="${item.src}" alt="${escapeHtml(item.name)}">
-              <script>
-                const img = document.getElementById('fotoStampa');
-                img.onload = function () {
-                  window.focus();
-                  window.print();
-                  window.close();
-                };
-              <\/script>
-            </body>
-            </html>
-          `);
-          win.document.close();
-        } else {
-          const printArea = document.getElementById('print-area');
-          printArea.innerHTML = `<img src="${item.src}" alt="${escapeHtml(item.name)}">`;
-          printArea.classList.remove('hidden');
-          window.print();
-          printArea.classList.add('hidden');
-          printArea.innerHTML = '';
-        }
-      }
-
-      function escapeHtml(str) {
-        return String(str || '')
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      }
-
-      function matchesSearch(text) {
-        if (!searchQuery.trim()) return true;
-        return String(text || '').toLowerCase().includes(searchQuery.trim().toLowerCase());
-      }
-
-      // Filtro temporale impegni & promemoria
-      function filterRemindersByPeriod(items, period, refDateStr) {
-        const [ry, rm, rd] = (refDateStr || getTodayISO()).split('-').map(Number);
-        const ref = new Date(ry, rm - 1, rd);
-        ref.setHours(0, 0, 0, 0);
-
-        const dayOfWeek = (ref.getDay() + 6) % 7; // Lun = 0 .. Dom = 6
-        const weekStart = new Date(ref);
-        weekStart.setDate(ref.getDate() - dayOfWeek);
-        weekStart.setHours(0, 0, 0, 0);
-
-        const weekEnd = new Date(weekStart);
-        weekEnd.setDate(weekStart.getDate() + 6);
-        weekEnd.setHours(23, 59, 59, 999);
-
-        return items.filter((item) => {
-          const [y, m, d] = (item.date || getTodayISO()).split('-').map(Number);
-          const dt = new Date(y, m - 1, d);
-          dt.setHours(0, 0, 0, 0);
-
-          if (period === 'giornaliero') {
-            return dt.getTime() === ref.getTime();
-          }
-          if (period === 'settimanale') {
-            return dt >= weekStart && dt <= weekEnd;
-          }
-          if (period === 'mensile') {
-            return dt.getFullYear() === ref.getFullYear() && dt.getMonth() === ref.getMonth();
-          }
-          return true; // 'tutti'
-        });
-      }
-
-      // Render Impegni & Promemoria
-      function renderReminders() {
-        const refDate = document.getElementById('reference-date').value || getTodayISO();
-        const periodFiltered = filterRemindersByPeriod(state.reminders, activePeriod, refDate);
-        const filtered = periodFiltered.filter((item) =>
-          matchesSearch(`${item.title} ${item.date} ${item.timeStart || ''} ${item.location || ''} ${item.alert || ''} ${item.attachment?.name || ''}`)
-        );
-
-        const listEl = document.getElementById('reminders-list');
-        const countEl = document.getElementById('reminders-count');
-        countEl.textContent = String(filtered.length);
-        listEl.innerHTML = '';
-
-        if (filtered.length === 0) {
-          listEl.innerHTML = `
-            <li class="rounded-xl bg-slate-900/60 border border-slate-800/80 p-4 text-center text-xs text-slate-400">
-              Nessun impegno o promemoria trovato per il filtro <span class="text-slate-200 font-medium">${escapeHtml(activePeriod)}</span>.
-            </li>
-          `;
-          return;
-        }
-
-        filtered.forEach((item) => {
-          const li = document.createElement('li');
-          li.className = `rounded-xl bg-slate-900/85 border ${item.completed ? 'border-slate-800/60 opacity-75' : 'border-slate-800 hover:border-slate-700'} p-3.5 flex flex-col sm:flex-row sm:items-start justify-between gap-3 transition`;
-
-          const timeLabel = item.timeStart
-            ? (item.timeEnd ? `${item.timeStart} – ${item.timeEnd}` : item.timeStart)
-            : '';
-
-          const attBadge = item.attachment
-            ? `<span class="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium bg-sky-500/15 text-sky-300 border border-sky-500/30">📎 ${escapeHtml(item.attachment.type.toUpperCase())}: ${escapeHtml(item.attachment.name)}</span>`
-            : '';
-
-          li.innerHTML = `
-            <div class="flex items-start gap-3 min-w-0 flex-1">
-              <input
-                type="checkbox"
-                ${item.completed ? 'checked' : ''}
-                data-action="toggle-reminder"
-                data-id="${item.id}"
-                class="mt-1 w-4 h-4 rounded accent-indigo-500 cursor-pointer shrink-0"
-              >
-              <div class="min-w-0 flex-1">
-                <p class="text-sm font-semibold ${item.completed ? 'line-through text-slate-400' : 'text-white'} break-words">${escapeHtml(item.title)}</p>
-                <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs mt-1">
-                  <span class="text-indigo-300 font-medium">${escapeHtml(item.date)}${timeLabel ? ` • ${escapeHtml(timeLabel)}` : ''}</span>
-                  ${item.alert ? `<span class="text-indigo-400/90">• ${escapeHtml(item.alert)}</span>` : ''}
-                </div>
-                ${item.location ? `<p class="text-xs text-slate-400 mt-0.5">Luogo: ${escapeHtml(item.location)}</p>` : ''}
-                ${attBadge}
-              </div>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-1.5 sm:justify-end shrink-0">
-              ${item.attachment ? `
-                <button type="button" data-action="preview-reminder" data-id="${item.id}" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-sky-200 border border-slate-700">Anteprima</button>
-                <button type="button" data-action="print-reminder" data-id="${item.id}" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-600/80 hover:bg-indigo-600 text-white">Stampa</button>
-                <button type="button" data-action="remove-reminder-file" data-id="${item.id}" class="px-2 py-1 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300">Rimuovi File</button>
-              ` : `
-                <button type="button" data-action="attach-reminder" data-id="${item.id}" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">+ Foto/PDF</button>
-              `}
-              <button type="button" data-action="edit-reminder" data-id="${item.id}" title="Modifica" class="px-2 py-1 rounded-lg text-xs bg-slate-800/80 hover:bg-slate-700 text-slate-300">✎</button>
-              <button type="button" data-action="delete-reminder" data-id="${item.id}" title="Elimina" class="px-2 py-1 rounded-lg text-xs bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800/40">🗑</button>
-            </div>
-          `;
-
-          listEl.appendChild(li);
-        });
-      }
-
-      // Render Scadenze Carte, Polizze & Doc
-      function renderDeadlines() {
-        const filtered = state.deadlines.filter((dl) => {
-          const catOk = activeCategory === 'Tutte' || dl.category === activeCategory;
-          const searchOk = matchesSearch(`${dl.title} ${dl.category} ${dl.date} ${dl.code || ''} ${dl.attachment?.name || ''}`);
-          return catOk && searchOk;
-        });
-
-        const listEl = document.getElementById('deadlines-list');
-        const countEl = document.getElementById('deadlines-count');
-        countEl.textContent = String(filtered.length);
-        listEl.innerHTML = '';
-
-        if (filtered.length === 0) {
-          listEl.innerHTML = `
-            <div class="rounded-xl bg-slate-900/60 border border-slate-800/80 p-4 text-center text-xs text-slate-400">
-              Nessuna scadenza nella categoria <span class="text-slate-200 font-medium">${escapeHtml(activeCategory)}</span>.
-            </div>
-          `;
-          return;
-        }
-
-        filtered.forEach((dl) => {
-          const card = document.createElement('div');
-          card.className = 'rounded-xl bg-slate-900/85 border border-slate-800 hover:border-slate-700 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition';
-
-          card.innerHTML = `
-            <div class="min-w-0 flex-1">
-              <div class="flex flex-wrap items-center gap-1.5 mb-1">
-                <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30">${escapeHtml(dl.category)}</span>
-                <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Attiva</span>
-                ${dl.attachment ? `<span class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-sky-500/15 text-sky-300 border border-sky-500/30">📎 ${escapeHtml(dl.attachment.name)}</span>` : ''}
-              </div>
-              <p class="text-sm font-bold text-white truncate">${escapeHtml(dl.title)}</p>
-              <p class="text-xs text-slate-400 mt-0.5">Scadenza: <span class="text-slate-200">${escapeHtml(dl.date)}</span>${dl.code ? ` • <span class="text-amber-200/90">${escapeHtml(dl.code)}</span>` : ''}</p>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-1.5 shrink-0">
-              ${dl.attachment ? `
-                <button type="button" data-action="preview-deadline" data-id="${dl.id}" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-sky-200 border border-slate-700">Anteprima</button>
-                <button type="button" data-action="print-deadline" data-id="${dl.id}" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-600/80 hover:bg-indigo-600 text-white">Stampa</button>
-              ` : `
-                <button type="button" data-action="attach-deadline" data-id="${dl.id}" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">+ File</button>
-              `}
-              <button type="button" data-action="edit-deadline" data-id="${dl.id}" title="Modifica" class="px-2 py-1 rounded-lg text-xs bg-slate-800/80 hover:bg-slate-700 text-slate-300">✎</button>
-              <button type="button" data-action="delete-deadline" data-id="${dl.id}" title="Elimina" class="px-2 py-1 rounded-lg text-xs bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800/40">🗑</button>
-            </div>
-          `;
-
-          listEl.appendChild(card);
-        });
-      }
-
-      // Render Note Rapide
-      function renderNotes() {
-        const filtered = state.notes.filter((n) => matchesSearch(`${n.text} ${n.createdAt || ''}`));
-        const listEl = document.getElementById('notes-list');
-        const countEl = document.getElementById('notes-count');
-        countEl.textContent = String(filtered.length);
-        listEl.innerHTML = '';
-
-        if (filtered.length === 0) {
-          listEl.innerHTML = `<li class="text-xs text-slate-400 py-2">Nessuna nota salvata.</li>`;
-          return;
-        }
-
-        filtered.forEach((note) => {
-          const li = document.createElement('li');
-          li.className = 'rounded-xl bg-slate-900/75 border border-slate-800 px-3 py-2.5 flex items-start justify-between gap-2';
-          li.innerHTML = `
-            <div class="min-w-0 flex-1">
-              <p class="text-xs text-slate-200 break-words">${escapeHtml(note.text)}</p>
-              <span class="text-[11px] text-slate-500">${escapeHtml(note.createdAt || '')}</span>
-            </div>
-            <button type="button" data-action="delete-note" data-id="${note.id}" class="text-xs text-slate-400 hover:text-rose-400 px-1.5">✕</button>
-          `;
-          listEl.appendChild(li);
-        });
-      }
-
-      // Render Cassaforte Password
-      function renderVault() {
-        const lockedEl = document.getElementById('vault-locked');
-        const unlockedEl = document.getElementById('vault-unlocked');
-        const badgeEl = document.getElementById('vault-status-badge');
-
-        if (!vaultUnlocked) {
-          lockedEl.classList.remove('hidden');
-          unlockedEl.classList.add('hidden');
-          badgeEl.textContent = 'PIN';
-          return;
-        }
-
-        lockedEl.classList.add('hidden');
-        unlockedEl.classList.remove('hidden');
-        badgeEl.textContent = `${state.vaultItems.length} voci`;
-
-        const filtered = state.vaultItems.filter((v) => matchesSearch(`${v.service} ${v.username}`));
-        const listEl = document.getElementById('vault-list');
-        listEl.innerHTML = '';
-
-        if (filtered.length === 0) {
-          listEl.innerHTML = `<li class="text-xs text-slate-400 text-center py-2">Nessuna credenziale salvata.</li>`;
-          return;
-        }
-
-        filtered.forEach((v) => {
-          const isShown = Boolean(visiblePasswords[v.id]);
-          const li = document.createElement('li');
-          li.className = 'rounded-xl bg-slate-900/90 border border-slate-800 p-3 flex items-center justify-between gap-2';
-          li.innerHTML = `
-            <div class="min-w-0 flex-1">
-              <p class="text-xs font-bold text-emerald-300 truncate">${escapeHtml(v.service)}</p>
-              <p class="text-xs text-slate-300 truncate">${escapeHtml(v.username)}</p>
-              <p class="text-xs font-mono text-slate-400 mt-0.5">${isShown ? escapeHtml(v.password) : '••••••••••••'}</p>
-            </div>
-            <div class="flex items-center gap-1 shrink-0">
-              <button type="button" data-action="toggle-pass" data-id="${v.id}" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-200">${isShown ? 'Nascondi' : 'Mostra'}</button>
-              <button type="button" data-action="delete-vault" data-id="${v.id}" class="px-2 py-1 rounded bg-rose-950/60 hover:bg-rose-900 text-[11px] text-rose-300">✕</button>
-            </div>
-          `;
-          listEl.appendChild(li);
-        });
-      }
-
-      // Render Registrazioni Vocali
-      function renderVoiceNotes() {
-        const filtered = state.voiceNotes.filter((vn) => matchesSearch(`${vn.title} ${vn.transcript || ''} ${vn.date || ''}`));
-        const countEl = document.getElementById('voice-count');
-        const listEl = document.getElementById('voice-list');
-        countEl.textContent = `${filtered.length} salvate`;
-        listEl.innerHTML = '';
-
-        if (filtered.length === 0) {
-          listEl.innerHTML = `<li class="text-xs text-slate-400 text-center py-2">Nessuna registrazione salvata.</li>`;
-          return;
-        }
-
-        filtered.forEach((vn) => {
-          const li = document.createElement('li');
-          li.className = 'rounded-xl bg-slate-900/85 border border-slate-800 p-3 space-y-2';
-          li.innerHTML = `
-            <div class="flex items-start justify-between gap-2">
-              <div class="min-w-0 flex-1">
-                <p class="text-xs font-semibold text-white truncate">${escapeHtml(vn.title)}</p>
-                <span class="text-[11px] text-slate-400">${escapeHtml(vn.date)}</span>
-              </div>
-              <button type="button" data-action="delete-voice" data-id="${vn.id}" class="text-xs text-slate-400 hover:text-rose-400">✕</button>
-            </div>
-            ${vn.transcript ? `<p class="text-xs text-rose-200/90 bg-slate-950/80 rounded-lg p-2 border border-slate-800/80">"${escapeHtml(vn.transcript)}"</p>` : ''}
-            ${vn.audioUrl ? `<audio controls src="${vn.audioUrl}" class="w-full h-8"></audio>` : ''}
-          `;
-          listEl.appendChild(li);
-        });
-      }
-
-      // Render Archivio Foto, PDF & Ricevute
-      function renderFiles() {
-        const filtered = state.files.filter((f) => matchesSearch(`${f.name} ${f.type} ${f.date || ''}`));
-        const listEl = document.getElementById('files-list');
-        listEl.innerHTML = '';
-
-        if (filtered.length === 0) {
-          listEl.innerHTML = `<li class="text-xs text-slate-400 text-center py-1">Nessun file archiviato.</li>`;
-          return;
-        }
-
-        filtered.forEach((f) => {
-          const li = document.createElement('li');
-          li.className = 'rounded-xl bg-slate-900/85 border border-slate-800 px-3 py-2.5 flex items-center justify-between gap-2';
-          li.innerHTML = `
-            <div class="min-w-0 flex-1">
-              <p class="text-xs font-semibold text-white truncate">${f.type === 'pdf' ? '📕' : '🖼️'} ${escapeHtml(f.name)}</p>
-              <span class="text-[11px] text-slate-400">${escapeHtml(f.type.toUpperCase())} • ${escapeHtml(f.date || '')}</span>
-            </div>
-            <div class="flex items-center gap-1 shrink-0">
-              <button type="button" data-action="preview-file" data-id="${f.id}" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-sky-200">Vedi</button>
-              <button type="button" data-action="print-file" data-id="${f.id}" class="px-2 py-1 rounded bg-indigo-600 hover:bg-indigo-500 text-[11px] text-white font-semibold">Stampa</button>
-              <button type="button" data-action="delete-file" data-id="${f.id}" class="px-2 py-1 rounded bg-rose-950/60 hover:bg-rose-900 text-[11px] text-rose-300">✕</button>
-            </div>
-          `;
-          listEl.appendChild(li);
-        });
-      }
-
-      function renderAll() {
-        renderReminders();
-        renderDeadlines();
-        renderNotes();
-        renderVault();
-        renderVoiceNotes();
-        renderFiles();
-        updateCloudUi();
-      }
-
-      // Comando rapido testuale (es. "avvisa tra 15 min ...")
-      function handleQuickCommand(rawText) {
-        const text = rawText.trim();
-        if (!text) return;
-
-        const today = getTodayISO();
-        const now = new Date();
-        const minMatch = text.match(/tra\s+(\d+)\s*min/i);
-
-        if (minMatch) {
-          const mins = parseInt(minMatch[1], 10);
-          const targetTime = new Date(now.getTime() + mins * 60000);
-          const hh = String(targetTime.getHours()).padStart(2, '0');
-          const mm = String(targetTime.getMinutes()).padStart(2, '0');
-
-          state.reminders.unshift({
-            id: `rem-${Date.now()}`,
-            title: text,
-            date: today,
-            timeStart: `${hh}:${mm}`,
-            timeEnd: '',
-            location: 'Comando Rapido',
-            alert: `Avviso tra ${mins} min`,
-            completed: false,
-            attachment: null
-          });
-          saveState();
-          renderReminders();
-          showToast(`Avviso impostato tra ${mins} min`, `"${text}" programmato per le ${hh}:${mm}.`);
-          return;
-        }
-
-        state.reminders.unshift({
-          id: `rem-${Date.now()}`,
-          title: text,
-          date: today,
-          timeStart: '',
-          timeEnd: '',
-          location: 'Promemoria Veloce',
-          alert: 'Promemoria attivo',
-          completed: false,
-          attachment: null
-        });
-        saveState();
-        renderReminders();
-        showToast('Promemoria aggiunto', `"${text}" aggiunto per oggi (${today}).`);
-      }
-
-      // Registrazione vocale reale (SpeechRecognition + MediaRecorder se disponibile)
-      async function startVoiceRecording() {
-        liveTranscript = '';
-        isRecording = true;
-        document.getElementById('voice-btn-label').textContent = 'Ferma e Salva Registrazione';
-        document.getElementById('voice-live-status').textContent = '🔴 Registrazione in corso... parla ora.';
-
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SpeechRecognition) {
-          try {
-            recognition = new SpeechRecognition();
-            recognition.lang = 'it-IT';
-            recognition.continuous = true;
-            recognition.interimResults = true;
-            recognition.onresult = (event) => {
-              let transcript = '';
-              for (let i = 0; i < event.results.length; i++) {
-                transcript += event.results[i][0].transcript;
-              }
-              liveTranscript = transcript.trim();
-              document.getElementById('voice-live-status').textContent = liveTranscript ? `🎙️ "${liveTranscript}"` : '🔴 In ascolto...';
-            };
-            recognition.start();
-          } catch (_) {}
-        }
-
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            audioChunks = [];
-            mediaRecorder = new MediaRecorder(stream);
-            mediaRecorder.ondataavailable = (e) => {
-              if (e.data.size > 0) audioChunks.push(e.data);
-            };
-            mediaRecorder.onstop = () => {
-              stream.getTracks().forEach((t) => t.stop());
-              const blob = new Blob(audioChunks, { type: 'audio/webm' });
-              const reader = new FileReader();
-              reader.onload = () => {
-                finalizeVoiceNote(reader.result);
-              };
-              reader.readAsDataURL(blob);
-            };
-            mediaRecorder.start();
-            return;
-          } catch (_) {
-            // Se il microfono non è disponibile o viene negato, prosegue con nota vocale testuale
-          }
-        }
-      }
-
-      function stopVoiceRecording() {
-        isRecording = false;
-        document.getElementById('voice-btn-label').textContent = 'Avvia Registrazione Vocale';
-        document.getElementById('voice-live-status').textContent = 'Registrazione salvata.';
-
-        if (recognition) {
-          try { recognition.stop(); } catch (_) {}
-          recognition = null;
-        }
-
-        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-          mediaRecorder.stop();
-          mediaRecorder = null;
-        } else {
-          finalizeVoiceNote(null);
-        }
-      }
-
-      function finalizeVoiceNote(audioUrl) {
-        const noteText = liveTranscript || 'Nota vocale registrata su OmniDesk';
-        state.voiceNotes.unshift({
-          id: `voice-${Date.now()}`,
-          title: `Nota Vocale #${state.voiceNotes.length + 1}`,
-          transcript: noteText,
-          audioUrl,
-          date: `${getTodayISO()} ${new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}`
-        });
-        saveState(true);
-        renderVoiceNotes();
-        showToast('Registrazione vocale salvata', noteText);
-      }
-
-      // Event Listeners
-      function bindEvents() {
-        // Ricerca globale
-        const searchInput = document.getElementById('global-search');
-        const clearSearchBtn = document.getElementById('btn-clear-search');
-        searchInput.addEventListener('input', (e) => {
-          searchQuery = e.target.value;
-          clearSearchBtn.classList.toggle('hidden', !searchQuery);
-          renderAll();
-        });
-        clearSearchBtn.addEventListener('click', () => {
-          searchInput.value = '';
-          searchQuery = '';
-          clearSearchBtn.classList.add('hidden');
-          renderAll();
-        });
-
-        // Spazio & Cloud / Export / Import JSON
-        document.getElementById('btn-space-cloud').addEventListener('click', openCloudPanel);
-        document.getElementById('sync-badge').addEventListener('click', openCloudPanel);
-        window.addEventListener('online', () => {
-          updateCloudUi();
-          if (state.cloud.enabled && state.cloud.autoSync) {
-            pushCloudSnapshot('Riconnessione Rete');
-          }
-          showToast('Connessione ripristinata', 'Stato rete tornato online.');
-        });
-        window.addEventListener('offline', () => {
-          updateCloudUi();
-          showToast('Modalità Offline', 'I dati continuano a essere salvati in locale.');
-        });
-
-        document.getElementById('btn-export-json').addEventListener('click', () => {
-          const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `omnidesk-backup-${getTodayISO()}.json`;
-          a.click();
-          URL.revokeObjectURL(url);
-          showToast('Backup esportato', 'File JSON scaricato correttamente.');
-        });
-
-        const importInput = document.getElementById('input-import-json');
-        document.getElementById('btn-import-json').addEventListener('click', () => importInput.click());
-        importInput.addEventListener('change', (e) => {
-          const file = e.target.files[0];
-          if (!file) return;
-          const reader = new FileReader();
-          reader.onload = () => {
-            try {
-              const imported = JSON.parse(reader.result);
-              state = { ...createDefaultState(), ...imported };
-              saveState();
-              renderAll();
-              showToast('Backup importato', 'Dati ripristinati da file JSON.');
-            } catch (err) {
-              showToast('Errore importazione', 'Il file JSON selezionato non è valido.');
-            }
-          };
-          reader.readAsText(file);
-          importInput.value = '';
-        });
-
-        document.getElementById('btn-reset-demo').addEventListener('click', () => {
-          state = createDefaultState();
-          saveState();
-          setPreview(null);
-          renderAll();
-          showToast('Demo ripristinata', 'Dati iniziali caricati.');
-        });
-
-        // Azioni Rapide 1-Tap
-        document.querySelectorAll('[data-quick-action]').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            const action = btn.dataset.quickAction;
-            if (action === 'impegno') {
-              const form = document.getElementById('reminder-form');
-              form.classList.remove('hidden');
-              form.classList.add('grid');
-              document.getElementById('reminder-edit-id').value = '';
-              document.getElementById('reminder-date').value = getTodayISO();
-              document.getElementById('reminder-title').focus();
-            } else if (action === 'scadenza') {
-              const form = document.getElementById('deadline-form');
-              form.classList.remove('hidden');
-              form.classList.add('grid');
-              document.getElementById('deadline-edit-id').value = '';
-              document.getElementById('deadline-date').value = addDaysISO(getTodayISO(), 7);
-              document.getElementById('deadline-title').focus();
-            } else if (action === 'nota') {
-              const form = document.getElementById('note-form');
-              form.classList.remove('hidden');
-              form.classList.add('flex');
-              document.getElementById('note-text').focus();
-            } else if (action === 'vocale') {
-              document.getElementById('btn-toggle-voice').click();
-            } else if (action === 'fotopdf') {
-              document.getElementById('input-file-local').click();
-            } else if (action === 'password') {
-              document.getElementById('section-vault').scrollIntoView({ behavior: 'smooth' });
-              if (!vaultUnlocked) {
-                document.getElementById('vault-pin-input').focus();
-              } else {
-                document.getElementById('vault-service').focus();
-              }
-            }
-          });
-        });
-
-        // Comando rapido
-        document.getElementById('quick-command-form').addEventListener('submit', (e) => {
-          e.preventDefault();
-          const input = document.getElementById('quick-command-input');
-          handleQuickCommand(input.value);
-          input.value = '';
-        });
-
-        // Filtri periodo promemoria
-        document.querySelectorAll('.period-btn').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            activePeriod = btn.dataset.period;
-            document.querySelectorAll('.period-btn').forEach((b) => {
-              const active = b.dataset.period === activePeriod;
-              b.className = `period-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition ${active ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`;
-            });
-            renderReminders();
-          });
-        });
-
-        document.getElementById('reference-date').value = getTodayISO();
-        document.getElementById('reference-date').addEventListener('change', renderReminders);
-
-        document.getElementById('btn-new-reminder').addEventListener('click', () => {
-          const form = document.getElementById('reminder-form');
-          form.classList.toggle('hidden');
-          form.classList.toggle('grid');
-          document.getElementById('reminder-edit-id').value = '';
-          document.getElementById('reminder-date').value = document.getElementById('reference-date').value || getTodayISO();
-          document.getElementById('reminder-title').focus();
-        });
-
-        document.getElementById('btn-cancel-reminder').addEventListener('click', () => {
-          const form = document.getElementById('reminder-form');
-          form.reset();
-          form.classList.add('hidden');
-          form.classList.remove('grid');
-        });
-
-        document.getElementById('btn-notify-reminders').addEventListener('click', () => {
-          const refDate = document.getElementById('reference-date').value || getTodayISO();
-          const items = filterRemindersByPeriod(state.reminders, activePeriod, refDate).filter((r) => !r.completed);
-          if (items.length === 0) {
-            showToast('Nessun promemoria attivo', `Non ci sono impegni aperti per il filtro ${activePeriod}.`);
-          } else {
-            showToast(`Promemoria (${items.length})`, `Prossimo: "${items[0].title}" (${items[0].date}${items[0].timeStart ? ' ' + items[0].timeStart : ''}).`);
-          }
-        });
-
-        // Salvataggio form impegno/promemoria
-        document.getElementById('reminder-form').addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const editId = document.getElementById('reminder-edit-id').value;
-          const title = document.getElementById('reminder-title').value.trim();
-          const date = document.getElementById('reminder-date').value || getTodayISO();
-          const timeStart = document.getElementById('reminder-time').value;
-          const location = document.getElementById('reminder-location').value.trim();
-          const alertText = document.getElementById('reminder-alert').value.trim();
-          const fileInput = document.getElementById('reminder-file');
-
-          if (!title) return;
-
-          let attachment = null;
-          if (fileInput.files[0]) {
-            try {
-              attachment = await readFileAsAttachment(fileInput.files[0]);
-            } catch (_) {
-              showToast('Errore file', 'Impossibile leggere l\'allegato.');
-            }
-          }
-
-          if (editId) {
-            const target = state.reminders.find((r) => r.id === editId);
-            if (target) {
-              target.title = title;
-              target.date = date;
-              target.timeStart = timeStart;
-              target.location = location;
-              target.alert = alertText;
-              if (attachment) target.attachment = attachment;
-            }
-          } else {
-            const created = {
-              id: `rem-${Date.now()}`,
-              title,
-              date,
-              timeStart,
-              timeEnd: '',
-              location,
-              alert: alertText,
-              completed: false,
-              attachment
-            };
-            state.reminders.unshift(created);
-            if (attachment) {
-              setPreview({ type: attachment.type, src: attachment.dataUrl, name: attachment.name });
-            }
-          }
-
-          saveState();
-          renderReminders();
-          e.target.reset();
-          e.target.classList.add('hidden');
-          e.target.classList.remove('grid');
-          showToast('Impegno salvato', `"${title}" aggiornato in agenda.`);
-        });
-
-        // Azioni sulla lista impegni
-        document.getElementById('reminders-list').addEventListener('click', (e) => {
-          const btn = e.target.closest('[data-action]');
-          if (!btn) return;
-          const action = btn.dataset.action;
-          const id = btn.dataset.id;
-          const item = state.reminders.find((r) => r.id === id);
-          if (!item) return;
-
-          if (action === 'toggle-reminder') {
-            item.completed = btn.checked;
-            saveState();
-            renderReminders();
-          } else if (action === 'preview-reminder' && item.attachment) {
-            setPreview({ type: item.attachment.type, src: item.attachment.dataUrl, name: item.attachment.name });
-            document.getElementById('section-files').scrollIntoView({ behavior: 'smooth' });
-          } else if (action === 'print-reminder' && item.attachment) {
-            const el = { type: item.attachment.type, src: item.attachment.dataUrl, name: item.attachment.name };
-            setPreview(el);
-            printItem(el);
-          } else if (action === 'remove-reminder-file') {
-            item.attachment = null;
-            saveState();
-            renderReminders();
-            showToast('Allegato rimosso', `File scollegato da "${item.title}".`);
-          } else if (action === 'attach-reminder') {
-            pendingAttachTarget = { kind: 'reminder', id };
-            document.getElementById('attach-reminder-file').click();
-          } else if (action === 'edit-reminder') {
-            const form = document.getElementById('reminder-form');
-            form.classList.remove('hidden');
-            form.classList.add('grid');
-            document.getElementById('reminder-edit-id').value = item.id;
-            document.getElementById('reminder-title').value = item.title;
-            document.getElementById('reminder-date').value = item.date;
-            document.getElementById('reminder-time').value = item.timeStart || '';
-            document.getElementById('reminder-location').value = item.location || '';
-            document.getElementById('reminder-alert').value = item.alert || '';
-          } else if (action === 'delete-reminder') {
-            state.reminders = state.reminders.filter((r) => r.id !== id);
-            saveState();
-            renderReminders();
-            showToast('Impegno eliminato', `"${item.title}" rimosso.`);
-          }
-        });
-
-        // Allega file a impegno esistente
-        document.getElementById('attach-reminder-file').addEventListener('change', async (e) => {
-          const file = e.target.files[0];
-          if (!file || !pendingAttachTarget || pendingAttachTarget.kind !== 'reminder') return;
-          const item = state.reminders.find((r) => r.id === pendingAttachTarget.id);
-          pendingAttachTarget = null;
-          e.target.value = '';
-          if (!item) return;
-
-          try {
-            const att = await readFileAsAttachment(file);
-            item.attachment = att;
-            saveState();
-            renderReminders();
-            setPreview({ type: att.type, src: att.dataUrl, name: att.name });
-            showToast('File collegato', `${att.name} collegato a "${item.title}".`);
-          } catch (_) {
-            showToast('Errore file', 'Impossibile allegare il file.');
-          }
-        });
-
-        // Filtri categoria scadenze
-        document.querySelectorAll('.cat-btn').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            activeCategory = btn.dataset.category;
-            document.querySelectorAll('.cat-btn').forEach((b) => {
-              const active = b.dataset.category === activeCategory;
-              b.className = `cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition ${active ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`;
-            });
-            renderDeadlines();
-          });
-        });
-
-        document.getElementById('btn-new-deadline').addEventListener('click', () => {
-          const form = document.getElementById('deadline-form');
-          form.classList.toggle('hidden');
-          form.classList.toggle('grid');
-          document.getElementById('deadline-edit-id').value = '';
-          document.getElementById('deadline-date').value = addDaysISO(getTodayISO(), 7);
-          document.getElementById('deadline-title').focus();
-        });
-
-        document.getElementById('btn-cancel-deadline').addEventListener('click', () => {
-          const form = document.getElementById('deadline-form');
-          form.reset();
-          form.classList.add('hidden');
-          form.classList.remove('grid');
-        });
-
-        document.getElementById('deadline-form').addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const editId = document.getElementById('deadline-edit-id').value;
-          const title = document.getElementById('deadline-title').value.trim();
-          const category = document.getElementById('deadline-category').value;
-          const date = document.getElementById('deadline-date').value || getTodayISO();
-          const code = document.getElementById('deadline-code').value.trim();
-          const fileInput = document.getElementById('deadline-file');
-
-          if (!title) return;
-
-          let attachment = null;
-          if (fileInput.files[0]) {
-            try {
-              attachment = await readFileAsAttachment(fileInput.files[0]);
-            } catch (_) {}
-          }
-
-          if (editId) {
-            const target = state.deadlines.find((d) => d.id === editId);
-            if (target) {
-              target.title = title;
-              target.category = category;
-              target.date = date;
-              target.code = code;
-              if (attachment) target.attachment = attachment;
-            }
-          } else {
-            state.deadlines.unshift({
-              id: `dl-${Date.now()}`,
-              title,
-              category,
-              date,
-              code,
-              attachment
-            });
-          }
-
-          saveState();
-          renderDeadlines();
-          e.target.reset();
-          e.target.classList.add('hidden');
-          e.target.classList.remove('grid');
-          showToast('Scadenza salvata', `"${title}" (${category}) aggiunta.`);
-        });
-
-        document.getElementById('deadlines-list').addEventListener('click', (e) => {
-          const btn = e.target.closest('[data-action]');
-          if (!btn) return;
-          const action = btn.dataset.action;
-          const id = btn.dataset.id;
-          const dl = state.deadlines.find((d) => d.id === id);
-          if (!dl) return;
-
-          if (action === 'preview-deadline' && dl.attachment) {
-            setPreview({ type: dl.attachment.type, src: dl.attachment.dataUrl, name: dl.attachment.name });
-            document.getElementById('section-files').scrollIntoView({ behavior: 'smooth' });
-          } else if (action === 'print-deadline' && dl.attachment) {
-            const el = { type: dl.attachment.type, src: dl.attachment.dataUrl, name: dl.attachment.name };
-            setPreview(el);
-            printItem(el);
-          } else if (action === 'attach-deadline') {
-            pendingAttachTarget = { kind: 'deadline', id };
-            document.getElementById('attach-deadline-file').click();
-          } else if (action === 'edit-deadline') {
-            const form = document.getElementById('deadline-form');
-            form.classList.remove('hidden');
-            form.classList.add('grid');
-            document.getElementById('deadline-edit-id').value = dl.id;
-            document.getElementById('deadline-title').value = dl.title;
-            document.getElementById('deadline-category').value = dl.category;
-            document.getElementById('deadline-date').value = dl.date;
-            document.getElementById('deadline-code').value = dl.code || '';
-          } else if (action === 'delete-deadline') {
-            state.deadlines = state.deadlines.filter((d) => d.id !== id);
-            saveState();
-            renderDeadlines();
-            showToast('Scadenza rimossa', `"${dl.title}" eliminata.`);
-          }
-        });
-
-        document.getElementById('attach-deadline-file').addEventListener('change', async (e) => {
-          const file = e.target.files[0];
-          if (!file || !pendingAttachTarget || pendingAttachTarget.kind !== 'deadline') return;
-          const dl = state.deadlines.find((d) => d.id === pendingAttachTarget.id);
-          pendingAttachTarget = null;
-          e.target.value = '';
-          if (!dl) return;
-
-          try {
-            const att = await readFileAsAttachment(file);
-            dl.attachment = att;
-            saveState();
-            renderDeadlines();
-            setPreview({ type: att.type, src: att.dataUrl, name: att.name });
-            showToast('Documento allegato', `${att.name} collegato a "${dl.title}".`);
-          } catch (_) {}
-        });
-
-        // Note rapide
-        document.getElementById('btn-new-note').addEventListener('click', () => {
-          const form = document.getElementById('note-form');
-          form.classList.toggle('hidden');
-          form.classList.toggle('flex');
-          document.getElementById('note-text').focus();
-        });
-
-        document.getElementById('note-form').addEventListener('submit', (e) => {
-          e.preventDefault();
-          const input = document.getElementById('note-text');
-          const text = input.value.trim();
-          if (!text) return;
-          state.notes.unshift({
-            id: `note-${Date.now()}`,
-            text,
-            createdAt: getTodayISO()
-          });
-          saveState();
-          renderNotes();
-          input.value = '';
-          e.target.classList.add('hidden');
-          e.target.classList.remove('flex');
-          showToast('Nota salvata', 'Nota aggiunta a OmniDesk.');
-        });
-
-        document.getElementById('notes-list').addEventListener('click', (e) => {
-          const btn = e.target.closest('[data-action="delete-note"]');
-          if (!btn) return;
-          state.notes = state.notes.filter((n) => n.id !== btn.dataset.id);
-          saveState();
-          renderNotes();
-        });
-
-        // Cassaforte Password
-        document.getElementById('vault-unlock-form').addEventListener('submit', (e) => {
-          e.preventDefault();
-          const pinInput = document.getElementById('vault-pin-input');
-          const errEl = document.getElementById('vault-error');
-          if (pinInput.value.trim() === state.pin) {
-            errEl.textContent = '';
-            pinInput.value = '';
-            vaultUnlocked = true;
-            renderVault();
-            showToast('Cassaforte sbloccata', 'Credenziali visibili.');
-          } else {
-            errEl.textContent = 'PIN non corretto. Riprova (PIN demo: 1234).';
-          }
-        });
-
-        document.getElementById('btn-lock-vault').addEventListener('click', () => {
-          vaultUnlocked = false;
-          visiblePasswords = {};
-          renderVault();
-        });
-
-        document.getElementById('btn-change-pin').addEventListener('click', () => {
-          openModal(
-            'Imposta nuovo PIN Cassaforte',
-            `
-              <p>Inserisci un nuovo PIN numerico o alfanumerico per la cassaforte.</p>
-              <input id="new-pin-field" type="password" placeholder="Nuovo PIN..." class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-sm text-white">
-            `,
-            [
-              { label: 'Annulla', className: 'px-3 py-1.5 rounded-lg text-xs bg-slate-800 text-slate-300', onClick: closeModal },
-              {
-                label: 'Salva PIN',
-                className: 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-slate-950',
-                onClick: () => {
-                  const val = document.getElementById('new-pin-field').value.trim();
-                  if (!val) return;
-                  state.pin = val;
-                  saveState();
-                  closeModal();
-                  showToast('PIN aggiornato', 'Nuovo PIN salvato in locale.');
-                }
-              }
-            ]
-          );
-        });
-
-        document.getElementById('vault-add-form').addEventListener('submit', (e) => {
-          e.preventDefault();
-          const service = document.getElementById('vault-service').value.trim();
-          const username = document.getElementById('vault-user').value.trim();
-          const password = document.getElementById('vault-pass').value;
-          if (!service || !username || !password) return;
-
-          state.vaultItems.unshift({
-            id: `vault-${Date.now()}`,
-            service,
-            username,
-            password
-          });
-          saveState();
-          renderVault();
-          e.target.reset();
-          showToast('Credenziale salvata', `"${service}" aggiunto alla cassaforte.`);
-        });
-
-        document.getElementById('vault-list').addEventListener('click', (e) => {
-          const btn = e.target.closest('[data-action]');
-          if (!btn) return;
-          const id = btn.dataset.id;
-          if (btn.dataset.action === 'toggle-pass') {
-            visiblePasswords[id] = !visiblePasswords[id];
-            renderVault();
-          } else if (btn.dataset.action === 'delete-vault') {
-            state.vaultItems = state.vaultItems.filter((v) => v.id !== id);
-            saveState();
-            renderVault();
-          }
-        });
-
-        // Registrazioni Vocali
-        document.getElementById('btn-toggle-voice').addEventListener('click', () => {
-          if (!isRecording) {
-            startVoiceRecording();
-          } else {
-            stopVoiceRecording();
-          }
-        });
-
-        document.getElementById('voice-list').addEventListener('click', (e) => {
-          const btn = e.target.closest('[data-action="delete-voice"]');
-          if (!btn) return;
-          state.voiceNotes = state.voiceNotes.filter((vn) => vn.id !== btn.dataset.id);
-          saveState(true);
-          renderVoiceNotes();
-        });
-
-        // Foto, PDF & Ricevute + Stampa
-        const localFileInput = document.getElementById('input-file-local');
-        document.getElementById('btn-upload-file').addEventListener('click', () => localFileInput.click());
-
-        localFileInput.addEventListener('change', async (e) => {
-          const file = e.target.files[0];
-          if (!file) return;
-          try {
-            const att = await readFileAsAttachment(file);
-            const record = {
-              id: `file-${Date.now()}`,
-              name: att.name,
-              type: att.type,
-              src: att.dataUrl,
-              date: getTodayISO()
-            };
-            state.files.unshift(record);
-            saveState(true);
-            renderFiles();
-            setPreview({ type: att.type, src: att.dataUrl, name: att.name });
-            showToast('File caricato', `${att.name} pronto per l'anteprima e la stampa.`);
-          } catch (_) {
-            showToast('Errore caricamento', 'Impossibile aprire il file selezionato.');
-          }
-          localFileInput.value = '';
-        });
-
-        document.getElementById('btn-load-url').addEventListener('click', () => {
-          const url = document.getElementById('input-file-url').value.trim();
-          if (!url) {
-            showToast('URL mancante', 'Inserisci l\'indirizzo di una foto o di un PDF.');
-            return;
-          }
-          const isPdf = url.toLowerCase().includes('.pdf');
-          const item = {
-            type: isPdf ? 'pdf' : 'foto',
-            src: url,
-            name: url.split('/').pop() || url
-          };
-          setPreview(item);
-          printItem(item);
-        });
-
-        document.getElementById('btn-print-active').addEventListener('click', () => {
-          printItem(currentPreview);
-        });
-
-        document.getElementById('btn-clear-preview').addEventListener('click', () => {
-          setPreview(null);
-        });
-
-        document.getElementById('files-list').addEventListener('click', (e) => {
-          const btn = e.target.closest('[data-action]');
-          if (!btn) return;
-          const fileRec = state.files.find((f) => f.id === btn.dataset.id);
-          if (!fileRec) return;
-
-          if (btn.dataset.action === 'preview-file') {
-            setPreview({ type: fileRec.type, src: fileRec.src, name: fileRec.name });
-          } else if (btn.dataset.action === 'print-file') {
-            const item = { type: fileRec.type, src: fileRec.src, name: fileRec.name };
-            setPreview(item);
-            printItem(item);
-          } else if (btn.dataset.action === 'delete-file') {
-            state.files = state.files.filter((f) => f.id !== fileRec.id);
-            saveState(true);
-            renderFiles();
-          }
-        });
-
-        // Toast e Modale
-        document.getElementById('btn-close-toast').addEventListener('click', hideToast);
-        document.getElementById('btn-close-modal').addEventListener('click', closeModal);
-        document.getElementById('modal-backdrop').addEventListener('click', (e) => {
-          if (e.target.id === 'modal-backdrop') closeModal();
-        });
-      }
-
-      // Avvio applicazione
-      window.addEventListener('DOMContentLoaded', () => {
-        updateDateTime();
-        updateCloudUi();
-        setInterval(updateDateTime, 30000);
-        bindEvents();
-        renderAll();
-
-        // Notifica iniziale discreta in basso a destra
-        setTimeout(() => {
-          const firstDeadline = state.deadlines[0];
-          if (firstDeadline) {
-            showToast('Promemoria scadenze', `${firstDeadline.title} in scadenza (${firstDeadline.date}).`);
-          }
-        }, 600);
+      ],
+      vocali: [],
+      pinVault: '1234',
+      updatedAt: Date.now()
+    };
+
+    const defaultCloudCfg = {
+      roomCode: 'omnidesk-spazio-personale',
+      apiKey: '',
+      databaseUrl: '',
+      projectId: '',
+      appId: ''
+    };
+
+    let state = loadState();
+    let cloudCfg = loadCloudCfg();
+
+    let filtroTemporale = 'giornaliero';
+    let categoriaScadenzaAttiva = 'Tutte';
+    let vaultSbloccato = false;
+    let elementoAnteprima = null; // { tipo: 'foto' | 'pdf', src: string, nome: string, impegnoId?: string }
+    let mediaRecorder = null;
+    let chunkVocali = [];
+    let pollTimer = null;
+    let isSyncingFromRemote = false;
+
+    // Elementi DOM
+    const inputRicerca = document.getElementById('inputRicerca');
+    const badgeCloud = document.getElementById('badgeCloud');
+    const testoBadgeCloud = document.getElementById('testoBadgeCloud');
+    const dataOraHeader = document.getElementById('dataOraHeader');
+    const statusToast = document.getElementById('statusToast');
+
+    const formRapido = document.getElementById('formRapido');
+    const inputRapido = document.getElementById('inputRapido');
+    const formImpegnoCompleto = document.getElementById('formImpegnoCompleto');
+    const listaImpegni = document.getElementById('listaImpegni');
+    const conteggioImpegni = document.getElementById('conteggioImpegni');
+    const inputDataRiferimento = document.getElementById('inputDataRiferimento');
+
+    const formScadenza = document.getElementById('formScadenza');
+    const listaScadenze = document.getElementById('listaScadenze');
+    const conteggioScadenze = document.getElementById('conteggioScadenze');
+
+    const vaultBloccata = document.getElementById('vaultBloccata');
+    const vaultSbloccata = document.getElementById('vaultSbloccata');
+    const inputPinVault = document.getElementById('inputPinVault');
+    const formPassword = document.getElementById('formPassword');
+    const listaPassword = document.getElementById('listaPassword');
+
+    const btnRegistrazioneVocale = document.getElementById('btnRegistrazioneVocale');
+    const testoBtnVocale = document.getElementById('testoBtnVocale');
+    const listaVocali = document.getElementById('listaVocali');
+
+    const inputFileStampa = document.getElementById('inputFileStampa');
+    const inputUrlFile = document.getElementById('inputUrlFile');
+    const btnStampaAnteprima = document.getElementById('btnStampaAnteprima');
+    const etichettaAnteprima = document.getElementById('etichettaAnteprima');
+    const previewPlaceholder = document.getElementById('previewPlaceholder');
+    const previewImg = document.getElementById('previewImg');
+    const previewPdf = document.getElementById('previewPdf');
+
+    const modalCloud = document.getElementById('modalCloud');
+    const inputAllegaVoceItem = document.getElementById('inputAllegaVoceItem');
+    const inputAllegaScadenzaItem = document.getElementById('inputAllegaScadenzaItem');
+
+    function oggiISO() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function aggiornaDataOraHeader() {
+      const ora = new Date();
+      const formattata = ora.toLocaleDateString('it-IT', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
       });
-    })();
+      const hhmm = ora.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+      const roomLabel = cloudCfg.databaseUrl
+        ? `Stanza: ${cloudCfg.roomCode || 'default'}`
+        : 'Solo dispositivo locale';
+      dataOraHeader.textContent = `${formattata.charAt(0).toUpperCase() + formattata.slice(1)} alle ore ${hhmm} • ${roomLabel}`;
+    }
+
+    function mostraToast(msg) {
+      statusToast.textContent = msg;
+      statusToast.style.display = 'block';
+      clearTimeout(mostraToast._t);
+      mostraToast._t = setTimeout(() => {
+        statusToast.style.display = 'none';
+      }, 3400);
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(defaultState);
+        return { ...structuredClone(defaultState), ...JSON.parse(raw) };
+      } catch (e) {
+        return structuredClone(defaultState);
+      }
+    }
+
+    function loadCloudCfg() {
+      try {
+        const raw = localStorage.getItem(CLOUD_CFG_KEY);
+        if (!raw) return { ...defaultCloudCfg };
+        return { ...defaultCloudCfg, ...JSON.parse(raw) };
+      } catch (e) {
+        return { ...defaultCloudCfg };
+      }
+    }
+
+    function saveState(pushRemote = true) {
+      state.updatedAt = Date.now();
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        mostraToast('Memoria localStorage piena: rimuovi allegati grandi o esporta JSON.');
+      }
+      aggiornaIndicatoreSpazio();
+      if (pushRemote && !isSyncingFromRemote && isCloudConfigured()) {
+        pushToFirebase(false);
+      }
+    }
+
+    function isCloudConfigured() {
+      return Boolean(cloudCfg.databaseUrl && cloudCfg.databaseUrl.trim().startsWith('http'));
+    }
+
+    function getFirebaseRoomUrl() {
+      const base = cloudCfg.databaseUrl.trim().replace(/\/+$/, '');
+      const room = encodeURIComponent((cloudCfg.roomCode || 'omnidesk-default').trim() || 'omnidesk-default');
+      return `${base}/omnidesk_rooms/${room}.json`;
+    }
+
+    async function pushToFirebase(showFeedback = true) {
+      if (!isCloudConfigured()) {
+        if (showFeedback) mostraToast('Configura prima il Firebase Database URL in Spazio Cloud.');
+        return;
+      }
+      try {
+        const res = await fetch(getFirebaseRoomUrl(), {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(state)
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        aggiornaStatoCloudUI(true, 'Cloud Sincronizzato');
+        if (showFeedback) mostraToast('Dati inviati al Cloud condiviso.');
+      } catch (err) {
+        aggiornaStatoCloudUI(false, 'Errore Cloud');
+        if (showFeedback) mostraToast('Errore invio Cloud: controlla URL e regole Firebase.');
+      }
+    }
+
+    async function pullFromFirebase(showFeedback = false) {
+      if (!isCloudConfigured()) {
+        if (showFeedback) mostraToast('Configura prima il Firebase Database URL in Spazio Cloud.');
+        return;
+      }
+      try {
+        const res = await fetch(getFirebaseRoomUrl());
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const remote = await res.json();
+        if (remote && typeof remote === 'object') {
+          const remoteTs = Number(remote.updatedAt || 0);
+          const localTs = Number(state.updatedAt || 0);
+          if (showFeedback || remoteTs > localTs) {
+            isSyncingFromRemote = true;
+            state = { ...structuredClone(defaultState), ...remote };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            isSyncingFromRemote = false;
+            renderAll();
+            if (showFeedback) mostraToast('Dati aggiornati dal Cloud.');
+          }
+        }
+        aggiornaStatoCloudUI(true, 'Live Cloud Attivo');
+      } catch (err) {
+        aggiornaStatoCloudUI(false, 'Cloud Non Raggiungibile');
+        if (showFeedback) mostraToast('Impossibile leggere dal Cloud.');
+      }
+    }
+
+    function avviaPollingCloud() {
+      clearInterval(pollTimer);
+      if (isCloudConfigured()) {
+        pullFromFirebase(false);
+        pollTimer = setInterval(() => pullFromFirebase(false), 6000);
+      } else {
+        aggiornaStatoCloudUI(false, 'Cloud Locale');
+      }
+    }
+
+    function aggiornaStatoCloudUI(online, etichetta) {
+      testoBadgeCloud.textContent = etichetta;
+      document.getElementById('statoDettagliatoCloud').textContent = etichetta;
+      if (online) {
+        badgeCloud.classList.remove('offline');
+      } else {
+        badgeCloud.classList.add('offline');
+      }
+      aggiornaDataOraHeader();
+    }
+
+    function aggiornaIndicatoreSpazio() {
+      const bytes = new Blob([JSON.stringify(state)]).size;
+      const kb = (bytes / 1024).toFixed(1);
+      const pct = Math.min(100, Math.max(4, Math.round((bytes / (5 * 1024 * 1024)) * 100)));
+      document.getElementById('barraSpazioCloud').style.width = `${pct}%`;
+      document.getElementById('testoSpazioCloud').textContent = `Spazio locale utilizzato: ${kb} KB (${pct}% di 5 MB stimati)`;
+    }
+
+    function leggiFileComeDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          resolve({
+            nome: file.name,
+            tipo: file.type.includes('pdf') ? 'pdf' : 'foto',
+            dataUrl: reader.result
+          });
+        };
+        reader.onerror = () => reject(new Error('Errore lettura file'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function filtraPerPeriodo(items, filtro, dataRifStr) {
+      const query = inputRicerca.value.trim().toLowerCase();
+      const [y, m, d] = (dataRifStr || oggiISO()).split('-').map(Number);
+      const rif = new Date(y, m - 1, d);
+      rif.setHours(0, 0, 0, 0);
+
+      const dow = (rif.getDay() + 6) % 7;
+      const inizioSett = new Date(rif);
+      inizioSett.setDate(rif.getDate() - dow);
+      inizioSett.setHours(0, 0, 0, 0);
+
+      const fineSett = new Date(inizioSett);
+      fineSett.setDate(inizioSett.getDate() + 6);
+      fineSett.setHours(23, 59, 59, 999);
+
+      return items.filter((item) => {
+        if (query) {
+          const testo = `${item.titolo || ''} ${item.luogo || ''} ${item.data || ''}`.toLowerCase();
+          if (!testo.includes(query)) return false;
+        }
+        if (filtro === 'tutti') return true;
+        if (!item.data) return filtro === 'giornaliero';
+
+        const [iy, im, iday] = item.data.split('-').map(Number);
+        const dataItem = new Date(iy, im - 1, iday);
+        dataItem.setHours(0, 0, 0, 0);
+
+        if (filtro === 'giornaliero') return dataItem.getTime() === rif.getTime();
+        if (filtro === 'settimanale') return dataItem >= inizioSett && dataItem <= fineSett;
+        if (filtro === 'mensile') return dataItem.getFullYear() === rif.getFullYear() && dataItem.getMonth() === rif.getMonth();
+        return true;
+      });
+    }
+
+    function mostraAnteprima(el, etichetta) {
+      elementoAnteprima = el;
+      previewPlaceholder.style.display = 'none';
+      previewImg.style.display = 'none';
+      previewPdf.style.display = 'none';
+      previewImg.src = '';
+      previewPdf.src = '';
+
+      if (el.tipo === 'pdf') {
+        previewPdf.src = el.src;
+        previewPdf.style.display = 'block';
+      } else {
+        previewImg.src = el.src;
+        previewImg.style.display = 'block';
+      }
+
+      etichettaAnteprima.textContent = etichetta;
+      btnStampaAnteprima.disabled = false;
+      renderImpegni();
+    }
+
+    function stampaElemento(el) {
+      if (!el) return;
+      if (el.tipo === 'pdf') {
+        const iframe = document.createElement('iframe');
+        iframe.style.position = 'fixed';
+        iframe.style.right = '0';
+        iframe.style.bottom = '0';
+        iframe.style.width = '0';
+        iframe.style.height = '0';
+        iframe.style.border = '0';
+        iframe.src = el.src;
+        iframe.onload = () => {
+          try {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+          } catch (e) {
+            window.open(el.src, '_blank');
+          }
+        };
+        document.body.appendChild(iframe);
+      } else {
+        const win = window.open('', '_blank', 'width=820,height=620');
+        if (!win) {
+          mostraToast('Consenti i popup del browser per stampare la foto.');
+          return;
+        }
+        win.document.write(`
+          <!DOCTYPE html>
+          <html lang="it">
+          <head><meta charset="UTF-8"><title>Stampa Foto</title>
+          <style>@page{margin:10mm;}body{margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;}img{max-width:100%;max-height:95vh;object-fit:contain;}</style>
+          </head>
+          <body>
+            <img id="pimg" src="${el.src}" alt="Stampa">
+            <script>
+              const i = document.getElementById('pimg');
+              i.onload = () => { window.focus(); window.print(); window.close(); };
+            <\/script>
+          </body></html>
+        `);
+        win.document.close();
+      }
+    }
+
+    function renderImpegni() {
+      const filtrati = filtraPerPeriodo(state.impegni, filtroTemporale, inputDataRiferimento.value);
+      conteggioImpegni.textContent = String(filtrati.length);
+      listaImpegni.innerHTML = '';
+
+      if (filtrati.length === 0) {
+        listaImpegni.innerHTML = `<div class="empty-hint">Nessun impegno per il filtro "${filtroTemporale}".</div>`;
+        return;
+      }
+
+      filtrati.forEach((item) => {
+        const row = document.createElement('div');
+        const isSelected = elementoAnteprima && elementoAnteprima.impegnoId === item.id;
+        row.className = `row-item ${item.completato ? 'done' : ''} ${isSelected ? 'selected' : ''}`;
+
+        const main = document.createElement('div');
+        main.className = 'item-main';
+
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = Boolean(item.completato);
+        cb.addEventListener('change', () => {
+          item.completato = cb.checked;
+          saveState();
+          renderImpegni();
+        });
+
+        const textWrap = document.createElement('div');
+        const title = document.createElement('div');
+        title.className = 'item-title';
+        title.textContent = item.titolo;
+
+        const meta = document.createElement('div');
+        meta.className = 'item-meta';
+        meta.textContent = `${item.data || ''}${item.ora ? ` • ${item.ora}` : ''}${item.luogo ? ` • Luogo: ${item.luogo}` : ''}`;
+
+        textWrap.appendChild(title);
+        textWrap.appendChild(meta);
+
+        if (item.allegato) {
+          const tags = document.createElement('div');
+          tags.className = 'tag-row';
+          const badge = document.createElement('span');
+          badge.className = 'pill-tag file';
+          badge.textContent = `${item.allegato.tipo.toUpperCase()}: ${item.allegato.nome}`;
+          tags.appendChild(badge);
+          textWrap.appendChild(tags);
+        }
+
+        main.appendChild(cb);
+        main.appendChild(textWrap);
+
+        const actions = document.createElement('div');
+        actions.className = 'item-actions';
+
+        if (item.allegato) {
+          const el = { tipo: item.allegato.tipo, src: item.allegato.dataUrl, nome: item.allegato.nome, impegnoId: item.id };
+          const btnAnt = document.createElement('button');
+          btnAnt.type = 'button';
+          btnAnt.textContent = 'Anteprima';
+          btnAnt.addEventListener('click', () => mostraAnteprima(el, `Impegno "${item.titolo}" — ${item.allegato.nome}`));
+
+          const btnStampa = document.createElement('button');
+          btnStampa.type = 'button';
+          btnStampa.className = 'btn-primary';
+          btnStampa.textContent = 'Stampa';
+          btnStampa.addEventListener('click', () => {
+            mostraAnteprima(el, `Impegno "${item.titolo}" — ${item.allegato.nome}`);
+            stampaElemento(el);
+          });
+
+          actions.appendChild(btnAnt);
+          actions.appendChild(btnStampa);
+        } else {
+          const btnAllega = document.createElement('button');
+          btnAllega.type = 'button';
+          btnAllega.textContent = '+ Allega';
+          btnAllega.addEventListener('click', () => {
+            inputAllegaVoceItem.dataset.targetId = item.id;
+            inputAllegaVoceItem.value = '';
+            inputAllegaVoceItem.click();
+          });
+          actions.appendChild(btnAllega);
+        }
+
+        const btnDel = document.createElement('button');
+        btnDel.type = 'button';
+        btnDel.className = 'btn-danger';
+        btnDel.textContent = 'Elimina';
+        btnDel.addEventListener('click', () => {
+          state.impegni = state.impegni.filter((x) => x.id !== item.id);
+          saveState();
+          renderImpegni();
+        });
+        actions.appendChild(btnDel);
+
+        row.appendChild(main);
+        row.appendChild(actions);
+        listaImpegni.appendChild(row);
+      });
+    }
+
+    function renderScadenze() {
+      const q = inputRicerca.value.trim().toLowerCase();
+      const filtered = state.scadenze.filter((s) => {
+        const catOk = categoriaScadenzaAttiva === 'Tutte' || s.categoria === categoriaScadenzaAttiva;
+        const qOk = !q || `${s.titolo} ${s.categoria} ${s.dettaglio || ''}`.toLowerCase().includes(q);
+        return catOk && qOk;
+      });
+
+      conteggioScadenze.textContent = String(filtered.length);
+      listaScadenze.innerHTML = '';
+
+      if (filtered.length === 0) {
+        listaScadenze.innerHTML = '<div class="empty-hint">Nessuna scadenza per questa categoria.</div>';
+        return;
+      }
+
+      filtered.forEach((sc) => {
+        const row = document.createElement('div');
+        row.className = 'row-item';
+
+        const left = document.createElement('div');
+        const tags = document.createElement('div');
+        tags.className = 'tag-row';
+        tags.style.marginTop = '0';
+        tags.style.marginBottom = '4px';
+
+        const catBadge = document.createElement('span');
+        catBadge.className = 'pill-tag';
+        catBadge.textContent = sc.categoria;
+
+        const okBadge = document.createElement('span');
+        okBadge.className = 'pill-tag ok';
+        okBadge.textContent = 'Monitorata';
+
+        tags.appendChild(catBadge);
+        tags.appendChild(okBadge);
+
+        const title = document.createElement('div');
+        title.className = 'item-title';
+        title.textContent = sc.titolo;
+
+        const meta = document.createElement('div');
+        meta.className = 'item-meta';
+        meta.textContent = `Scadenza: ${sc.data}${sc.dettaglio ? ` • ${sc.dettaglio}` : ''}`;
+
+        left.appendChild(tags);
+        left.appendChild(title);
+        left.appendChild(meta);
+
+        const actions = document.createElement('div');
+        actions.className = 'item-actions';
+
+        if (sc.allegato) {
+          const btnDoc = document.createElement('button');
+          btnDoc.type = 'button';
+          btnDoc.textContent = 'Apri Doc';
+          btnDoc.addEventListener('click', () => {
+            mostraAnteprima({ tipo: sc.allegato.tipo, src: sc.allegato.dataUrl, nome: sc.allegato.nome }, `Scadenza "${sc.titolo}" — ${sc.allegato.nome}`);
+          });
+          actions.appendChild(btnDoc);
+        } else {
+          const btnAddDoc = document.createElement('button');
+          btnAddDoc.type = 'button';
+          btnAddDoc.textContent = 'Doc';
+          btnAddDoc.addEventListener('click', () => {
+            inputAllegaScadenzaItem.dataset.targetId = sc.id;
+            inputAllegaScadenzaItem.value = '';
+            inputAllegaScadenzaItem.click();
+          });
+          actions.appendChild(btnAddDoc);
+        }
+
+        const btnDel = document.createElement('button');
+        btnDel.type = 'button';
+        btnDel.className = 'btn-danger';
+        btnDel.textContent = '✕';
+        btnDel.addEventListener('click', () => {
+          state.scadenze = state.scadenze.filter((x) => x.id !== sc.id);
+          saveState();
+          renderScadenze();
+        });
+        actions.appendChild(btnDel);
+
+        row.appendChild(left);
+        row.appendChild(actions);
+        listaScadenze.appendChild(row);
+      });
+    }
+
+    function renderVault() {
+      const pill = document.getElementById('statoVaultPill');
+      if (!vaultSbloccato) {
+        vaultBloccata.style.display = 'block';
+        vaultSbloccata.style.display = 'none';
+        pill.textContent = 'PIN';
+        return;
+      }
+      vaultBloccata.style.display = 'none';
+      vaultSbloccata.style.display = 'block';
+      pill.textContent = 'SBLOCCATA';
+      listaPassword.innerHTML = '';
+
+      state.password.forEach((p) => {
+        const row = document.createElement('div');
+        row.className = 'row-item';
+        const info = document.createElement('div');
+        info.innerHTML = `<div class="item-title">${p.servizio}</div><div class="item-meta">${p.utente} • <strong>${p.valore}</strong></div>`;
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'btn-danger';
+        del.textContent = 'Elimina';
+        del.addEventListener('click', () => {
+          state.password = state.password.filter((x) => x.id !== p.id);
+          saveState();
+          renderVault();
+        });
+        row.appendChild(info);
+        row.appendChild(del);
+        listaPassword.appendChild(row);
+      });
+    }
+
+    function renderVocali() {
+      listaVocali.innerHTML = '';
+      if (!state.vocali || state.vocali.length === 0) {
+        listaVocali.innerHTML = '<div class="empty-hint">Nessuna registrazione salvata.</div>';
+        return;
+      }
+      state.vocali.forEach((v) => {
+        const row = document.createElement('div');
+        row.className = 'row-item';
+        const wrap = document.createElement('div');
+        wrap.style.flex = '1';
+        wrap.innerHTML = `<div class="item-title">${v.titolo}</div><div class="item-meta">${v.data}</div>`;
+        if (v.audioUrl) {
+          const audio = document.createElement('audio');
+          audio.controls = true;
+          audio.src = v.audioUrl;
+          audio.style.width = '100%';
+          audio.style.marginTop = '6px';
+          wrap.appendChild(audio);
+        }
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'btn-danger';
+        del.textContent = '✕';
+        del.addEventListener('click', () => {
+          state.vocali = state.vocali.filter((x) => x.id !== v.id);
+          saveState();
+          renderVocali();
+        });
+        row.appendChild(wrap);
+        row.appendChild(del);
+        listaVocali.appendChild(row);
+      });
+    }
+
+    function renderAll() {
+      renderImpegni();
+      renderScadenze();
+      renderVault();
+      renderVocali();
+      aggiornaIndicatoreSpazio();
+      aggiornaDataOraHeader();
+    }
+
+    // Eventi Form Rapido & Impegni
+    formRapido.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const titolo = inputRapido.value.trim();
+      if (!titolo) return;
+      state.impegni.unshift({
+        id: 'imp-' + Date.now(),
+        titolo,
+        data: inputDataRiferimento.value || oggiISO(),
+        ora: '',
+        luogo: 'Nota rapida',
+        completato: false,
+        allegato: null
+      });
+      inputRapido.value = '';
+      saveState();
+      renderImpegni();
+      mostraToast('Promemoria aggiunto.');
+    });
+
+    document.getElementById('btnToggleFormImpegno').addEventListener('click', () => {
+      formImpegnoCompleto.classList.toggle('hidden');
+      document.getElementById('impegnoData').value = inputDataRiferimento.value || oggiISO();
+    });
+
+    formImpegnoCompleto.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const titolo = document.getElementById('impegnoTitolo').value.trim();
+      const data = document.getElementById('impegnoData').value;
+      const ora = document.getElementById('impegnoOra').value;
+      const luogo = document.getElementById('impegnoLuogo').value.trim();
+      const file = document.getElementById('impegnoAllegato').files[0];
+      if (!titolo || !data) return;
+
+      let allegato = null;
+      if (file) {
+        allegato = await leggiFileComeDataUrl(file);
+      }
+
+      const nuovo = {
+        id: 'imp-' + Date.now(),
+        titolo,
+        data,
+        ora,
+        luogo,
+        completato: false,
+        allegato
+      };
+
+      state.impegni.unshift(nuovo);
+      saveState();
+      formImpegnoCompleto.reset();
+      formImpegnoCompleto.classList.add('hidden');
+      renderImpegni();
+      if (allegato) {
+        mostraAnteprima({ tipo: allegato.tipo, src: allegato.dataUrl, nome: allegato.nome, impegnoId: nuovo.id }, `Impegno "${nuovo.titolo}" — ${allegato.nome}`);
+      }
+    });
+
+    inputAllegaVoceItem.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      const id = e.target.dataset.targetId;
+      if (!file || !id) return;
+      const target = state.impegni.find((x) => x.id === id);
+      if (!target) return;
+      target.allegato = await leggiFileComeDataUrl(file);
+      saveState();
+      renderImpegni();
+      mostraAnteprima({ tipo: target.allegato.tipo, src: target.allegato.dataUrl, nome: target.allegato.nome, impegnoId: target.id }, `Impegno "${target.titolo}" — ${target.allegato.nome}`);
+    });
+
+    // Filtri temporali
+    document.querySelectorAll('[data-time-filter]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-time-filter]').forEach((b) => b.classList.remove('active-time-filter'));
+        btn.classList.add('active-time-filter');
+        filtroTemporale = btn.dataset.timeFilter;
+        renderImpegni();
+      });
+    });
+
+    inputDataRiferimento.addEventListener('change', renderImpegni);
+    inputRicerca.addEventListener('input', () => {
+      renderImpegni();
+      renderScadenze();
+    });
+
+    // Scadenze
+    document.getElementById('btnToggleFormScadenza').addEventListener('click', () => {
+      formScadenza.classList.toggle('hidden');
+      document.getElementById('scadenzaData').value = oggiISO();
+    });
+
+    formScadenza.addEventListener('submit', (e) => {
+      e.preventDefault();
+      state.scadenze.unshift({
+        id: 'sc-' + Date.now(),
+        titolo: document.getElementById('scadenzaTitolo').value.trim(),
+        categoria: document.getElementById('scadenzaCategoria').value,
+        data: document.getElementById('scadenzaData').value,
+        dettaglio: document.getElementById('scadenzaDettaglio').value.trim(),
+        completato: false
+      });
+      formScadenza.reset();
+      formScadenza.classList.add('hidden');
+      saveState();
+      renderScadenze();
+    });
+
+    inputAllegaScadenzaItem.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      const id = e.target.dataset.targetId;
+      if (!file || !id) return;
+      const sc = state.scadenze.find((x) => x.id === id);
+      if (!sc) return;
+      sc.allegato = await leggiFileComeDataUrl(file);
+      saveState();
+      renderScadenze();
+      mostraAnteprima({ tipo: sc.allegato.tipo, src: sc.allegato.dataUrl, nome: sc.allegato.nome }, `Scadenza "${sc.titolo}" — ${sc.allegato.nome}`);
+    });
+
+    document.querySelectorAll('[data-cat-scadenza]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-cat-scadenza]').forEach((b) => b.classList.remove('active-filter'));
+        btn.classList.add('active-filter');
+        categoriaScadenzaAttiva = btn.dataset.catScadenza;
+        renderScadenze();
+      });
+    });
+
+    // Cassaforte PIN
+    document.getElementById('btnSbloccaVault').addEventListener('click', () => {
+      const pin = inputPinVault.value.trim();
+      if (pin === (state.pinVault || '1234')) {
+        vaultSbloccato = true;
+        inputPinVault.value = '';
+        renderVault();
+      } else {
+        mostraToast('PIN errato (predefinito: 1234).');
+      }
+    });
+
+    document.getElementById('btnBloccaVault').addEventListener('click', () => {
+      vaultSbloccato = false;
+      renderVault();
+    });
+
+    formPassword.addEventListener('submit', (e) => {
+      e.preventDefault();
+      state.password.unshift({
+        id: 'pwd-' + Date.now(),
+        servizio: document.getElementById('pwdServizio').value.trim(),
+        utente: document.getElementById('pwdUtente').value.trim(),
+        valore: document.getElementById('pwdValore').value.trim()
+      });
+      formPassword.reset();
+      saveState();
+      renderVault();
+    });
+
+    // Registrazioni vocali
+    btnRegistrazioneVocale.addEventListener('click', async () => {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        return;
+      }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        mostraToast('Registrazione audio non supportata su questo browser.');
+        return;
+      }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        chunkVocali = [];
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.ondataavailable = (ev) => {
+          if (ev.data.size > 0) chunkVocali.push(ev.data);
+        };
+        mediaRecorder.onstop = () => {
+          stream.getTracks().forEach((t) => t.stop());
+          const blob = new Blob(chunkVocali, { type: 'audio/webm' });
+          const reader = new FileReader();
+          reader.onload = () => {
+            state.vocali.unshift({
+              id: 'voc-' + Date.now(),
+              titolo: `Nota vocale #${state.vocali.length + 1}`,
+              data: new Date().toLocaleString('it-IT'),
+              audioUrl: reader.result
+            });
+            saveState();
+            renderVocali();
+          };
+          reader.readAsDataURL(blob);
+          btnRegistrazioneVocale.classList.remove('recording');
+          testoBtnVocale.textContent = 'Avvia Registrazione Vocale';
+        };
+        mediaRecorder.start();
+        btnRegistrazioneVocale.classList.add('recording');
+        testoBtnVocale.textContent = 'Ferma Registrazione';
+      } catch (err) {
+        mostraToast('Permesso microfono negato o non disponibile.');
+      }
+    });
+
+    // Stampa Foto / PDF
+    document.getElementById('btnCaricaFotoPdf').addEventListener('click', () => inputFileStampa.click());
+    inputFileStampa.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const dati = await leggiFileComeDataUrl(file);
+      mostraAnteprima({ tipo: dati.tipo, src: dati.dataUrl, nome: dati.nome }, `File locale: ${dati.nome}`);
+    });
+
+    document.getElementById('btnApriUrlFile').addEventListener('click', () => {
+      const url = inputUrlFile.value.trim();
+      if (!url) return;
+      const isPdf = url.toLowerCase().includes('.pdf');
+      mostraAnteprima({ tipo: isPdf ? 'pdf' : 'foto', src: url, nome: url }, `URL (${isPdf ? 'PDF' : 'FOTO'}): ${url}`);
+    });
+
+    btnStampaAnteprima.addEventListener('click', () => stampaElemento(elementoAnteprima));
+
+    // Azioni Rapide 1-Tap
+    document.getElementById('tileNuovoImpegno').addEventListener('click', () => {
+      formImpegnoCompleto.classList.remove('hidden');
+      document.getElementById('impegnoData').value = inputDataRiferimento.value || oggiISO();
+      document.getElementById('impegnoTitolo').focus();
+    });
+    document.getElementById('tileNuovaScadenza').addEventListener('click', () => {
+      formScadenza.classList.remove('hidden');
+      document.getElementById('scadenzaData').value = oggiISO();
+      document.getElementById('scadenzaTitolo').focus();
+    });
+    document.getElementById('tileNuovaNota').addEventListener('click', () => inputRapido.focus());
+    document.getElementById('tileVocale').addEventListener('click', () => btnRegistrazioneVocale.click());
+    document.getElementById('tileFotoPdf').addEventListener('click', () => inputFileStampa.click());
+    document.getElementById('tilePassword').addEventListener('click', () => {
+      vaultSbloccato = true;
+      renderVault();
+      document.getElementById('pwdServizio').focus();
+    });
+
+    // Backup JSON
+    document.getElementById('btnExportJson').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `omnidesk-backup-${oggiISO()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      mostraToast('Backup JSON esportato.');
+    });
+
+    document.getElementById('btnImportJson').addEventListener('click', () => {
+      document.getElementById('inputFileJson').click();
+    });
+
+    document.getElementById('inputFileJson').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          state = { ...structuredClone(defaultState), ...parsed };
+          saveState();
+          renderAll();
+          mostraToast('Backup JSON importato.');
+        } catch (err) {
+          mostraToast('File JSON non valido.');
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    // Modale Cloud
+    function apriModalCloud() {
+      document.getElementById('cloudRoomCode').value = cloudCfg.roomCode || '';
+      document.getElementById('fbApiKey').value = cloudCfg.apiKey || '';
+      document.getElementById('fbDatabaseUrl').value = cloudCfg.databaseUrl || '';
+      document.getElementById('fbProjectId').value = cloudCfg.projectId || '';
+      document.getElementById('fbAppId').value = cloudCfg.appId || '';
+      aggiornaIndicatoreSpazio();
+      modalCloud.classList.add('open');
+    }
+
+    document.getElementById('btnApriCloud').addEventListener('click', apriModalCloud);
+    badgeCloud.addEventListener('click', apriModalCloud);
+    document.getElementById('btnChiudiModalCloud').addEventListener('click', () => modalCloud.classList.remove('open'));
+    document.getElementById('btnSincronizzaOra').addEventListener('click', () => {
+      if (isCloudConfigured()) {
+        pullFromFirebase(true);
+      } else {
+        saveState(false);
+        mostraToast('Stato locale aggiornato. Apri Spazio Cloud per collegare Firebase.');
+      }
+    });
+
+    document.getElementById('btnSalvaConfigCloud').addEventListener('click', async () => {
+      cloudCfg = {
+        roomCode: document.getElementById('cloudRoomCode').value.trim() || 'omnidesk-spazio-personale',
+        apiKey: document.getElementById('fbApiKey').value.trim(),
+        databaseUrl: document.getElementById('fbDatabaseUrl').value.trim(),
+        projectId: document.getElementById('fbProjectId').value.trim(),
+        appId: document.getElementById('fbAppId').value.trim()
+      };
+      localStorage.setItem(CLOUD_CFG_KEY, JSON.stringify(cloudCfg));
+      avviaPollingCloud();
+      if (isCloudConfigured()) {
+        await pushToFirebase(true);
+      } else {
+        mostraToast('Impostazioni salvate in modalità locale.');
+      }
+    });
+
+    document.getElementById('btnForzaPullCloud').addEventListener('click', () => pullFromFirebase(true));
+    document.getElementById('btnForzaPushCloud').addEventListener('click', () => pushToFirebase(true));
+
+    document.getElementById('btnResetDati').addEventListener('click', () => {
+      state = structuredClone(defaultState);
+      saveState();
+      renderAll();
+      mostraToast('Dati reimpostati ai valori iniziali.');
+    });
+
+    // Avvio
+    inputDataRiferimento.value = oggiISO();
+    renderAll();
+    avviaPollingCloud();
   </script>
 </body>
 </html>
