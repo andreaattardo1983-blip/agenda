@@ -349,3 +349,1689 @@
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
+    }
+
+    .filter-buttons button {
+      padding: 6px 10px;
+      font-size: 0.78rem;
+    }
+
+    .ref-date-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .ref-date-wrap input {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-radius: 7px;
+      padding: 5px 8px;
+      font-size: 0.78rem;
+    }
+
+    .inline-form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 12px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+    }
+
+    .inline-form.hidden {
+      display: none;
+    }
+
+    .inline-form input,
+    .inline-form select,
+    .inline-form textarea {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-radius: 7px;
+      padding: 8px 10px;
+      font-size: 0.83rem;
+    }
+
+    .list-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .row-item {
+      background: var(--bg-input);
+      border: 1px solid var(--border-soft);
+      border-radius: 11px;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .row-item.selected {
+      border-color: var(--accent);
+      background: rgba(91, 92, 255, 0.08);
+    }
+
+    .row-item.done .item-title {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .item-main {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .item-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      word-break: break-word;
+    }
+
+    .item-meta {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .pill-tag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--bg-card-soft);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .pill-tag.ok {
+      background: var(--ok-soft);
+      border-color: rgba(16, 185, 129, 0.35);
+      color: #34d399;
+    }
+
+    .pill-tag.file {
+      background: var(--accent-soft);
+      border-color: rgba(99, 102, 241, 0.35);
+      color: #a5b4fc;
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .item-actions button {
+      padding: 5px 9px;
+      font-size: 0.76rem;
+    }
+
+    .vault-box {
+      background: var(--bg-input);
+      border: 1px solid var(--border-soft);
+      border-radius: 11px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .pin-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pin-row input {
+      width: 115px;
+      text-align: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.88rem;
+    }
+
+    .voice-btn {
+      width: 100%;
+      background: var(--pink);
+      border-color: var(--pink);
+      color: #fff;
+      padding: 11px 14px;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .voice-btn:hover:not(:disabled) {
+      background: #be123c;
+    }
+
+    .voice-btn.recording {
+      background: #dc2626;
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .preview-surface {
+      margin-top: 10px;
+      background: var(--bg-input);
+      border: 1px dashed var(--border);
+      border-radius: 11px;
+      padding: 12px;
+      min-height: 190px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .preview-surface img {
+      max-width: 100%;
+      max-height: 360px;
+      object-fit: contain;
+      display: none;
+      border-radius: 6px;
+    }
+
+    .preview-surface iframe {
+      width: 100%;
+      height: 360px;
+      border: none;
+      display: none;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .empty-hint {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      text-align: center;
+    }
+
+    .status-toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      color: var(--text-main);
+      padding: 11px 14px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+      z-index: 60;
+      max-width: 340px;
+      display: none;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 6, 12, 0.76);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      max-width: 640px;
+      width: 100%;
+      padding: 20px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    @media (max-width: 580px) {
+      .modal-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .field-group label {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .field-group input {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.84rem;
+    }
+
+    .password-input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .password-input-row input {
+      flex: 1;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: var(--bg-input);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--border-soft);
+      margin: 8px 0 12px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 12%;
+      background: linear-gradient(90deg, #10b981, #6366f1);
+      transition: width 0.25s ease;
+    }
+
+    .hidden-file {
+      display: none;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .topbar,
+      .bento-card:not(.print-target-card),
+      .main-bento > .left-stack,
+      .main-bento > .right-stack > .bento-card:not(.print-target-card),
+      .status-toast,
+      .modal-backdrop {
+        display: none !important;
+      }
+      .main-bento,
+      .right-stack {
+        display: block !important;
+      }
+      .print-target-card {
+        border: none;
+        padding: 0;
+        background: #fff;
+      }
+      .preview-surface {
+        border: none;
+        padding: 0;
+        background: #fff;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-group">
+        <div class="brand-logo" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div>
+          <div class="brand-title-row">
+            <span class="brand-title">OmniDesk</span>
+            <button type="button" id="badgeCloud" class="cloud-pill offline" title="Stato e configurazione Cloud">
+              <span class="cloud-dot"></span>
+              <span id="testoBadgeCloud">Cloud Locale</span>
+            </button>
+          </div>
+          <div class="brand-subtitle" id="dataOraHeader">Sabato 21 novembre 2026 • Sincronizzazione pronta</div>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <input type="search" id="inputRicerca" class="search-input" placeholder="Cerca ovunque...">
+        <button type="button" id="btnApriCloud">Spazio Cloud</button>
+        <button type="button" class="icon-btn" id="btnExportJson" title="Esporta Backup JSON">⬇</button>
+        <button type="button" class="icon-btn" id="btnImportJson" title="Importa Backup JSON">⬆</button>
+        <input type="file" id="inputFileJson" accept="application/json,.json" class="hidden-file">
+        <input type="file" id="inputAllegaVoceItem" accept="image/*,application/pdf" class="hidden-file">
+        <input type="file" id="inputAllegaScadenzaItem" accept="image/*,application/pdf" class="hidden-file">
+      </div>
+    </header>
+
+    <section class="bento-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="cloud-dot" style="background: var(--ok);"></span>
+          <h2 class="card-title">Azioni Rapide (1-Tap)</h2>
+        </div>
+        <button type="button" id="btnSincronizzaOra" style="padding: 5px 10px; font-size: 0.78rem;">↻ Sync Ora</button>
+      </div>
+
+      <div class="quick-grid">
+        <button type="button" class="quick-tile tile-impegno" id="tileNuovoImpegno">
+          <span>🗓️</span>
+          <span>+ Impegno</span>
+        </button>
+        <button type="button" class="quick-tile tile-scadenza" id="tileNuovaScadenza">
+          <span>💳</span>
+          <span>+ Scadenza</span>
+        </button>
+        <button type="button" class="quick-tile tile-nota" id="tileNuovaNota">
+          <span>📝</span>
+          <span>+ Nota</span>
+        </button>
+        <button type="button" class="quick-tile tile-vocale" id="tileVocale">
+          <span>🎙️</span>
+          <span>Vocale</span>
+        </button>
+        <button type="button" class="quick-tile tile-file" id="tileFotoPdf">
+          <span>📄</span>
+          <span>+ Foto/PDF</span>
+        </button>
+        <button type="button" class="quick-tile tile-password" id="tilePassword">
+          <span>🔑</span>
+          <span>+ Password</span>
+        </button>
+      </div>
+
+      <form class="quick-bar" id="formRapido">
+        <input type="text" id="inputRapido" placeholder="Scrivi un promemoria veloce o premi Invio (avviso tra 10 min)..." required>
+        <button type="submit" class="btn-primary">Aggiungi</button>
+      </form>
+    </section>
+
+    <div class="main-bento">
+      <div class="left-stack">
+        <section class="bento-card" id="sezioneImpegni">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2 class="card-title">📅 Impegni &amp; Promemoria</h2>
+              <span class="count-badge" id="conteggioImpegni">0</span>
+            </div>
+            <div class="item-actions">
+              <button type="button" id="btnToggleFormImpegno">+ Nuovo</button>
+            </div>
+          </div>
+
+          <div class="filter-row">
+            <div class="filter-buttons" role="group" aria-label="Filtro temporale promemoria">
+              <button type="button" class="active-time-filter" data-time-filter="giornaliero">Giornaliero</button>
+              <button type="button" data-time-filter="settimanale">Settimanale</button>
+              <button type="button" data-time-filter="mensile">Mensile</button>
+              <button type="button" data-time-filter="tutti">Tutti</button>
+            </div>
+            <div class="ref-date-wrap">
+              <label for="inputDataRiferimento">Rif.:</label>
+              <input type="date" id="inputDataRiferimento">
+            </div>
+          </div>
+
+          <form class="inline-form hidden" id="formImpegnoCompleto">
+            <input type="text" id="impegnoTitolo" placeholder="Titolo impegno o promemoria..." required>
+            <input type="date" id="impegnoData" required>
+            <input type="time" id="impegnoOra">
+            <input type="text" id="impegnoLuogo" placeholder="Luogo (es. Studio, Casa)">
+            <input type="file" id="impegnoAllegato" accept="image/*,application/pdf">
+            <button type="submit" class="btn-primary">Salva Impegno</button>
+          </form>
+
+          <div class="list-stack" id="listaImpegni"></div>
+        </section>
+
+        <section class="bento-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2 class="card-title">⚠️ Scadenze Carte, Polizze &amp; Doc</h2>
+              <span class="count-badge" id="conteggioScadenze">0</span>
+            </div>
+            <button type="button" id="btnToggleFormScadenza">+ Scadenza</button>
+          </div>
+
+          <div class="filter-buttons" style="margin-bottom: 12px;" id="filtriCategoriaScadenze">
+            <button type="button" class="active-filter" data-cat-scadenza="Tutte">Tutte</button>
+            <button type="button" data-cat-scadenza="Carte">Carte</button>
+            <button type="button" data-cat-scadenza="Assicurazioni">Assicurazioni</button>
+            <button type="button" data-cat-scadenza="Documenti">Documenti</button>
+            <button type="button" data-cat-scadenza="Abbonamenti">Abbonamenti</button>
+          </div>
+
+          <form class="inline-form hidden" id="formScadenza">
+            <input type="text" id="scadenzaTitolo" placeholder="Es. Assicurazione Auto RC" required>
+            <select id="scadenzaCategoria">
+              <option value="Assicurazioni">Assicurazioni</option>
+              <option value="Carte">Carte</option>
+              <option value="Documenti">Documenti</option>
+              <option value="Abbonamenti">Abbonamenti</option>
+            </select>
+            <input type="date" id="scadenzaData" required>
+            <input type="text" id="scadenzaDettaglio" placeholder="Dettaglio / Polizza / IBAN">
+            <button type="submit" class="btn-primary">Salva Scadenza</button>
+          </form>
+
+          <div class="list-stack" id="listaScadenze"></div>
+        </section>
+      </div>
+
+      <div class="right-stack">
+        <section class="bento-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2 class="card-title">🔒 Cassaforte Password</h2>
+            </div>
+            <span class="pill-tag" id="statoVaultPill">PIN</span>
+          </div>
+
+          <div id="vaultBloccata" class="vault-box">
+            <div style="font-size: 1.5rem; margin-bottom: 6px;">🛡️</div>
+            <div class="item-meta">Inserisci il PIN per accedere ai tuoi account</div>
+            <div class="pin-row">
+              <input type="password" id="inputPinVault" placeholder="PIN (default 1234)" maxlength="12">
+              <button type="button" class="btn-primary" id="btnSbloccaVault">Sblocca</button>
+            </div>
+          </div>
+
+          <div id="vaultSbloccata" style="display: none;">
+            <form class="inline-form" id="formPassword">
+              <input type="text" id="pwdServizio" placeholder="Servizio / Account" required>
+              <input type="text" id="pwdUtente" placeholder="Username / Email" required>
+              <input type="text" id="pwdValore" placeholder="Password" required>
+              <button type="submit" class="btn-primary">Salva</button>
+            </form>
+            <div class="list-stack" id="listaPassword"></div>
+            <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
+              <button type="button" id="btnBloccaVault">Blocca Cassaforte</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="bento-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2 class="card-title">🎙️ Registrazioni Vocali</h2>
+            </div>
+          </div>
+          <button type="button" class="voice-btn" id="btnRegistrazioneVocale">
+            <span>●</span>
+            <span id="testoBtnVocale">Avvia Registrazione Vocale</span>
+          </button>
+          <div class="list-stack" id="listaVocali" style="margin-top: 10px;">
+            <div class="empty-hint">Nessuna registrazione salvata.</div>
+          </div>
+        </section>
+
+        <section class="bento-card print-target-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2 class="card-title">📄 Foto, PDF &amp; Ricevute</h2>
+            </div>
+            <div class="item-actions">
+              <button type="button" id="btnCaricaFotoPdf">+ Carica Foto/PDF</button>
+              <button type="button" class="btn-primary" id="btnStampaAnteprima" disabled>Stampa</button>
+            </div>
+          </div>
+
+          <input type="file" id="inputFileStampa" accept="image/*,application/pdf" class="hidden-file">
+
+          <div class="inline-form" style="margin-bottom: 8px; padding: 8px;">
+            <input type="url" id="inputUrlFile" placeholder="Oppure incolla URL di foto o PDF...">
+            <button type="button" id="btnApriUrlFile">Apri URL</button>
+          </div>
+
+          <div class="item-meta" id="etichettaAnteprima">Nessun file o allegato collegato selezionato.</div>
+
+          <div class="preview-surface" id="previewSurface">
+            <div class="empty-hint" id="previewPlaceholder">
+              Collega una foto o un PDF a un impegno oppure caricalo qui per visualizzarlo e stamparlo.
+            </div>
+            <img id="previewImg" alt="Anteprima immagine">
+            <iframe id="previewPdf" title="Anteprima PDF"></iframe>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE CLOUD & SYNC -->
+  <div class="modal-backdrop" id="modalCloud" role="dialog" aria-modal="true" aria-labelledby="titoloModalCloud">
+    <div class="modal-card">
+      <div class="card-header">
+        <h2 class="card-title" id="titoloModalCloud">☁️ Cloud Sync tra PC e Cellulare</h2>
+        <button type="button" id="btnChiudiModalCloud">✕</button>
+      </div>
+
+      <div class="item-meta">
+        Stato attuale: <strong id="statoDettagliatoCloud">Cloud Locale</strong>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="barraSpazioCloud"></div>
+      </div>
+      <div class="item-meta" id="testoSpazioCloud" style="margin-bottom: 12px;">Spazio locale utilizzato: 0 KB</div>
+
+      <div class="modal-grid">
+        <div class="field-group" style="margin-bottom: 0;">
+          <label for="cloudRoomCode">Codice Stanza Cloud Condiviso</label>
+          <input type="text" id="cloudRoomCode" placeholder="es. omnidesk-spazio-personale">
+        </div>
+        <div class="field-group" style="margin-bottom: 0;">
+          <label for="cloudSyncPassword">Codice / Password di Sincronizzazione</label>
+          <div class="password-input-row">
+            <input type="password" id="cloudSyncPassword" placeholder="Inserisci codice/password condiviso">
+            <button type="button" id="btnTogglePasswordCloud" title="Mostra o nascondi password">👁</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-grid">
+        <div class="field-group" style="margin-bottom: 0;">
+          <label for="fbApiKey">Firebase API Key</label>
+          <input type="text" id="fbApiKey" placeholder="AIzaSy...">
+        </div>
+        <div class="field-group" style="margin-bottom: 0;">
+          <label for="fbDatabaseUrl">Firebase Database URL</label>
+          <input type="url" id="fbDatabaseUrl" placeholder="https://tuo-progetto-default-rtdb.firebaseio.com">
+        </div>
+        <div class="field-group" style="margin-bottom: 0;">
+          <label for="fbProjectId">Firebase Project ID</label>
+          <input type="text" id="fbProjectId" placeholder="tuo-progetto">
+        </div>
+        <div class="field-group" style="margin-bottom: 0;">
+          <label for="fbAppId">Firebase App ID</label>
+          <input type="text" id="fbAppId" placeholder="1:123456:web:abcdef">
+        </div>
+      </div>
+
+      <div class="item-meta" style="margin: 8px 0 14px;">
+        Usa lo stesso <strong>Codice Stanza</strong> e <strong>Codice / Password di Sincronizzazione</strong> su PC e cellulare[cite: 4, 8]. Ogni aggiunta o eliminazione aggiorna subito il cloud per evitare che elementi cancellati ritornino.
+      </div>
+
+      <div class="item-actions" style="justify-content: space-between;">
+        <div class="item-actions">
+          <button type="button" class="btn-primary" id="btnSalvaConfigCloud">Salva e Connetti Cloud</button>
+          <button type="button" id="btnForzaPullCloud">Scarica da Cloud</button>
+          <button type="button" id="btnForzaPushCloud">Invia a Cloud</button>
+        </div>
+        <button type="button" class="btn-danger" id="btnResetDati">Reset Dati</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="status-toast" id="statusToast"></div>
+
+  <script>
+    const STORAGE_KEY = 'omnidesk_stato_v1';
+    const CLOUD_CFG_KEY = 'omnidesk_cloud_cfg_v2';
+
+    const defaultState = {
+      impegni: [
+        {
+          id: 'imp-1',
+          titolo: 'Chiamare commercialista',
+          data: '2026-11-21',
+          ora: '16:30',
+          luogo: 'Studio / Telefono',
+          completato: false,
+          allegato: null
+        }
+      ],
+      scadenze: [
+        {
+          id: 'sc-1',
+          titolo: 'Assicurazione Auto RC',
+          categoria: 'Assicurazioni',
+          data: '2026-12-20',
+          dettaglio: 'POL-954021',
+          completato: false
+        },
+        {
+          id: 'sc-2',
+          titolo: 'Carta di Credito Principale',
+          categoria: 'Carte',
+          data: '2027-03-15',
+          dettaglio: 'VISA •••• 4820',
+          completato: false
+        }
+      ],
+      password: [
+        {
+          id: 'pwd-1',
+          servizio: 'Email Principale',
+          utente: 'utente@esempio.it',
+          valore: '••••••••'
+        }
+      ],
+      vocali: [],
+      pinVault: '1234',
+      updatedAt: Date.now()
+    };
+
+    const defaultCloudCfg = {
+      roomCode: 'omnidesk-spazio-personale',
+      syncPassword: '',
+      apiKey: 'AIzaSyAmxzeE4N_2f0Rj8Uw7azx6p43JXJiOJ6g',
+      databaseUrl: 'https://agenda-f2631-default-rtdb.europe-west1.firebasedatabase.app',
+      projectId: 'agenda-f2631',
+      appId: '1:586746089395:web:ee7a2fcbc0e0fc685905c6'
+    };
+
+    let state = loadState();
+    let cloudCfg = loadCloudCfg();
+
+    let filtroTemporale = 'giornaliero';
+    let categoriaScadenzaAttiva = 'Tutte';
+    let vaultSbloccato = false;
+    let elementoAnteprima = null;
+    let mediaRecorder = null;
+    let chunkVocali = [];
+    let pollTimer = null;
+    let isSyncingFromRemote = false;
+    let localLockUntil = 0; // Protegge modifiche/eliminazioni locali per 12s da sovrascritture ritardate
+
+    const inputRicerca = document.getElementById('inputRicerca');
+    const badgeCloud = document.getElementById('badgeCloud');
+    const testoBadgeCloud = document.getElementById('testoBadgeCloud');
+    const dataOraHeader = document.getElementById('dataOraHeader');
+    const statusToast = document.getElementById('statusToast');
+
+    const formRapido = document.getElementById('formRapido');
+    const inputRapido = document.getElementById('inputRapido');
+    const formImpegnoCompleto = document.getElementById('formImpegnoCompleto');
+    const listaImpegni = document.getElementById('listaImpegni');
+    const conteggioImpegni = document.getElementById('conteggioImpegni');
+    const inputDataRiferimento = document.getElementById('inputDataRiferimento');
+
+    const formScadenza = document.getElementById('formScadenza');
+    const listaScadenze = document.getElementById('listaScadenze');
+    const conteggioScadenze = document.getElementById('conteggioScadenze');
+
+    const vaultBloccata = document.getElementById('vaultBloccata');
+    const vaultSbloccata = document.getElementById('vaultSbloccata');
+    const inputPinVault = document.getElementById('inputPinVault');
+    const formPassword = document.getElementById('formPassword');
+    const listaPassword = document.getElementById('listaPassword');
+
+    const btnRegistrazioneVocale = document.getElementById('btnRegistrazioneVocale');
+    const testoBtnVocale = document.getElementById('testoBtnVocale');
+    const listaVocali = document.getElementById('listaVocali');
+
+    const inputFileStampa = document.getElementById('inputFileStampa');
+    const inputUrlFile = document.getElementById('inputUrlFile');
+    const btnStampaAnteprima = document.getElementById('btnStampaAnteprima');
+    const etichettaAnteprima = document.getElementById('etichettaAnteprima');
+    const previewPlaceholder = document.getElementById('previewPlaceholder');
+    const previewImg = document.getElementById('previewImg');
+    const previewPdf = document.getElementById('previewPdf');
+
+    const modalCloud = document.getElementById('modalCloud');
+    const cloudSyncPasswordInput = document.getElementById('cloudSyncPassword');
+    const inputAllegaVoceItem = document.getElementById('inputAllegaVoceItem');
+    const inputAllegaScadenzaItem = document.getElementById('inputAllegaScadenzaItem');
+
+    function oggiISO() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function aggiornaDataOraHeader() {
+      const ora = new Date();
+      const formattata = ora.toLocaleDateString('it-IT', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+      const hhmm = ora.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+      const passBadge = cloudCfg.syncPassword ? ' • Codice/Password impostato' : '';
+      const roomLabel = cloudCfg.databaseUrl
+        ? `Stanza: ${cloudCfg.roomCode || 'default'}${passBadge}`
+        : `Solo dispositivo locale${passBadge}`;
+      dataOraHeader.textContent = `${formattata.charAt(0).toUpperCase() + formattata.slice(1)} alle ore ${hhmm} • ${roomLabel}`;
+    }
+
+    function mostraToast(msg) {
+      statusToast.textContent = msg;
+      statusToast.style.display = 'block';
+      clearTimeout(mostraToast._t);
+      mostraToast._t = setTimeout(() => {
+        statusToast.style.display = 'none';
+      }, 3400);
+    }
+
+    function normalizeArrayField(val, fallback) {
+      if (Array.isArray(val)) return val;
+      if (val && typeof val === 'object') return Object.values(val);
+      return structuredClone(fallback);
+    }
+
+    function mergeState(base, incoming) {
+      const merged = structuredClone(base);
+      if (!incoming || typeof incoming !== 'object') return merged;
+      merged.impegni = normalizeArrayField(incoming.impegni, []);
+      merged.scadenze = normalizeArrayField(incoming.scadenze, []);
+      merged.password = normalizeArrayField(incoming.password, []);
+      merged.vocali = normalizeArrayField(incoming.vocali, []);
+      if (typeof incoming.pinVault === 'string' && incoming.pinVault) {
+        merged.pinVault = incoming.pinVault;
+      }
+      merged.updatedAt = Number(incoming.updatedAt || Date.now());
+      return merged;
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(defaultState);
+        return mergeState(defaultState, JSON.parse(raw));
+      } catch (e) {
+        return structuredClone(defaultState);
+      }
+    }
+
+    function loadCloudCfg() {
+      try {
+        const raw = localStorage.getItem(CLOUD_CFG_KEY);
+        if (!raw) return { ...defaultCloudCfg };
+        return { ...defaultCloudCfg, ...JSON.parse(raw) };
+      } catch (e) {
+        return { ...defaultCloudCfg };
+      }
+    }
+
+    function saveState(pushRemote = true, isDeletionOrEdit = false) {
+      state.updatedAt = Date.now();
+      if (isDeletionOrEdit) {
+        localLockUntil = Date.now() + 12000;
+      }
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        mostraToast('Memoria localStorage piena: rimuovi allegati grandi o esporta JSON.');
+      }
+      aggiornaIndicatoreSpazio();
+      if (pushRemote && !isSyncingFromRemote && isCloudConfigured()) {
+        pushToFirebase(false);
+      }
+    }
+
+    function isCloudConfigured() {
+      return Boolean(cloudCfg.databaseUrl && cloudCfg.databaseUrl.trim().startsWith('http'));
+    }
+
+    function hashSyncKey(room, password) {
+      const cleanRoom = (room || 'omnidesk-spazio-personale').trim();
+      const raw = `${cleanRoom}::${(password || '').trim()}`;
+      let h1 = 0x811c9dc5;
+      for (let i = 0; i < raw.length; i++) {
+        h1 ^= raw.charCodeAt(i);
+        h1 = Math.imul(h1, 0x01000193);
+      }
+      const suffix = (h1 >>> 0).toString(16);
+      const safeRoom = cleanRoom.replace(/[^a-zA-Z0-9_-]/g, '_');
+      return `${safeRoom}_${suffix}`;
+    }
+
+    function getFirebaseRoomUrl() {
+      const base = cloudCfg.databaseUrl.trim().replace(/\/+$/, '');
+      const key = encodeURIComponent(hashSyncKey(cloudCfg.roomCode, cloudCfg.syncPassword));
+      return `${base}/omnidesk_rooms/${key}.json`;
+    }
+
+    async function pushToFirebase(showFeedback = true) {
+      if (!isCloudConfigured()) {
+        if (showFeedback) mostraToast('Configura prima il Firebase Database URL in Spazio Cloud.');
+        return;
+      }
+      try {
+        const payload = {
+          ...state,
+          impegni: state.impegni || [],
+          scadenze: state.scadenze || [],
+          password: state.password || [],
+          vocali: state.vocali || [],
+          updatedAt: Number(state.updatedAt || Date.now())
+        };
+        const res = await fetch(getFirebaseRoomUrl(), {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        aggiornaStatoCloudUI(true, 'Live Cloud Attivo');
+        if (showFeedback) mostraToast('Dati salvati e inviati al Cloud.');
+      } catch (err) {
+        aggiornaStatoCloudUI(false, 'Errore Cloud');
+        if (showFeedback) mostraToast('Errore invio Cloud: controlla URL e regole Firebase.');
+      }
+    }
+
+    async function pullFromFirebase(showFeedback = false) {
+      if (!isCloudConfigured()) {
+        if (showFeedback) mostraToast('Configura prima il Firebase Database URL in Spazio Cloud.');
+        return;
+      }
+      if (!showFeedback && Date.now() < localLockUntil) {
+        return;
+      }
+      try {
+        const cacheBust = `?_t=${Date.now()}`;
+        const url = getFirebaseRoomUrl() + cacheBust;
+        const res = await fetch(url, { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const remote = await res.json();
+        if (remote && typeof remote === 'object') {
+          const remoteTs = Number(remote.updatedAt || 0);
+          const localTs = Number(state.updatedAt || 0);
+          if (showFeedback || remoteTs > localTs) {
+            isSyncingFromRemote = true;
+            state = mergeState(defaultState, remote);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            isSyncingFromRemote = false;
+            renderAll();
+            if (showFeedback) mostraToast('Dati scaricati e aggiornati dal Cloud.');
+          }
+        }
+        aggiornaStatoCloudUI(true, 'Live Cloud Attivo');
+      } catch (err) {
+        aggiornaStatoCloudUI(false, 'Cloud Non Raggiungibile');
+        if (showFeedback) mostraToast('Impossibile leggere dal Cloud.');
+      }
+    }
+
+    function avviaPollingCloud() {
+      clearInterval(pollTimer);
+      if (isCloudConfigured()) {
+        pullFromFirebase(false);
+        pollTimer = setInterval(() => pullFromFirebase(false), 3000);
+      } else {
+        aggiornaStatoCloudUI(false, 'Cloud Locale');
+      }
+    }
+
+    function aggiornaStatoCloudUI(online, etichetta) {
+      testoBadgeCloud.textContent = etichetta;
+      document.getElementById('statoDettagliatoCloud').textContent = etichetta;
+      if (online) {
+        badgeCloud.classList.remove('offline');
+      } else {
+        badgeCloud.classList.add('offline');
+      }
+      aggiornaDataOraHeader();
+    }
+
+    function aggiornaIndicatoreSpazio() {
+      const bytes = new Blob([JSON.stringify(state)]).size;
+      const kb = (bytes / 1024).toFixed(1);
+      const pct = Math.min(100, Math.max(4, Math.round((bytes / (5 * 1024 * 1024)) * 100)));
+      document.getElementById('barraSpazioCloud').style.width = `${pct}%`;
+      document.getElementById('testoSpazioCloud').textContent = `Spazio locale utilizzato: ${kb} KB (${pct}% di 5 MB stimati)`;
+    }
+
+    function leggiFileComeDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          resolve({
+            nome: file.name,
+            tipo: file.type.includes('pdf') ? 'pdf' : 'foto',
+            dataUrl: reader.result
+          });
+        };
+        reader.onerror = () => reject(new Error('Errore lettura file'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function filtraPerPeriodo(items, filtro, dataRifStr) {
+      const query = inputRicerca.value.trim().toLowerCase();
+      const [y, m, d] = (dataRifStr || oggiISO()).split('-').map(Number);
+      const rif = new Date(y, m - 1, d);
+      rif.setHours(0, 0, 0, 0);
+
+      const dow = (rif.getDay() + 6) % 7;
+      const inizioSett = new Date(rif);
+      inizioSett.setDate(rif.getDate() - dow);
+      inizioSett.setHours(0, 0, 0, 0);
+
+      const fineSett = new Date(inizioSett);
+      fineSett.setDate(inizioSett.getDate() + 6);
+      fineSett.setHours(23, 59, 59, 999);
+
+      return items.filter((item) => {
+        if (query) {
+          const testo = `${item.titolo || ''} ${item.luogo || ''} ${item.data || ''}`.toLowerCase();
+          if (!testo.includes(query)) return false;
+        }
+        if (filtro === 'tutti') return true;
+        if (!item.data) return filtro === 'giornaliero';
+
+        const [iy, im, iday] = item.data.split('-').map(Number);
+        const dataItem = new Date(iy, im - 1, iday);
+        dataItem.setHours(0, 0, 0, 0);
+
+        if (filtro === 'giornaliero') return dataItem.getTime() === rif.getTime();
+        if (filtro === 'settimanale') return dataItem >= inizioSett && dataItem <= fineSett;
+        if (filtro === 'mensile') return dataItem.getFullYear() === rif.getFullYear() && dataItem.getMonth() === rif.getMonth();
+        return true;
+      });
+    }
+
+    function mostraAnteprima(el, etichetta) {
+      elementoAnteprima = el;
+      previewPlaceholder.style.display = 'none';
+      previewImg.style.display = 'none';
+      previewPdf.style.display = 'none';
+      previewImg.src = '';
+      previewPdf.src = '';
+
+      if (el.tipo === 'pdf') {
+        previewPdf.src = el.src;
+        previewPdf.style.display = 'block';
+      } else {
+        previewImg.src = el.src;
+        previewImg.style.display = 'block';
+      }
+
+      etichettaAnteprima.textContent = etichetta;
+      btnStampaAnteprima.disabled = false;
+      renderImpegni();
+    }
+
+    function stampaElemento(el) {
+      if (!el) return;
+      if (el.tipo === 'pdf') {
+        const iframe = document.createElement('iframe');
+        iframe.style.position = 'fixed';
+        iframe.style.right = '0';
+        iframe.style.bottom = '0';
+        iframe.style.width = '0';
+        iframe.style.height = '0';
+        iframe.style.border = '0';
+        iframe.src = el.src;
+        iframe.onload = () => {
+          try {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+          } catch (e) {
+            window.open(el.src, '_blank');
+          }
+        };
+        document.body.appendChild(iframe);
+      } else {
+        const win = window.open('', '_blank', 'width=820,height=620');
+        if (!win) {
+          mostraToast('Consenti i popup del browser per stampare la foto.');
+          return;
+        }
+        win.document.write(`
+          <!DOCTYPE html>
+          <html lang="it">
+          <head><meta charset="UTF-8"><title>Stampa Foto</title>
+          <style>@page{margin:10mm;}body{margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;}img{max-width:100%;max-height:95vh;object-fit:contain;}</style>
+          </head>
+          <body>
+            <img id="pimg" src="${el.src}" alt="Stampa">
+            <script>
+              const i = document.getElementById('pimg');
+              i.onload = () => { window.focus(); window.print(); window.close(); };
+            <\/script>
+          </body></html>
+        `);
+        win.document.close();
+      }
+    }
+
+    function renderImpegni() {
+      const filtrati = filtraPerPeriodo(state.impegni, filtroTemporale, inputDataRiferimento.value);
+      conteggioImpegni.textContent = String(filtrati.length);
+      listaImpegni.innerHTML = '';
+
+      if (filtrati.length === 0) {
+        listaImpegni.innerHTML = `<div class="empty-hint">Nessun impegno per il filtro "${filtroTemporale}".</div>`;
+        return;
+      }
+
+      filtrati.forEach((item) => {
+        const row = document.createElement('div');
+        const isSelected = elementoAnteprima && elementoAnteprima.impegnoId === item.id;
+        row.className = `row-item ${item.completato ? 'done' : ''} ${isSelected ? 'selected' : ''}`;
+
+        const main = document.createElement('div');
+        main.className = 'item-main';
+
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = Boolean(item.completato);
+        cb.addEventListener('change', () => {
+          item.completato = cb.checked;
+          saveState(true, true);
+          renderImpegni();
+        });
+
+        const textWrap = document.createElement('div');
+        const title = document.createElement('div');
+        title.className = 'item-title';
+        title.textContent = item.titolo;
+
+        const meta = document.createElement('div');
+        meta.className = 'item-meta';
+        meta.textContent = `${item.data || ''}${item.ora ? ` • ${item.ora}` : ''}${item.luogo ? ` • Luogo: ${item.luogo}` : ''}`;
+
+        textWrap.appendChild(title);
+        textWrap.appendChild(meta);
+
+        if (item.allegato) {
+          const tags = document.createElement('div');
+          tags.className = 'tag-row';
+          const badge = document.createElement('span');
+          badge.className = 'pill-tag file';
+          badge.textContent = `${item.allegato.tipo.toUpperCase()}: ${item.allegato.nome}`;
+          tags.appendChild(badge);
+          textWrap.appendChild(tags);
+        }
+
+        main.appendChild(cb);
+        main.appendChild(textWrap);
+
+        const actions = document.createElement('div');
+        actions.className = 'item-actions';
+
+        if (item.allegato) {
+          const el = { tipo: item.allegato.tipo, src: item.allegato.dataUrl, nome: item.allegato.nome, impegnoId: item.id };
+          const btnAnt = document.createElement('button');
+          btnAnt.type = 'button';
+          btnAnt.textContent = 'Anteprima';
+          btnAnt.addEventListener('click', () => mostraAnteprima(el, `Impegno "${item.titolo}" — ${item.allegato.nome}`));
+
+          const btnStampa = document.createElement('button');
+          btnStampa.type = 'button';
+          btnStampa.className = 'btn-primary';
+          btnStampa.textContent = 'Stampa';
+          btnStampa.addEventListener('click', () => {
+            mostraAnteprima(el, `Impegno "${item.titolo}" — ${item.allegato.nome}`);
+            stampaElemento(el);
+          });
+
+          actions.appendChild(btnAnt);
+          actions.appendChild(btnStampa);
+        } else {
+          const btnAllega = document.createElement('button');
+          btnAllega.type = 'button';
+          btnAllega.textContent = '+ Allega';
+          btnAllega.addEventListener('click', () => {
+            inputAllegaVoceItem.dataset.targetId = item.id;
+            inputAllegaVoceItem.value = '';
+            inputAllegaVoceItem.click();
+          });
+          actions.appendChild(btnAllega);
+        }
+
+        const btnDel = document.createElement('button');
+        btnDel.type = 'button';
+        btnDel.className = 'btn-danger';
+        btnDel.textContent = 'Elimina';
+        btnDel.addEventListener('click', () => {
+          state.impegni = state.impegni.filter((x) => x.id !== item.id);
+          saveState(true, true);
+          renderImpegni();
+          mostraToast('Impegno eliminato.');
+        });
+        actions.appendChild(btnDel);
+
+        row.appendChild(main);
+        row.appendChild(actions);
+        listaImpegni.appendChild(row);
+      });
+    }
+
+    function renderScadenze() {
+      const q = inputRicerca.value.trim().toLowerCase();
+      const filtered = state.scadenze.filter((s) => {
+        const catOk = categoriaScadenzaAttiva === 'Tutte' || s.categoria === categoriaScadenzaAttiva;
+        const qOk = !q || `${s.titolo} ${s.categoria} ${s.dettaglio || ''}`.toLowerCase().includes(q);
+        return catOk && qOk;
+      });
+
+      conteggioScadenze.textContent = String(filtered.length);
+      listaScadenze.innerHTML = '';
+
+      if (filtered.length === 0) {
+        listaScadenze.innerHTML = '<div class="empty-hint">Nessuna scadenza per questa categoria.</div>';
+        return;
+      }
+
+      filtered.forEach((sc) => {
+        const row = document.createElement('div');
+        row.className = 'row-item';
+
+        const left = document.createElement('div');
+        const tags = document.createElement('div');
+        tags.className = 'tag-row';
+        tags.style.marginTop = '0';
+        tags.style.marginBottom = '4px';
+
+        const catBadge = document.createElement('span');
+        catBadge.className = 'pill-tag';
+        catBadge.textContent = sc.categoria;
+
+        const okBadge = document.createElement('span');
+        okBadge.className = 'pill-tag ok';
+        okBadge.textContent = 'Monitorata';
+
+        tags.appendChild(catBadge);
+        tags.appendChild(okBadge);
+
+        const title = document.createElement('div');
+        title.className = 'item-title';
+        title.textContent = sc.titolo;
+
+        const meta = document.createElement('div');
+        meta.className = 'item-meta';
+        meta.textContent = `Scadenza: ${sc.data}${sc.dettaglio ? ` • ${sc.dettaglio}` : ''}`;
+
+        left.appendChild(tags);
+        left.appendChild(title);
+        left.appendChild(meta);
+
+        const actions = document.createElement('div');
+        actions.className = 'item-actions';
+
+        if (sc.allegato) {
+          const btnDoc = document.createElement('button');
+          btnDoc.type = 'button';
+          btnDoc.textContent = 'Apri Doc';
+          btnDoc.addEventListener('click', () => {
+            mostraAnteprima({ tipo: sc.allegato.tipo, src: sc.allegato.dataUrl, nome: sc.allegato.nome }, `Scadenza "${sc.titolo}" — ${sc.allegato.nome}`);
+          });
+          actions.appendChild(btnDoc);
+        } else {
+          const btnAddDoc = document.createElement('button');
+          btnAddDoc.type = 'button';
+          btnAddDoc.textContent = 'Doc';
+          btnAddDoc.addEventListener('click', () => {
+            inputAllegaScadenzaItem.dataset.targetId = sc.id;
+            inputAllegaScadenzaItem.value = '';
+            inputAllegaScadenzaItem.click();
+          });
+          actions.appendChild(btnAddDoc);
+        }
+
+        const btnDel = document.createElement('button');
+        btnDel.type = 'button';
+        btnDel.className = 'btn-danger';
+        btnDel.textContent = '✕';
+        btnDel.addEventListener('click', () => {
+          state.scadenze = state.scadenze.filter((x) => x.id !== sc.id);
+          saveState(true, true);
+          renderScadenze();
+          mostraToast('Scadenza eliminata.');
+        });
+        actions.appendChild(btnDel);
+
+        row.appendChild(left);
+        row.appendChild(actions);
+        listaScadenze.appendChild(row);
+      });
+    }
+
+    function renderVault() {
+      const pill = document.getElementById('statoVaultPill');
+      if (!vaultSbloccato) {
+        vaultBloccata.style.display = 'block';
+        vaultSbloccata.style.display = 'none';
+        pill.textContent = 'PIN';
+        return;
+      }
+      vaultBloccata.style.display = 'none';
+      vaultSbloccata.style.display = 'block';
+      pill.textContent = 'SBLOCCATA';
+      listaPassword.innerHTML = '';
+
+      state.password.forEach((p) => {
+        const row = document.createElement('div');
+        row.className = 'row-item';
+        const info = document.createElement('div');
+        info.innerHTML = `<div class="item-title">${p.servizio}</div><div class="item-meta">${p.utente} • <strong>${p.valore}</strong></div>`;
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'btn-danger';
+        del.textContent = 'Elimina';
+        del.addEventListener('click', () => {
+          state.password = state.password.filter((x) => x.id !== p.id);
+          saveState(true, true);
+          renderVault();
+          mostraToast('Password eliminata.');
+        });
+        row.appendChild(info);
+        row.appendChild(del);
+        listaPassword.appendChild(row);
+      });
+    }
+
+    function renderVocali() {
+      listaVocali.innerHTML = '';
+      if (!state.vocali || state.vocali.length === 0) {
+        listaVocali.innerHTML = '<div class="empty-hint">Nessuna registrazione salvata.</div>';
+        return;
+      }
+      state.vocali.forEach((v) => {
+        const row = document.createElement('div');
+        row.className = 'row-item';
+        const wrap = document.createElement('div');
+        wrap.style.flex = '1';
+        wrap.innerHTML = `<div class="item-title">${v.titolo}</div><div class="item-meta">${v.data}</div>`;
+        if (v.audioUrl) {
+          const audio = document.createElement('audio');
+          audio.controls = true;
+          audio.src = v.audioUrl;
+          audio.style.width = '100%';
+          audio.style.marginTop = '6px';
+          wrap.appendChild(audio);
+        }
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'btn-danger';
+        del.textContent = '✕';
+        del.addEventListener('click', () => {
+          state.vocali = state.vocali.filter((x) => x.id !== v.id);
+          saveState(true, true);
+          renderVocali();
+          mostraToast('Registrazione eliminata.');
+        });
+        row.appendChild(wrap);
+        row.appendChild(del);
+        listaVocali.appendChild(row);
+      });
+    }
+
+    function renderAll() {
+      renderImpegni();
+      renderScadenze();
+      renderVault();
+      renderVocali();
+      aggiornaIndicatoreSpazio();
+      aggiornaDataOraHeader();
+    }
+
+    formRapido.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const titolo = inputRapido.value.trim();
+      if (!titolo) return;
+      state.impegni.unshift({
+        id: 'imp-' + Date.now(),
+        titolo,
+        data: inputDataRiferimento.value || oggiISO(),
+        ora: '',
+        luogo: 'Nota rapida',
+        completato: false,
+        allegato: null
+      });
+      inputRapido.value = '';
+      saveState(true, true);
+      renderImpegni();
+      mostraToast('Promemoria aggiunto.');
+    });
+
+    document.getElementById('btnToggleFormImpegno').addEventListener('click', () => {
+      formImpegnoCompleto.classList.toggle('hidden');
+      document.getElementById('impegnoData').value = inputDataRiferimento.value || oggiISO();
+    });
+
+    formImpegnoCompleto.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const titolo = document.getElementById('impegnoTitolo').value.trim();
+      const data = document.getElementById('impegnoData').value;
+      const ora = document.getElementById('impegnoOra').value;
+      const luogo = document.getElementById('impegnoLuogo').value.trim();
+      const file = document.getElementById('impegnoAllegato').files[0];
+      if (!titolo || !data) return;
+
+      let allegato = null;
+      if (file) {
+        allegato = await leggiFileComeDataUrl(file);
+      }
+
+      const nuovo = {
+        id: 'imp-' + Date.now(),
+        titolo,
+        data,
+        ora,
+        luogo,
+        completato: false,
+        allegato
+      };
+
+      state.impegni.unshift(nuovo);
+      saveState(true, true);
+      formImpegnoCompleto.reset();
+      formImpegnoCompleto.classList.add('hidden');
+      renderImpegni();
+      if (allegato) {
+        mostraAnteprima({ tipo: allegato.tipo, src: allegato.dataUrl, nome: allegato.nome, impegnoId: nuovo.id }, `Impegno "${nuovo.titolo}" — ${allegato.nome}`);
+      }
+    });
+
+    inputAllegaVoceItem.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      const id = e.target.dataset.targetId;
+      if (!file || !id) return;
+      const target = state.impegni.find((x) => x.id === id);
+      if (!target) return;
+      target.allegato = await leggiFileComeDataUrl(file);
+      saveState(true, true);
+      renderImpegni();
+      mostraAnteprima({ tipo: target.allegato.tipo, src: target.allegato.dataUrl, nome: target.allegato.nome, impegnoId: target.id }, `Impegno "${target.titolo}" — ${target.allegato.nome}`);
+    });
+
+    document.querySelectorAll('[data-time-filter]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-time-filter]').forEach((b) => b.classList.remove('active-time-filter'));
+        btn.classList.add('active-time-filter');
+        filtroTemporale = btn.dataset.timeFilter;
+        renderImpegni();
+      });
+    });
+
+    inputDataRiferimento.addEventListener('change', renderImpegni);
+    inputRicerca.addEventListener('input', () => {
+      renderImpegni();
+      renderScadenze();
+    });
+
+    document.getElementById('btnToggleFormScadenza').addEventListener('click', () => {
+      formScadenza.classList.toggle('hidden');
+      document.getElementById('scadenzaData').value = oggiISO();
+    });
+
+    formScadenza.addEventListener('submit', (e) => {
+      e.preventDefault();
+      state.scadenze.unshift({
+        id: 'sc-' + Date.now(),
+        titolo: document.getElementById('scadenzaTitolo').value.trim(),
+        categoria: document.getElementById('scadenzaCategoria').value,
+        data: document.getElementById('scadenzaData').value,
+        dettaglio: document.getElementById('scadenzaDettaglio').value.trim(),
+        completato: false
+      });
+      formScadenza.reset();
+      formScadenza.classList.add('hidden');
+      saveState(true, true);
+      renderScadenze();
+    });
+
+    inputAllegaScadenzaItem.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      const id = e.target.dataset.targetId;
+      if (!file || !id) return;
+      const sc = state.scadenze.find((x) => x.id === id);
+      if (!sc) return;
+      sc.allegato = await leggiFileComeDataUrl(file);
+      saveState(true, true);
+      renderScadenze();
+      mostraAnteprima({ tipo: sc.allegato.tipo, src: sc.allegato.dataUrl, nome: sc.allegato.nome }, `Scadenza "${sc.titolo}" — ${sc.allegato.nome}`);
+    });
+
+    document.querySelectorAll('[data-cat-scadenza]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-cat-scadenza]').forEach((b) => b.classList.remove('active-filter'));
+        btn.classList.add('active-filter');
+        categoriaScadenzaAttiva = btn.dataset.catScadenza;
+        renderScadenze();
+      });
+    });
+
+    document.getElementById('btnSbloccaVault').addEventListener('click', () => {
+      const pin = inputPinVault.value.trim();
+      if (pin === (state.pinVault || '1234')) {
+        vaultSbloccato = true;
+        inputPinVault.value = '';
+        renderVault();
+      } else {
+        mostraToast('PIN errato (predefinito: 1234).');
+      }
+    });
+
+    document.getElementById('btnBloccaVault').addEventListener('click', () => {
+      vaultSbloccato = false;
+      renderVault();
+    });
+
+    formPassword.addEventListener('submit', (e) => {
+      e.preventDefault();
+      state.password.unshift({
+        id: 'pwd-' + Date.now(),
+        servizio: document.getElementById('pwdServizio').value.trim(),
+        utente: document.getElementById('pwdUtente').value.trim(),
+        valore: document.getElementById('pwdValore').value.trim()
+      });
+      formPassword.reset();
+      saveState(true, true);
+      renderVault();
+    });
+
+    btnRegistrazioneVocale.addEventListener('click', async () => {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        return;
+      }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        mostraToast('Registrazione audio non supportata su questo browser.');
+        return;
+      }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        chunkVocali = [];
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.ondataavailable = (ev) => {
+          if (ev.data.size > 0) chunkVocali.push(ev.data);
+        };
+        mediaRecorder.onstop = () => {
+          stream.getTracks().forEach((t) => t.stop());
+          const blob = new Blob(chunkVocali, { type: 'audio/webm' });
+          const reader = new FileReader();
+          reader.onload = () => {
+            state.vocali.unshift({
+              id: 'voc-' + Date.now(),
+              titolo: `Nota vocale #${state.vocali.length + 1}`,
+              data: new Date().toLocaleString('it-IT'),
+              audioUrl: reader.result
+            });
+            saveState(true, true);
+            renderVocali();
+          };
+          reader.readAsDataURL(blob);
+          btnRegistrazioneVocale.classList.remove('recording');
+          testoBtnVocale.textContent = 'Avvia Registrazione Vocale';
+        };
+        mediaRecorder.start();
+        btnRegistrazioneVocale.classList.add('recording');
+        testoBtnVocale.textContent = 'Ferma Registrazione';
+      } catch (err) {
+        mostraToast('Permesso microfono negato o non disponibile.');
+      }
+    });
+
+    document.getElementById('btnCaricaFotoPdf').addEventListener('click', () => inputFileStampa.click());
+    inputFileStampa.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const dati = await leggiFileComeDataUrl(file);
+      mostraAnteprima({ tipo: dati.tipo, src: dati.dataUrl, nome: dati.nome }, `File locale: ${dati.nome}`);
+    });
+
+    document.getElementById('btnApriUrlFile').addEventListener('click', () => {
+      const url = inputUrlFile.value.trim();
+      if (!url) return;
+      const isPdf = url.toLowerCase().includes('.pdf');
+      mostraAnteprima({ tipo: isPdf ? 'pdf' : 'foto', src: url, nome: url }, `URL (${isPdf ? 'PDF' : 'FOTO'}): ${url}`);
+    });
+
+    btnStampaAnteprima.addEventListener('click', () => stampaElemento(elementoAnteprima));
+
+    document.getElementById('tileNuovoImpegno').addEventListener('click', () => {
+      formImpegnoCompleto.classList.remove('hidden');
+      document.getElementById('impegnoData').value = inputDataRiferimento.value || oggiISO();
+      document.getElementById('impegnoTitolo').focus();
+    });
+    document.getElementById('tileNuovaScadenza').addEventListener('click', () => {
+      formScadenza.classList.remove('hidden');
+      document.getElementById('scadenzaData').value = oggiISO();
+      document.getElementById('scadenzaTitolo').focus();
+    });
+    document.getElementById('tileNuovaNota').addEventListener('click', () => inputRapido.focus());
+    document.getElementById('tileVocale').addEventListener('click', () => btnRegistrazioneVocale.click());
+    document.getElementById('tileFotoPdf').addEventListener('click', () => inputFileStampa.click());
+    document.getElementById('tilePassword').addEventListener('click', () => {
+      vaultSbloccato = true;
+      renderVault();
+      document.getElementById('pwdServizio').focus();
+    });
+
+    document.getElementById('btnExportJson').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `omnidesk-backup-${oggiISO()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      mostraToast('Backup JSON esportato.');
+    });
+
+    document.getElementById('btnImportJson').addEventListener('click', () => {
+      document.getElementById('inputFileJson').click();
+    });
+
+    document.getElementById('inputFileJson').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          state = mergeState(defaultState, parsed);
+          saveState(true, true);
+          renderAll();
+          mostraToast('Backup JSON importato.');
+        } catch (err) {
+          mostraToast('File JSON non valido.');
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    function apriModalCloud() {
+      document.getElementById('cloudRoomCode').value = cloudCfg.roomCode || '';
+      cloudSyncPasswordInput.value = cloudCfg.syncPassword || '';
+      document.getElementById('fbApiKey').value = cloudCfg.apiKey || '';
+      document.getElementById('fbDatabaseUrl').value = cloudCfg.databaseUrl || '';
+      document.getElementById('fbProjectId').value = cloudCfg.projectId || '';
+      document.getElementById('fbAppId').value = cloudCfg.appId || '';
+      aggiornaIndicatoreSpazio();
+      modalCloud.classList.add('open');
+    }
+
+    document.getElementById('btnTogglePasswordCloud').addEventListener('click', () => {
+      cloudSyncPasswordInput.type = cloudSyncPasswordInput.type === 'password' ? 'text' : 'password';
+    });
+
+    document.getElementById('btnApriCloud').addEventListener('click', apriModalCloud);
+    badgeCloud.addEventListener('click', apriModalCloud);
+    document.getElementById('btnChiudiModalCloud').addEventListener('click', () => modalCloud.classList.remove('open'));
+    document.getElementById('btnSincronizzaOra').addEventListener('click', () => {
+      if (isCloudConfigured()) {
+        pullFromFirebase(true);
+      } else {
+        saveState(false);
+        mostraToast('Stato locale aggiornato. Apri Spazio Cloud per collegare Firebase.');
+      }
+    });
+
+    document.getElementById('btnSalvaConfigCloud').addEventListener('click', async () => {
+      cloudCfg = {
+        roomCode: document.getElementById('cloudRoomCode').value.trim() || 'omnidesk-spazio-personale',
+        syncPassword: cloudSyncPasswordInput.value.trim(),
+        apiKey: document.getElementById('fbApiKey').value.trim(),
+        databaseUrl: document.getElementById('fbDatabaseUrl').value.trim(),
+        projectId: document.getElementById('fbProjectId').value.trim(),
+        appId: document.getElementById('fbAppId').value.trim()
+      };
+      localStorage.setItem(CLOUD_CFG_KEY, JSON.stringify(cloudCfg));
+      localLockUntil = Date.now() + 8000;
+      avviaPollingCloud();
+      if (isCloudConfigured()) {
+        await pushToFirebase(true);
+      } else {
+        mostraToast('Codice/password e impostazioni salvate in locale.');
+      }
+    });
+
+    document.getElementById('btnForzaPullCloud').addEventListener('click', () => {
+      localLockUntil = 0;
+      pullFromFirebase(true);
+    });
+    document.getElementById('btnForzaPushCloud').addEventListener('click', () => {
+      state.updatedAt = Date.now();
+      localLockUntil = Date.now() + 12000;
+      pushToFirebase(true);
+    });
+
+    document.getElementById('btnResetDati').addEventListener('click', () => {
+      state = structuredClone(defaultState);
+      saveState(true, true);
+      renderAll();
+      mostraToast('Dati reimpostati ai valori iniziali.');
+    });
+
+    inputDataRiferimento.value = oggiISO();
+    renderAll();
+    avviaPollingCloud();
+  </script>
+</body>
+</html>
