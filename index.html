@@ -1,1575 +1,727 @@
 <!DOCTYPE html>
-<html lang="it" class="dark">
+<html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>OmniDesk Cloud — Tutto-in-Uno Widget Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda Promemoria & Stampa Foto/PDF</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: #0b0f19;
-      color: #f8fafc;
-      -webkit-tap-highlight-color: transparent;
+      margin: 0;
+      padding: 24px;
+      background-color: #f4f6f9;
+      color: #222;
     }
-    .bento-card {
-      background: linear-gradient(145deg, rgba(23, 30, 48, 0.92), rgba(15, 20, 34, 0.96));
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(12px);
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 24px;
+      border-radius: 10px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
     }
-    .bento-card:hover {
-      border-color: rgba(99, 102, 241, 0.35);
+
+    h1 {
+      margin-top: 0;
+      font-size: 1.65rem;
     }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.4); }
-    ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.4); border-radius: 9999px; }
-    @keyframes pulseRing {
-      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-      70% { transform: scale(1); box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
-      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+
+    h2 {
+      margin-top: 0;
+      font-size: 1.15rem;
     }
-    .recording-pulse { animation: pulseRing 1.5s infinite; }
-    @media print {
-      body {
-        background: #ffffff !important;
-        color: #0f172a !important;
+
+    .sezione {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #e5e9f0;
+    }
+
+    .sezione:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    /* Form Agenda */
+    .form-agenda {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 760px) {
+      .form-agenda {
+        grid-template-columns: 1fr;
       }
-      body.printing-day-agenda > *:not(#dayPrintArea) {
-        display: none !important;
-      }
-      #dayPrintArea {
-        display: block !important;
-        padding: 20px;
-        color: #0f172a;
-        background: #ffffff;
-      }
     }
-    #dayPrintArea {
+
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    input[type="file"],
+    input[type="url"],
+    select {
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid #ccd2dc;
+      border-radius: 6px;
+      background: #fff;
+      font-size: 0.95rem;
+    }
+
+    button {
+      background-color: #1d63ed;
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    button:hover:not(:disabled) {
+      background-color: #154ec0;
+    }
+
+    button:disabled {
+      background-color: #a9bce6;
+      cursor: not-allowed;
+    }
+
+    button.btn-secondario {
+      background-color: #eef2f7;
+      color: #222;
+      border: 1px solid #cfd6e0;
+    }
+
+    button.btn-secondario:hover:not(:disabled) {
+      background-color: #e2e8f0;
+    }
+
+    button.btn-secondario.attivo {
+      background-color: #1d63ed;
+      color: #fff;
+      border-color: #1d63ed;
+    }
+
+    button.btn-pericolo {
+      background-color: #d92d20;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+    }
+
+    button.btn-pericolo:hover {
+      background-color: #b42318;
+    }
+
+    button.btn-piccolo {
+      padding: 6px 10px;
+      font-size: 0.85rem;
+    }
+
+    /* Barra filtri */
+    .barra-filtri {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      background: #fafbfd;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #e0e4ea;
+    }
+
+    .bottoni-filtro {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .data-riferimento {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+
+    .data-riferimento input[type="date"] {
+      width: auto;
+    }
+
+    /* Lista promemoria */
+    .lista-promemoria {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .item-promemoria {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid #e0e4ea;
+      border-radius: 8px;
+      background: #fafbfd;
+    }
+
+    .item-promemoria.completato .titolo-promemoria {
+      text-decoration: line-through;
+      color: #6c757d;
+    }
+
+    .info-promemoria {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .meta-promemoria {
+      font-size: 0.85rem;
+      color: #555;
+    }
+
+    .azioni-promemoria {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* Sezione Stampa Foto e PDF */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      border: 1px solid #e0e4ea;
+      border-radius: 8px;
+      padding: 16px;
+      background: #fafbfd;
+    }
+
+    .card input[type="file"],
+    .card input[type="url"] {
+      margin: 10px 0 12px;
+    }
+
+    .card button {
+      width: 100%;
+    }
+
+    .preview-box {
+      border: 1px dashed #cbd2d9;
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .preview-box img {
+      max-width: 100%;
+      max-height: 500px;
+      object-fit: contain;
       display: none;
     }
 
+    .preview-box iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+      display: none;
+    }
+
+    .placeholder {
+      color: #6c757d;
+      text-align: center;
+    }
+
+    .messaggio {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: #b42318;
+      min-height: 20px;
+    }
+
+    /* Stili dedicati alla stampa */
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+
+      .container > h1,
+      .sezione-agenda,
+      .grid,
+      .messaggio,
+      .placeholder {
+        display: none !important;
+      }
+
+      .container {
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+      }
+
+      .sezione-stampa {
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+
+      .sezione-stampa > h2 {
+        display: none;
+      }
+
+      .preview-box {
+        border: none;
+        padding: 0;
+        min-height: auto;
+      }
+
+      .preview-box img {
+        max-width: 100%;
+        max-height: 100vh;
+        page-break-inside: avoid;
+      }
+    }
   </style>
 </head>
-<body class="min-h-screen pb-16 md:pb-6 text-[13.5px] sm:text-sm">
+<body>
+  <div class="container">
+    <h1>Agenda Promemoria & Stampa Foto / PDF</h1>
 
-  <!-- Top Navbar -->
-  <header class="sticky top-0 z-30 bg-[#0b0f19]/90 backdrop-blur-md border-b border-white/10 px-3 sm:px-4 py-2 sm:py-3">
-    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-          <i data-lucide="layout-grid" class="w-5 h-5 text-white"></i>
-        </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-lg font-extrabold tracking-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">OmniDesk</h1>
-            <span id="syncStatusBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-white/10 font-semibold">Connessione...</span>
-          </div>
-          <p id="liveClock" class="text-xs text-slate-400">Caricamento orario...</p>
-        </div>
-      </div>
-
-      <!-- Search + Cloud + Backup Tools -->
-      <div class="flex items-center gap-2">
-        <div class="relative hidden sm:block">
-          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-          <input id="globalSearch" type="text" placeholder="Cerca ovunque..." oninput="renderAll()"
-            class="bg-slate-900/90 border border-white/10 rounded-xl pl-9 pr-3 py-1.5 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 w-44 lg:w-56" />
-        </div>
-        <button onclick="openModal('cloudModal')" title="Impostazioni Spazio Cloud Firebase"
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600/25 hover:bg-indigo-600/40 border border-indigo-400/30 text-xs font-semibold text-indigo-200 transition">
-          <i data-lucide="cloud" class="w-3.5 h-3.5 text-indigo-300"></i>
-          <span class="hidden md:inline">Spazio Cloud</span>
-        </button>
-        <button onclick="exportData()" title="Esporta Backup JSON"
-          class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-white/10 text-xs font-medium text-slate-200 transition">
-          <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-400"></i>
-        </button>
-        <label title="Importa Backup JSON"
-          class="cursor-pointer flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-white/10 text-xs font-medium text-slate-200 transition">
-          <i data-lucide="upload" class="w-3.5 h-3.5 text-sky-400"></i>
-          <input type="file" accept=".json" onchange="importData(event)" class="hidden" />
-        </label>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Bento Grid -->
-  <main class="max-w-7xl mx-auto px-3 sm:px-4 pt-3 sm:pt-5 space-y-3 sm:space-y-5">
-
-    <!-- WIDGET 1: Azioni Rapide (1-Tap) -->
-    <section class="bento-card rounded-xl sm:rounded-2xl p-3 sm:p-4">
-      <div class="flex items-center justify-between mb-3">
-        <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-          <h2 class="text-sm font-bold text-white tracking-wide">Azioni Rapide (1-Tap)</h2>
-        </div>
-        <button onclick="triggerTestNotification()" class="flex items-center gap-1.5 text-xs text-indigo-300 hover:text-indigo-200 transition">
-          <i data-lucide="bell-ring" class="w-3.5 h-3.5"></i>
-          <span>Prova Avviso</span>
-        </button>
-      </div>
-
-      <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5 sm:gap-2.5 mb-2.5 sm:mb-3">
-        <button onclick="openModal('taskModal')" class="group flex flex-col items-center justify-center gap-1 sm:gap-2 p-2 sm:p-3 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/25 transition">
-          <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-300 group-hover:scale-110 transition">
-            <i data-lucide="calendar-plus" class="w-4 h-4"></i>
-          </div>
-          <span class="text-xs font-semibold text-indigo-200">+ Impegno</span>
-        </button>
-
-        <button onclick="openModal('expiryModal')" class="group flex flex-col items-center justify-center gap-1 sm:gap-2 p-2 sm:p-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/25 transition">
-          <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-300 group-hover:scale-110 transition">
-            <i data-lucide="credit-card" class="w-4 h-4"></i>
-          </div>
-          <span class="text-xs font-semibold text-amber-200">+ Scadenza</span>
-        </button>
-
-        <button onclick="openModal('noteModal')" class="group flex flex-col items-center justify-center gap-1 sm:gap-2 p-2 sm:p-3 rounded-xl bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/25 transition">
-          <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-yellow-500/20 flex items-center justify-center text-yellow-300 group-hover:scale-110 transition">
-            <i data-lucide="file-plus-2" class="w-4 h-4"></i>
-          </div>
-          <span class="text-xs font-semibold text-yellow-200">+ Nota</span>
-        </button>
-
-        <button onclick="toggleQuickRecord()" class="group flex flex-col items-center justify-center gap-1 sm:gap-2 p-2 sm:p-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 transition">
-          <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-rose-500/20 flex items-center justify-center text-rose-300 group-hover:scale-110 transition">
-            <i data-lucide="mic" class="w-4 h-4"></i>
-          </div>
-          <span class="text-xs font-semibold text-rose-200">Vocale</span>
-        </button>
-
-        <label class="cursor-pointer group flex flex-col items-center justify-center gap-1 sm:gap-2 p-2 sm:p-3 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/25 transition">
-          <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-sky-500/20 flex items-center justify-center text-sky-300 group-hover:scale-110 transition">
-            <i data-lucide="file-up" class="w-4 h-4"></i>
-          </div>
-          <span class="text-xs font-semibold text-sky-200">+ Foto/PDF</span>
-          <input type="file" accept="image/*,application/pdf,.pdf" onchange="handlePhotoUpload(event)" class="hidden" />
-        </label>
-
-        <button onclick="openPasswordModalGuarded()" class="group flex flex-col items-center justify-center gap-1 sm:gap-2 p-2 sm:p-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 transition">
-          <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-300 group-hover:scale-110 transition">
-            <i data-lucide="key-round" class="w-4 h-4"></i>
-          </div>
-          <span class="text-xs font-semibold text-emerald-200">+ Password</span>
-        </button>
-      </div>
-
-      <form onsubmit="addQuickReminder(event)" class="flex gap-2">
-        <input id="quickReminderInput" type="text" placeholder="Scrivi un promemoria veloce e premi Invio (avviso tra 15 min)..."
-          class="flex-1 bg-slate-900/90 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500" />
-        <button type="submit" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-sm font-semibold text-white transition shadow-lg shadow-indigo-600/25">
-          Aggiungi
-        </button>
+    <!-- SEZIONE 1: AGENDA E FILTRO PROMEMORIA -->
+    <section class="sezione sezione-agenda">
+      <h2>Nuovo Promemoria</h2>
+      <form class="form-agenda" id="formPromemoria">
+        <input type="text" id="inputTitolo" placeholder="Descrizione o titolo promemoria..." required>
+        <input type="date" id="inputData" required>
+        <input type="time" id="inputOra">
+        <button type="submit">Aggiungi</button>
       </form>
+
+      <div class="barra-filtri">
+        <div class="bottoni-filtro" role="group" aria-label="Filtro promemoria">
+          <button type="button" class="btn-secondario attivo" data-filtro="giornaliero">Giornaliero</button>
+          <button type="button" class="btn-secondario" data-filtro="settimanale">Settimanale</button>
+          <button type="button" class="btn-secondario" data-filtro="mensile">Mensile</button>
+          <button type="button" class="btn-secondario" data-filtro="tutti">Tutti</button>
+        </div>
+
+        <div class="data-riferimento">
+          <label for="inputDataRiferimento">Data riferimento:</label>
+          <input type="date" id="inputDataRiferimento">
+        </div>
+      </div>
+
+      <ul class="lista-promemoria" id="listaPromemoria"></ul>
     </section>
 
-    <!-- Bento Grid Principale -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-5">
+    <!-- SEZIONE 2: STAMPA FOTO E PDF -->
+    <section class="sezione sezione-stampa">
+      <h2>Stampa Foto e PDF</h2>
 
-      <!-- COLONNA SINISTRA (7 cols) -->
-      <div class="lg:col-span-7 space-y-3 sm:space-y-5">
-
-        <section id="sec-tasks" class="bento-card rounded-xl sm:rounded-2xl p-3 sm:p-4">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center gap-2">
-              <i data-lucide="calendar-clock" class="w-5 h-5 text-indigo-400"></i>
-              <h2 class="font-bold text-base">Impegni & Promemoria</h2>
-              <span id="taskCountBadge" class="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-semibold">0</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <button onclick="openDayPrintModal()" title="Stampa impegni e promemoria di una giornata" class="flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-indigo-200 border border-white/10 font-medium transition">
-                <i data-lucide="printer" class="w-3.5 h-3.5 text-indigo-300"></i>
-                <span>Stampa</span>
-              </button>
-              <button onclick="openModal('taskModal')" class="text-xs px-2.5 py-1 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 font-medium transition">
-                + Nuovo
-              </button>
-            </div>
-          </div>
-          <div id="tasksList" class="space-y-2.5 max-h-60 sm:max-h-80 overflow-y-auto pr-1"></div>
-        </section>
-
-        <section id="sec-expiries" class="bento-card rounded-xl sm:rounded-2xl p-3 sm:p-4">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-            <div class="flex items-center gap-2">
-              <i data-lucide="shield-alert" class="w-5 h-5 text-amber-400"></i>
-              <h2 class="font-bold text-base">Scadenze Carte, Polizze & Doc</h2>
-              <span id="expiryCountBadge" class="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-semibold">0</span>
-            </div>
-            <button onclick="openModal('expiryModal')" class="text-xs px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/40 text-amber-300 font-medium transition">
-              + Scadenza
-            </button>
-          </div>
-
-          <div class="flex gap-1.5 overflow-x-auto pb-2 mb-2 text-xs">
-            <button onclick="setExpiryFilter('all')" data-exp-filter="all" class="exp-filter-btn px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-semibold">Tutte</button>
-            <button onclick="setExpiryFilter('Carta')" data-exp-filter="Carta" class="exp-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300">Carte</button>
-            <button onclick="setExpiryFilter('Assicurazione')" data-exp-filter="Assicurazione" class="exp-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300">Assicurazioni</button>
-            <button onclick="setExpiryFilter('Documento')" data-exp-filter="Documento" class="exp-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300">Documenti</button>
-            <button onclick="setExpiryFilter('Veicolo')" data-exp-filter="Veicolo" class="exp-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300">Auto/Moto</button>
-          </div>
-
-          <div id="expiriesList" class="space-y-2.5 max-h-60 sm:max-h-80 overflow-y-auto pr-1"></div>
-        </section>
-
-        <section id="sec-notes" class="bento-card rounded-xl sm:rounded-2xl p-3 sm:p-4">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center gap-2">
-              <i data-lucide="sticky-note" class="w-5 h-5 text-yellow-400"></i>
-              <h2 class="font-bold text-base">Appunti & Post-it</h2>
-            </div>
-            <button onclick="openModal('noteModal')" class="text-xs px-2.5 py-1 rounded-lg bg-yellow-500/20 hover:bg-yellow-500/40 text-yellow-300 font-medium transition">
-              + Appunto
-            </button>
-          </div>
-          <div id="notesGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-60 sm:max-h-80 overflow-y-auto pr-1"></div>
-        </section>
-
-      </div>
-
-      <!-- COLONNA DESTRA (5 cols) -->
-      <div class="lg:col-span-5 space-y-3 sm:space-y-5">
-
-        <section id="sec-vault" class="bento-card rounded-xl sm:rounded-2xl p-3 sm:p-4">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center gap-2">
-              <i data-lucide="lock" class="w-5 h-5 text-emerald-400"></i>
-              <h2 class="font-bold text-base">Cassaforte Password</h2>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <button onclick="changeMasterPin()" title="Cambia PIN Master" class="text-xs px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">PIN</button>
-              <button id="vaultLockBtn" onclick="toggleVaultLock()" class="hidden text-xs px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 font-medium transition">Blocca</button>
-            </div>
-          </div>
-
-          <!-- Vista bloccata: nessun elenco, nessun titolo, nessun user o password visibile -->
-          <div id="vaultLockedView" class="py-4 sm:py-7 text-center space-y-2.5 sm:space-y-3">
-            <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center mx-auto text-emerald-400">
-              <i data-lucide="shield-check" class="w-6 h-6"></i>
-            </div>
-            <p class="text-xs text-slate-400">Inserisci il PIN per accedere a user e password</p>
-            <div class="flex justify-center gap-2 max-w-xs mx-auto">
-              <input id="vaultPinInput" type="password" maxlength="8" placeholder="PIN..." onkeydown="if(event.key==='Enter') unlockVault()"
-                class="w-32 text-center tracking-widest bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500" />
-              <button onclick="unlockVault()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white transition">Sblocca</button>
-            </div>
-          </div>
-
-          <!-- Vista sbloccata: popolata solo dopo verifica del PIN -->
-          <div id="vaultUnlockedView" class="hidden space-y-2.5">
-            <div class="flex justify-between items-center">
-              <span class="text-[11px] text-slate-400">Auto-pulizia appunti attiva (20s)</span>
-              <button onclick="openModal('passwordModal')" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold">+ Aggiungi</button>
-            </div>
-            <div id="passwordsList" class="space-y-2 max-h-52 sm:max-h-64 overflow-y-auto pr-1"></div>
-          </div>
-        </section>
-
-        <section id="sec-voice" class="bento-card rounded-xl sm:rounded-2xl p-3 sm:p-4">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center gap-2">
-              <i data-lucide="mic" class="w-5 h-5 text-rose-400"></i>
-              <h2 class="font-bold text-base">Registrazioni Vocali</h2>
-            </div>
-            <span id="recTimer" class="text-xs font-mono text-rose-400 hidden">00:00</span>
-          </div>
-
-          <div class="flex items-center gap-2.5 mb-3">
-            <button id="recordBtn" onclick="toggleQuickRecord()"
-              class="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition shadow-lg shadow-rose-600/25">
-              <i data-lucide="circle-dot" class="w-4 h-4"></i>
-              <span id="recordBtnLabel">Avvia Registrazione Vocale</span>
-            </button>
-          </div>
-          <div id="voiceList" class="space-y-2 max-h-44 sm:max-h-56 overflow-y-auto pr-1"></div>
-        </section>
-
-        <section id="sec-photos" class="bento-card rounded-xl sm:rounded-2xl p-3 sm:p-4">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center gap-2">
-              <i data-lucide="file-text" class="w-5 h-5 text-sky-400"></i>
-              <h2 class="font-bold text-base">Foto, PDF & Ricevute</h2>
-            </div>
-            <label class="cursor-pointer text-xs px-2.5 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/40 text-sky-300 font-medium transition">
-              + Carica Foto/PDF
-              <input type="file" accept="image/*,application/pdf,.pdf" onchange="handlePhotoUpload(event)" class="hidden" />
-            </label>
-          </div>
-          <div id="photosGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-52 sm:max-h-64 overflow-y-auto pr-1"></div>
-        </section>
-
-      </div>
-    </div>
-  </main>
-
-  <!-- Area Stampa Impegni & Promemoria della Giornata -->
-  <div id="dayPrintArea" aria-hidden="true"></div>
-
-  <!-- Mobile Bottom Navigation -->
-  <nav class="md:hidden fixed bottom-0 inset-x-0 z-30 bg-[#0f1422]/95 backdrop-blur-lg border-t border-white/10 flex justify-around py-1.5 text-[10px] text-slate-400">
-    <a href="#sec-tasks" class="flex flex-col items-center gap-1 hover:text-indigo-400"><i data-lucide="calendar" class="w-4 h-4"></i>Impegni</a>
-    <a href="#sec-expiries" class="flex flex-col items-center gap-1 hover:text-amber-400"><i data-lucide="credit-card" class="w-4 h-4"></i>Scadenze</a>
-    <a href="#sec-notes" class="flex flex-col items-center gap-1 hover:text-yellow-400"><i data-lucide="sticky-note" class="w-4 h-4"></i>Note</a>
-    <a href="#sec-vault" class="flex flex-col items-center gap-1 hover:text-emerald-400"><i data-lucide="lock" class="w-4 h-4"></i>Password</a>
-    <a href="#sec-voice" class="flex flex-col items-center gap-1 hover:text-rose-400"><i data-lucide="mic" class="w-4 h-4"></i>Vocali</a>
-  </nav>
-
-  <!-- ==================== MODALI ==================== -->
-
-  <!-- Modal Spazio Cloud Firebase -->
-  <div id="cloudModal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bento-card rounded-2xl p-5 w-full max-w-md space-y-4">
-      <div class="flex justify-between items-center">
-        <div class="flex items-center gap-2">
-          <i data-lucide="cloud" class="w-5 h-5 text-indigo-400"></i>
-          <h3 class="font-bold text-lg">Spazio Cloud (agenda-f2631)</h3>
+      <div class="grid">
+        <!-- 1. Foto da file locale -->
+        <div class="card">
+          <h2>1. Foto dal dispositivo</h2>
+          <input type="file" id="inputFoto" accept="image/*">
+          <button id="btnStampaFoto" disabled>Stampa Foto</button>
         </div>
-        <button onclick="closeModal('cloudModal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-      <p class="text-xs text-slate-300 leading-relaxed">
-        Il progetto Firebase <strong>agenda-f2631</strong> è già collegato nel codice. Inserisci lo stesso <strong>Codice Spazio</strong> su PC e telefono per sincronizzare tutto in tempo reale.
-      </p>
-      <form onsubmit="saveRoomOnly(event)" class="space-y-3">
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Codice Spazio Personale</label>
-          <input id="cloudRoomInput" required placeholder="es. agenda-casa-2026" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2 text-sm text-white" />
+
+        <!-- 2. PDF da file locale -->
+        <div class="card">
+          <h2>2. PDF dal dispositivo</h2>
+          <input type="file" id="inputPdf" accept="application/pdf">
+          <button id="btnStampaPdfLocale" disabled>Stampa PDF</button>
         </div>
-        <button type="submit" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white">
-          Applica Codice Spazio
-        </button>
-      </form>
-    </div>
+
+        <!-- 3. File tramite URL -->
+        <div class="card">
+          <h2>3. Foto o PDF da URL</h2>
+          <input type="url" id="inputUrl" placeholder="https://esempio.it/file.pdf">
+          <button id="btnStampaUrl">Carica e Stampa URL</button>
+        </div>
+      </div>
+
+      <div class="preview-box" id="previewBox">
+        <div class="placeholder" id="placeholder">
+          Seleziona una foto, un PDF o inserisci un URL per visualizzare l'anteprima e stampare.
+        </div>
+        <img id="anteprimaFoto" alt="Anteprima foto">
+        <iframe id="anteprimaPdf" title="Anteprima PDF"></iframe>
+      </div>
+
+      <div class="messaggio" id="messaggio"></div>
+    </section>
   </div>
 
-  <!-- Modal Impegno -->
-  <div id="taskModal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bento-card rounded-2xl p-5 w-full max-w-md space-y-4">
-      <div class="flex justify-between items-center">
-        <h3 class="font-bold text-lg">Nuovo Impegno / Promemoria</h3>
-        <button onclick="closeModal('taskModal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-      <form onsubmit="saveTask(event)" class="space-y-3">
-        <input id="taskTitle" required placeholder="Titolo impegno o promemoria (es. Visita dentista)" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white" />
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-          <div>
-            <label class="block text-[11px] text-slate-400 mb-1">Data</label>
-            <input id="taskDate" type="date" required class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white" />
-          </div>
-          <div>
-            <label class="block text-[11px] text-slate-400 mb-1">Ora inizio</label>
-            <input id="taskStartTime" type="time" required class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white" />
-          </div>
-          <div>
-            <label class="block text-[11px] text-slate-400 mb-1">Ora fine (opz.)</label>
-            <input id="taskEndTime" type="time" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white" />
-          </div>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <div>
-            <label class="block text-[11px] text-slate-400 mb-1">Luogo</label>
-            <input id="taskLocation" placeholder="Es. Studio medico, Via Roma 12" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white" />
-          </div>
-          <div>
-            <label class="block text-[11px] text-slate-400 mb-1">Promemoria</label>
-            <select id="taskAdvance" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white">
-              <option value="5">Avvisa 5 min prima</option>
-              <option value="15" selected>Avvisa 15 min prima</option>
-              <option value="30">Avvisa 30 min prima</option>
-              <option value="60">Avvisa 1 ora prima</option>
-              <option value="1440">Avvisa 1 giorno prima</option>
-            </select>
-          </div>
-        </div>
-        <textarea id="taskNotes" rows="2" placeholder="Note aggiuntive (opzionale)..." class="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2 text-sm text-white"></textarea>
-        <button type="submit" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-sm text-white">Salva Impegno</button>
-      </form>
-    </div>
-  </div>
+  <script>
+    // --- GESTIONE AGENDA E FILTRO PROMEMORIA ---
+    const STORAGE_KEY = 'agenda_promemoria_v1';
+    const formPromemoria = document.getElementById('formPromemoria');
+    const inputTitolo = document.getElementById('inputTitolo');
+    const inputData = document.getElementById('inputData');
+    const inputOra = document.getElementById('inputOra');
+    const inputDataRiferimento = document.getElementById('inputDataRiferimento');
+    const listaPromemoria = document.getElementById('listaPromemoria');
+    const bottoniFiltro = document.querySelectorAll('.bottoni-filtro button');
 
-  <!-- Modal Scadenza -->
-  <div id="expiryModal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bento-card rounded-2xl p-5 w-full max-w-md space-y-4">
-      <div class="flex justify-between items-center">
-        <h3 class="font-bold text-lg">Nuova Scadenza Carta / Polizza</h3>
-        <button onclick="closeModal('expiryModal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-      <form onsubmit="saveExpiry(event)" class="space-y-3">
-        <input id="expTitle" required placeholder="Nome (es. Assicurazione Auto, Carta Visa)" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm" />
-        <div class="grid grid-cols-2 gap-2">
-          <select id="expCategory" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white">
-            <option value="Carta">Carta / Banca</option>
-            <option value="Assicurazione">Assicurazione</option>
-            <option value="Documento">Documento ID</option>
-            <option value="Veicolo">Auto / Bollo / Revisione</option>
-            <option value="Altro">Altro</option>
-          </select>
-          <input id="expDate" type="date" required class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white" />
-        </div>
-        <div class="grid grid-cols-2 gap-2">
-          <input id="expNumber" placeholder="N. Polizza / Ultime 4 cifre" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs" />
-          <select id="expNotifyDays" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white">
-            <option value="7">Avvisa 7 gg prima</option>
-            <option value="15">Avvisa 15 gg prima</option>
-            <option value="30" selected>Avvisa 30 gg prima</option>
-            <option value="60">Avvisa 60 gg prima</option>
-          </select>
-        </div>
-        <button type="submit" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm">Salva Scadenza</button>
-      </form>
-    </div>
-  </div>
+    let promemoria = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    let filtroAttivo = 'giornaliero';
 
-  <!-- Modal Nota -->
-  <div id="noteModal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bento-card rounded-2xl p-5 w-full max-w-md space-y-4">
-      <div class="flex justify-between items-center">
-        <h3 class="font-bold text-lg">Nuovo Appunto / Post-it</h3>
-        <button onclick="closeModal('noteModal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-      <form onsubmit="saveNote(event)" class="space-y-3">
-        <input id="noteTitle" required placeholder="Titolo appunto..." class="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm" />
-        <textarea id="noteBody" rows="4" required placeholder="Scrivi qui il tuo testo..." class="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2 text-sm"></textarea>
-        <div class="flex items-center justify-between">
-          <select id="noteColor" class="bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs">
-            <option value="yellow">Giallo Post-it</option>
-            <option value="indigo">Blu Notte</option>
-            <option value="emerald">Verde Menta</option>
-            <option value="rose">Rosa Corallo</option>
-          </select>
-          <label class="flex items-center gap-2 text-xs text-slate-300">
-            <input id="notePinned" type="checkbox" class="rounded" /> Fissa in alto
-          </label>
-        </div>
-        <button type="submit" class="w-full py-2.5 rounded-xl bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold text-sm">Salva Nota</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal Password -->
-  <div id="passwordModal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bento-card rounded-2xl p-5 w-full max-w-md space-y-4">
-      <div class="flex justify-between items-center">
-        <h3 class="font-bold text-lg">Salva Nuova Password</h3>
-        <button onclick="closeModal('passwordModal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-      <form onsubmit="savePassword(event)" class="space-y-3">
-        <input id="pwSite" required placeholder="Sito o Servizio (es. Gmail, Banca)" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm" />
-        <input id="pwUser" required placeholder="Email o Nome Utente" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm" />
-        <div class="flex gap-2">
-          <input id="pwPass" required placeholder="Password" class="flex-1 bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm font-mono" />
-          <button type="button" onclick="generateStrongPassword()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-emerald-300">Genera</button>
-        </div>
-        <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-sm">Salva nella Cassaforte</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal Stampa Impegni & Promemoria della Giornata -->
-  <div id="dayPrintModal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bento-card rounded-2xl p-5 w-full max-w-xl max-h-[90vh] overflow-y-auto space-y-4">
-      <div class="flex justify-between items-center">
-        <div class="flex items-center gap-2">
-          <i data-lucide="printer" class="w-5 h-5 text-indigo-400"></i>
-          <h3 class="font-bold text-lg">Stampa Impegni & Promemoria Giornata</h3>
-        </div>
-        <button onclick="closeModal('dayPrintModal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-
-      <div class="flex flex-wrap items-end justify-between gap-3 bg-slate-900/90 border border-white/10 rounded-xl p-3">
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Data della giornata da stampare</label>
-          <input id="printDayDate" type="date" onchange="renderDayPrintPreview()"
-            class="bg-slate-950 border border-white/15 rounded-xl px-3 py-2 text-xs text-white" />
-        </div>
-        <div class="flex items-center gap-2">
-          <button type="button" onclick="setPrintDayToday()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200">
-            Oggi
-          </button>
-          <button type="button" onclick="printSelectedDayAgenda()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white shadow-lg shadow-indigo-600/25">
-            <i data-lucide="printer" class="w-3.5 h-3.5"></i>
-            <span>Stampa Giornata</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Aggiungi direttamente un impegno o promemoria per la giornata scelta -->
-      <form onsubmit="addTaskFromPrintModal(event)" class="bg-slate-900/70 border border-white/10 rounded-xl p-3 space-y-2.5">
-        <p class="text-xs font-semibold text-indigo-300">Aggiungi impegno o promemoria alla giornata</p>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <input id="printNewTitle" required placeholder="Titolo impegno o promemoria..."
-            class="bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs text-white" />
-          <input id="printNewLocation" placeholder="Luogo (es. Ufficio, Palestra)"
-            class="bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs text-white" />
-        </div>
-        <div class="grid grid-cols-3 gap-2">
-          <div>
-            <label class="block text-[10px] text-slate-400 mb-1">Data</label>
-            <input id="printNewDate" type="date" required onchange="syncPrintDayFromForm()"
-              class="w-full bg-slate-950 border border-white/10 rounded-xl px-2.5 py-1.5 text-xs text-white" />
-          </div>
-          <div>
-            <label class="block text-[10px] text-slate-400 mb-1">Ora inizio</label>
-            <input id="printNewStart" type="time" required
-              class="w-full bg-slate-950 border border-white/10 rounded-xl px-2.5 py-1.5 text-xs text-white" />
-          </div>
-          <div>
-            <label class="block text-[10px] text-slate-400 mb-1">Ora fine</label>
-            <input id="printNewEnd" type="time"
-              class="w-full bg-slate-950 border border-white/10 rounded-xl px-2.5 py-1.5 text-xs text-white" />
-          </div>
-        </div>
-        <div class="flex gap-2">
-          <input id="printNewNotes" placeholder="Note / promemoria (opzionale)..."
-            class="flex-1 bg-slate-950 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white" />
-          <button type="submit" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white shrink-0">
-            + Aggiungi
-          </button>
-        </div>
-      </form>
-
-      <!-- Anteprima elementi della giornata -->
-      <div class="space-y-2">
-        <div class="flex items-center justify-between">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Elenco della giornata</h4>
-          <span id="printDayCount" class="text-xs text-indigo-300 font-semibold">0 elementi</span>
-        </div>
-        <div id="printDayPreviewList" class="space-y-2 max-h-56 overflow-y-auto pr-1"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast Banner -->
-  <div id="toast" class="fixed bottom-16 md:bottom-5 right-5 z-50 hidden max-w-sm bg-slate-900 border border-indigo-500/40 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3">
-    <i data-lucide="bell" class="w-5 h-5 text-indigo-400 shrink-0"></i>
-    <p id="toastMsg" class="text-xs font-medium"></p>
-  </div>
-
-  <script type="module">
-    import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getFirestore, doc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-
-    const FIREBASE_CONFIG = {
-      apiKey: "AIzaSyAmxzeE4N_2f0Rj8Uw7azx6p43JXJiOJ6g",
-      authDomain: "agenda-f2631.firebaseapp.com",
-      projectId: "agenda-f2631",
-      storageBucket: "agenda-f2631.firebasestorage.app",
-      messagingSenderId: "586746089395",
-      appId: "1:586746089395:web:ee7a2fcbc0e0fc685905c6",
-      measurementId: "G-DCV37CLG95"
-    };
-
-    const STORAGE_KEY = 'omnidesk_data_v10';
-    const ROOM_KEY = 'omnidesk_room_id_v10';
-
-    let vaultUnlocked = false;
-    let revealedPasswords = {};
-    let currentExpFilter = 'all';
-    let mediaRecorder = null;
-    let audioChunks = [];
-    let recInterval = null;
-    let recSeconds = 0;
-
-    let db = null;
-    let unsubscribeCloud = null;
-    let isApplyingRemoteUpdate = false;
-
-    function loadLocalStateSafe() {
-      const candidateKeys = ['omnidesk_data_v10', 'omnidesk_data_v9', 'omnidesk_data_v6'];
-      for (const k of candidateKeys) {
-        try {
-          const raw = localStorage.getItem(k);
-          if (raw) {
-            const parsed = JSON.parse(raw);
-            if (parsed && typeof parsed === 'object') return parsed;
-          }
-        } catch (e) {}
-      }
-      return null;
+    function oggiISO() {
+      const now = new Date();
+      const anno = now.getFullYear();
+      const mese = String(now.getMonth() + 1).padStart(2, '0');
+      const giorno = String(now.getDate()).padStart(2, '0');
+      return `${anno}-${mese}-${giorno}`;
     }
 
-    function saveLocalStateSafe(dataObj) {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(dataObj));
+    inputData.value = oggiISO();
+    inputDataRiferimento.value = oggiISO();
+
+    function salvaPromemoria() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(promemoria));
+    }
+
+    function filtraPromemoria(lista, filtro, dataRiferimentoStr) {
+      const [annoRif, meseRif, giornoRif] = dataRiferimentoStr.split('-').map(Number);
+      const rif = new Date(annoRif, meseRif - 1, giornoRif);
+      rif.setHours(0, 0, 0, 0);
+
+      // Lunedì - Domenica
+      const giornoSettimana = (rif.getDay() + 6) % 7;
+      const inizioSettimana = new Date(rif);
+      inizioSettimana.setDate(rif.getDate() - giornoSettimana);
+      inizioSettimana.setHours(0, 0, 0, 0);
+
+      const fineSettimana = new Date(inizioSettimana);
+      fineSettimana.setDate(inizioSettimana.getDate() + 6);
+      fineSettimana.setHours(23, 59, 59, 999);
+
+      return lista.filter((item) => {
+        if (filtro === 'tutti') return true;
+
+        const [a, m, g] = item.data.split('-').map(Number);
+        const d = new Date(a, m - 1, g);
+        d.setHours(0, 0, 0, 0);
+
+        if (filtro === 'giornaliero') {
+          return d.getTime() === rif.getTime();
+        }
+        if (filtro === 'settimanale') {
+          return d >= inizioSettimana && d <= fineSettimana;
+        }
+        if (filtro === 'mensile') {
+          return d.getFullYear() === rif.getFullYear() && d.getMonth() === rif.getMonth();
+        }
         return true;
-      } catch (err) {
-        return false;
-      }
+      });
     }
 
-    window.addEventListener('pagehide', () => {
-      saveLocalStateSafe(state);
-      pushStateToCloud();
+    function renderPromemoria() {
+      const dataRif = inputDataRiferimento.value || oggiISO();
+      const filtrati = filtraPromemoria(promemoria, filtroAttivo, dataRif)
+        .sort((a, b) => `${a.data} ${a.ora || ''}`.localeCompare(`${b.data} ${b.ora || ''}`));
+
+      listaPromemoria.innerHTML = '';
+
+      if (filtrati.length === 0) {
+        const vuoto = document.createElement('li');
+        vuoto.className = 'placeholder';
+        vuoto.style.padding = '16px';
+        vuoto.textContent = `Nessun promemoria per il filtro "${filtroAttivo}".`;
+        listaPromemoria.appendChild(vuoto);
+        return;
+      }
+
+      filtrati.forEach((item) => {
+        const li = document.createElement('li');
+        li.className = `item-promemoria ${item.completato ? 'completato' : ''}`;
+
+        const info = document.createElement('div');
+        info.className = 'info-promemoria';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = Boolean(item.completato);
+        checkbox.addEventListener('change', () => {
+          item.completato = checkbox.checked;
+          salvaPromemoria();
+          renderPromemoria();
+        });
+
+        const testoBox = document.createElement('div');
+        const titolo = document.createElement('div');
+        titolo.className = 'titolo-promemoria';
+        titolo.textContent = item.titolo;
+
+        const meta = document.createElement('div');
+        meta.className = 'meta-promemoria';
+        meta.textContent = `Data: ${item.data}${item.ora ? ` • Ora: ${item.ora}` : ''}`;
+
+        testoBox.appendChild(titolo);
+        testoBox.appendChild(meta);
+
+        info.appendChild(checkbox);
+        info.appendChild(testoBox);
+
+        const azioni = document.createElement('div');
+        azioni.className = 'azioni-promemoria';
+
+        const btnUsaUrl = document.createElement('button');
+        btnUsaUrl.type = 'button';
+        btnUsaUrl.className = 'btn-secondario btn-piccolo';
+        btnUsaUrl.textContent = 'Stampa URL';
+        btnUsaUrl.addEventListener('click', () => {
+          inputUrl.value = prompt('Inserisci URL di foto o PDF da stampare:', '') || '';
+          if (inputUrl.value.trim()) {
+            btnStampaUrl.click();
+          }
+        });
+
+        const btnElimina = document.createElement('button');
+        btnElimina.type = 'button';
+        btnElimina.className = 'btn-pericolo';
+        btnElimina.textContent = 'Elimina';
+        btnElimina.addEventListener('click', () => {
+          promemoria = promemoria.filter((p) => p.id !== item.id);
+          salvaPromemoria();
+          renderPromemoria();
+        });
+
+        azioni.appendChild(btnUsaUrl);
+        azioni.appendChild(btnElimina);
+
+        li.appendChild(info);
+        li.appendChild(azioni);
+        listaPromemoria.appendChild(li);
+      });
+    }
+
+    formPromemoria.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const titolo = inputTitolo.value.trim();
+      const data = inputData.value;
+      const ora = inputOra.value;
+
+      if (!titolo || !data) return;
+
+      promemoria.push({
+        id: Date.now().toString(),
+        titolo,
+        data,
+        ora,
+        completato: false
+      });
+
+      salvaPromemoria();
+      inputTitolo.value = '';
+      renderPromemoria();
     });
 
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'hidden') {
-        saveLocalStateSafe(state);
-        pushStateToCloud();
+    bottoniFiltro.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        bottoniFiltro.forEach((b) => b.classList.remove('attivo'));
+        btn.classList.add('attivo');
+        filtroAttivo = btn.dataset.filtro;
+        renderPromemoria();
+      });
+    });
+
+    inputDataRiferimento.addEventListener('change', renderPromemoria);
+
+    // --- GESTIONE STAMPA FOTO E PDF ---
+    const inputFoto = document.getElementById('inputFoto');
+    const inputPdf = document.getElementById('inputPdf');
+    const inputUrl = document.getElementById('inputUrl');
+
+    const btnStampaFoto = document.getElementById('btnStampaFoto');
+    const btnStampaPdfLocale = document.getElementById('btnStampaPdfLocale');
+    const btnStampaUrl = document.getElementById('btnStampaUrl');
+
+    const anteprimaFoto = document.getElementById('anteprimaFoto');
+    const anteprimaPdf = document.getElementById('anteprimaPdf');
+    const placeholder = document.getElementById('placeholder');
+    const messaggio = document.getElementById('messaggio');
+
+    let urlOggettoCorrente = null;
+    let urlPdfCorrente = null;
+
+    function mostraMessaggio(testo) {
+      messaggio.textContent = testo;
+    }
+
+    function resetAnteprima() {
+      mostraMessaggio('');
+      placeholder.style.display = 'none';
+      anteprimaFoto.style.display = 'none';
+      anteprimaPdf.style.display = 'none';
+      btnStampaFoto.disabled = true;
+      btnStampaPdfLocale.disabled = true;
+
+      if (urlOggettoCorrente) {
+        URL.revokeObjectURL(urlOggettoCorrente);
+        urlOggettoCorrente = null;
+      }
+    }
+
+    inputFoto.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      resetAnteprima();
+      urlOggettoCorrente = URL.createObjectURL(file);
+      anteprimaFoto.src = urlOggettoCorrente;
+      anteprimaFoto.style.display = 'block';
+      btnStampaFoto.disabled = false;
+      inputPdf.value = '';
+    });
+
+    btnStampaFoto.addEventListener('click', () => {
+      if (!anteprimaFoto.src) return;
+
+      const finestra = window.open('', '_blank', 'width=800,height=600');
+      if (!finestra) {
+        mostraMessaggio('Consenti i popup nel browser per avviare la stampa.');
+        return;
+      }
+
+      finestra.document.write(`
+        <!DOCTYPE html>
+        <html lang="it">
+        <head>
+          <meta charset="UTF-8">
+          <title>Stampa Foto</title>
+          <style>
+            @page { margin: 10mm; }
+            body {
+              margin: 0;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              min-height: 100vh;
+            }
+            img {
+              max-width: 100%;
+              max-height: 95vh;
+              object-fit: contain;
+            }
+          </style>
+        </head>
+        <body>
+          <img id="imgStampa" src="${anteprimaFoto.src}" alt="Foto da stampare">
+          <script>
+            const img = document.getElementById('imgStampa');
+            img.onload = () => {
+              window.focus();
+              window.print();
+              window.close();
+            };
+          <\/script>
+        </body>
+        </html>
+      `);
+      finestra.document.close();
+    });
+
+    inputPdf.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      resetAnteprima();
+      urlOggettoCorrente = URL.createObjectURL(file);
+      urlPdfCorrente = urlOggettoCorrente;
+      anteprimaPdf.src = urlOggettoCorrente;
+      anteprimaPdf.style.display = 'block';
+      btnStampaPdfLocale.disabled = false;
+      inputFoto.value = '';
+    });
+
+    btnStampaPdfLocale.addEventListener('click', () => {
+      if (!urlPdfCorrente) return;
+      stampaPdfDaUrl(urlPdfCorrente);
+    });
+
+    btnStampaUrl.addEventListener('click', () => {
+      const url = inputUrl.value.trim();
+      if (!url) {
+        mostraMessaggio('Inserisci un URL valido.');
+        return;
+      }
+
+      resetAnteprima();
+      const ePdf = url.toLowerCase().includes('.pdf');
+
+      if (ePdf) {
+        urlPdfCorrente = url;
+        anteprimaPdf.src = url;
+        anteprimaPdf.style.display = 'block';
+        stampaPdfDaUrl(url);
+      } else {
+        anteprimaFoto.onload = () => {
+          btnStampaFoto.disabled = false;
+          btnStampaFoto.click();
+        };
+        anteprimaFoto.onerror = () => {
+          placeholder.style.display = 'block';
+          mostraMessaggio('Impossibile caricare la foto dall’URL indicato.');
+        };
+        anteprimaFoto.src = url;
+        anteprimaFoto.style.display = 'block';
       }
     });
 
-    const loadedLocal = loadLocalStateSafe();
-    let state = loadedLocal || {
-      pin: '1234',
-      tasks: [
-        {
-          id: 1,
-          title: 'Chiamare commercialista',
-          date: new Date().toISOString().slice(0,10),
-          startTime: '15:00',
-          endTime: '15:30',
-          location: 'Studio / Telefono',
-          datetime: new Date(Date.now() + 3600000).toISOString().slice(0,16),
-          advance: 15,
-          notes: 'Portare fatture Q3',
-          notified: false,
-          done: false
-        }
-      ],
-      expiries: [
-        { id: 101, title: 'Assicurazione Auto RC', category: 'Assicurazione', date: new Date(Date.now() + 18*86400000).toISOString().slice(0,10), number: 'POL-994821', notifyDays: 30, notified: false },
-        { id: 102, title: 'Carta di Credito Principale', category: 'Carta', date: new Date(Date.now() + 95*86400000).toISOString().slice(0,10), number: '**** 4829', notifyDays: 30, notified: false }
-      ],
-      notes: [
-        { id: 201, title: 'Lista Spesa Veloce', body: 'Latte, caffè, pane integrale, pile AA', color: 'yellow', pinned: true }
-      ],
-      passwords: [],
-      voices: [],
-      photos: []
-    };
-
-    function getActiveRoom() {
-      return localStorage.getItem(ROOM_KEY) || 'spazio-principale';
-    }
-
-    function updateSyncBadge(mode, text) {
-      const badge = document.getElementById('syncStatusBadge');
-      if (!badge) return;
-      if (mode === 'live') {
-        badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-semibold';
-      } else {
-        badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold';
-      }
-      badge.textContent = text;
-    }
-
-    async function pushStateToCloud() {
-      if (!db || isApplyingRemoteUpdate) return;
-      const roomId = getActiveRoom();
-      try {
-        await setDoc(doc(db, 'omnidesk_spaces', roomId), {
-          payload: state,
-          updatedAt: Date.now()
-        }, { merge: true });
-      } catch (err) {
-        console.error('Errore sync cloud:', err);
-        updateSyncBadge('warn', 'File grande o Offline');
-        showToast('Sync cloud non riuscita: il file potrebbe essere troppo grande per Firestore.');
-      }
-    }
-
-    function connectCloud(roomId) {
-      if (unsubscribeCloud) {
-        unsubscribeCloud();
-        unsubscribeCloud = null;
-      }
-      const existing = getApps().find(a => a.name === 'omnidesk_app');
-      const app = existing || initializeApp(FIREBASE_CONFIG, 'omnidesk_app');
-      db = getFirestore(app);
-
-      const spaceRef = doc(db, 'omnidesk_spaces', roomId);
-      updateSyncBadge('live', `Live Cloud (${roomId})`);
-
-      unsubscribeCloud = onSnapshot(spaceRef, (snap) => {
-        if (snap.exists()) {
-          const remote = snap.data();
-          if (remote?.payload && typeof remote.payload === 'object') {
-            const remoteHasItems =
-              (remote.payload.tasks?.length || 0) +
-              (remote.payload.expiries?.length || 0) +
-              (remote.payload.notes?.length || 0) +
-              (remote.payload.passwords?.length || 0) +
-              (remote.payload.voices?.length || 0) +
-              (remote.payload.photos?.length || 0) > 0;
-
-            const localHasItems =
-              (state.tasks?.length || 0) +
-              (state.expiries?.length || 0) +
-              (state.notes?.length || 0) +
-              (state.passwords?.length || 0) +
-              (state.voices?.length || 0) +
-              (state.photos?.length || 0) > 0;
-
-            if (remoteHasItems || !localHasItems) {
-              isApplyingRemoteUpdate = true;
-              state = {
-                pin: remote.payload.pin || state.pin || '1234',
-                tasks: Array.isArray(remote.payload.tasks) ? remote.payload.tasks : [],
-                expiries: Array.isArray(remote.payload.expiries) ? remote.payload.expiries : [],
-                notes: Array.isArray(remote.payload.notes) ? remote.payload.notes : [],
-                passwords: Array.isArray(remote.payload.passwords) ? remote.payload.passwords : [],
-                voices: Array.isArray(remote.payload.voices) ? remote.payload.voices : [],
-                photos: Array.isArray(remote.payload.photos) ? remote.payload.photos : []
-              };
-              saveLocalStateSafe(state);
-              renderAll();
-              isApplyingRemoteUpdate = false;
-            } else {
-              pushStateToCloud();
-            }
-            updateSyncBadge('live', `Live Cloud (${roomId})`);
-          }
-        } else {
-          setDoc(spaceRef, { payload: state, updatedAt: Date.now() }).catch(() => {});
-        }
-      }, () => {
-        updateSyncBadge('warn', 'Solo Locale (Regole Firestore)');
-      });
-    }
-
-    window.saveRoomOnly = function(e) {
-      e.preventDefault();
-      const newRoom = document.getElementById('cloudRoomInput').value.trim();
-      if (!newRoom) return;
-      localStorage.setItem(ROOM_KEY, newRoom);
-      connectCloud(newRoom);
-      pushStateToCloud();
-      closeModal('cloudModal');
-      showToast(`Spazio cloud impostato su "${newRoom}"`);
-    };
-
-    function persist() {
-      const saved = saveLocalStateSafe(state);
-      if (!saved) {
-        showToast('Spazio locale pieno: rimuovi qualche foto o PDF pesante.');
-        return;
-      }
-      renderAll();
-      pushStateToCloud();
-    }
-
-    // ==================== OROLOGIO & NOTIFICHE ====================
-    function updateClock() {
-      const now = new Date();
-      document.getElementById('liveClock').textContent = now.toLocaleDateString('it-IT', {
-        weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
-      });
-      checkNotifications();
-    }
-    setInterval(updateClock, 10000);
-
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      document.getElementById('toastMsg').textContent = msg;
-      t.classList.remove('hidden');
-      setTimeout(() => t.classList.add('hidden'), 4500);
-    }
-
-    function playAlertSound() {
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(880, ctx.currentTime);
-        gain.gain.setValueAtTime(0.15, ctx.currentTime);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.25);
-      } catch (e) {}
-    }
-
-    function sendSystemNotification(title, body) {
-      playAlertSound();
-      showToast(`${title}: ${body}`);
-      if ('Notification' in window) {
-        if (Notification.permission === 'granted') {
-          new Notification(title, { body });
-        } else if (Notification.permission !== 'denied') {
-          Notification.requestPermission().then(p => {
-            if (p === 'granted') new Notification(title, { body });
-          });
-        }
-      }
-    }
-
-    window.triggerTestNotification = function() {
-      sendSystemNotification('OmniDesk Promemoria', 'Le notifiche sono attive e funzionanti!');
-    };
-
-    function checkNotifications() {
-      const now = Date.now();
-      let changed = false;
-      state.tasks.forEach(t => {
-        if (!t.done && !t.notified) {
-          const isoStr = getTaskIsoDateTime(t);
-          const due = new Date(isoStr).getTime();
-          if (!Number.isNaN(due)) {
-            const triggerAt = due - ((t.advance || 15) * 60000);
-            if (now >= triggerAt) {
-              t.notified = true;
-              changed = true;
-              const timeLabel = t.startTime || new Date(isoStr).toLocaleTimeString('it-IT', {hour:'2-digit', minute:'2-digit'});
-              sendSystemNotification('Impegno in arrivo', `${t.title} (${timeLabel})`);
-            }
-          }
-        }
-      });
-      state.expiries.forEach(e => {
-        if (!e.notified) {
-          const daysLeft = Math.ceil((new Date(e.date).getTime() - now) / 86400000);
-          if (daysLeft <= e.notifyDays) {
-            e.notified = true;
-            changed = true;
-            sendSystemNotification('Scadenza Imminente', `${e.title} scade tra ${daysLeft} giorni!`);
-          }
-        }
-      });
-      if (changed) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        pushStateToCloud();
-      }
-    }
-
-    // ==================== MODALI ====================
-    function getLocalTodayString() {
-      const now = new Date();
-      return new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-    }
-
-    function getTaskDatePart(t) {
-      if (t.date) return t.date;
-      if (t.datetime && t.datetime.includes('T')) return t.datetime.split('T')[0];
-      return getLocalTodayString();
-    }
-
-    function getTaskStartTimePart(t) {
-      if (t.startTime) return t.startTime;
-      if (t.datetime && t.datetime.includes('T')) return t.datetime.split('T')[1].slice(0, 5);
-      return '09:00';
-    }
-
-    function getTaskIsoDateTime(t) {
-      const d = getTaskDatePart(t);
-      const st = getTaskStartTimePart(t);
-      return `${d}T${st}`;
-    }
-
-    function formatTaskSchedule(t) {
-      const dStr = getTaskDatePart(t);
-      const st = getTaskStartTimePart(t);
-      const et = t.endTime ? ` - ${t.endTime}` : '';
-      const formattedDate = new Date(`${dStr}T12:00:00`).toLocaleDateString('it-IT', {
-        weekday: 'short', day: '2-digit', month: 'short', year: 'numeric'
-      });
-      return `${formattedDate} • ${st}${et}`;
-    }
-
-    window.openModal = function(id) {
-      if (id === 'cloudModal') {
-        document.getElementById('cloudRoomInput').value = getActiveRoom();
-      }
-      if (id === 'taskModal') {
-        const dateEl = document.getElementById('taskDate');
-        const startEl = document.getElementById('taskStartTime');
-        if (dateEl && !dateEl.value) dateEl.value = getLocalTodayString();
-        if (startEl && !startEl.value) {
-          const now = new Date();
-          startEl.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-        }
-      }
-      document.getElementById(id).classList.remove('hidden');
-    };
-    window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); };
-
-    window.openPasswordModalGuarded = function() {
-      if (!vaultUnlocked) {
-        showToast('Sblocca prima la cassaforte con il PIN.');
-        document.getElementById('vaultPinInput')?.focus();
-        return;
-      }
-      openModal('passwordModal');
-    };
-
-    // ==================== IMPEGNI & STAMPA GIORNALIERA ====================
-    window.addQuickReminder = function(e) {
-      e.preventDefault();
-      const input = document.getElementById('quickReminderInput');
-      const title = input.value.trim();
-      if (!title) return;
-      const in15Min = new Date(Date.now() + 15 * 60000);
-      const localDate = new Date(in15Min.getTime() - in15Min.getTimezoneOffset()*60000).toISOString().slice(0,10);
-      const localTime = `${String(in15Min.getHours()).padStart(2,'0')}:${String(in15Min.getMinutes()).padStart(2,'0')}`;
-      state.tasks.unshift({
-        id: Date.now(),
-        title,
-        date: localDate,
-        startTime: localTime,
-        endTime: '',
-        location: '',
-        datetime: `${localDate}T${localTime}`,
-        advance: 5,
-        notes: 'Promemoria rapido',
-        notified: false,
-        done: false
-      });
-      input.value = '';
-      persist();
-      showToast('Promemoria rapido aggiunto (+15 min)');
-    };
-
-    window.saveTask = function(e) {
-      e.preventDefault();
-      const dateVal = document.getElementById('taskDate').value || getLocalTodayString();
-      const startVal = document.getElementById('taskStartTime').value || '09:00';
-      const endVal = document.getElementById('taskEndTime').value || '';
-      const locVal = document.getElementById('taskLocation').value.trim();
-      state.tasks.unshift({
-        id: Date.now(),
-        title: document.getElementById('taskTitle').value.trim(),
-        date: dateVal,
-        startTime: startVal,
-        endTime: endVal,
-        location: locVal,
-        datetime: `${dateVal}T${startVal}`,
-        advance: parseInt(document.getElementById('taskAdvance').value),
-        notes: document.getElementById('taskNotes').value.trim(),
-        notified: false,
-        done: false
-      });
-      e.target.reset();
-      closeModal('taskModal');
-      persist();
-      showToast('Impegno salvato!');
-    };
-
-    function getTasksForDate(dateStr) {
-      return state.tasks
-        .filter(t => getTaskDatePart(t) === dateStr)
-        .sort((a, b) => getTaskStartTimePart(a).localeCompare(getTaskStartTimePart(b)));
-    }
-
-    window.openDayPrintModal = function() {
-      const dayInput = document.getElementById('printDayDate');
-      const formDateInput = document.getElementById('printNewDate');
-      const targetDay = dayInput.value || getLocalTodayString();
-      dayInput.value = targetDay;
-      if (formDateInput) formDateInput.value = targetDay;
-      renderDayPrintPreview();
-      openModal('dayPrintModal');
-      lucide.createIcons();
-    };
-
-    window.setPrintDayToday = function() {
-      const today = getLocalTodayString();
-      document.getElementById('printDayDate').value = today;
-      const formDateInput = document.getElementById('printNewDate');
-      if (formDateInput) formDateInput.value = today;
-      renderDayPrintPreview();
-    };
-
-    window.syncPrintDayFromForm = function() {
-      const formDateInput = document.getElementById('printNewDate');
-      const dayInput = document.getElementById('printDayDate');
-      if (formDateInput && formDateInput.value && dayInput) {
-        dayInput.value = formDateInput.value;
-        renderDayPrintPreview();
-      }
-    };
-
-    window.addTaskFromPrintModal = function(e) {
-      e.preventDefault();
-      const title = document.getElementById('printNewTitle').value.trim();
-      if (!title) return;
-      const dateVal = document.getElementById('printNewDate').value || document.getElementById('printDayDate').value || getLocalTodayString();
-      const startVal = document.getElementById('printNewStart').value || '09:00';
-      const endVal = document.getElementById('printNewEnd').value || '';
-      const locVal = document.getElementById('printNewLocation').value.trim();
-      const notesVal = document.getElementById('printNewNotes').value.trim();
-
-      state.tasks.unshift({
-        id: Date.now(),
-        title,
-        date: dateVal,
-        startTime: startVal,
-        endTime: endVal,
-        location: locVal,
-        datetime: `${dateVal}T${startVal}`,
-        advance: 15,
-        notes: notesVal,
-        notified: false,
-        done: false
-      });
-
-      document.getElementById('printNewTitle').value = '';
-      document.getElementById('printNewLocation').value = '';
-      document.getElementById('printNewStart').value = '';
-      document.getElementById('printNewEnd').value = '';
-      document.getElementById('printNewNotes').value = '';
-      document.getElementById('printDayDate').value = dateVal;
-
-      persist();
-      renderDayPrintPreview();
-      showToast('Aggiunto alla giornata!');
-    };
-
-    window.renderDayPrintPreview = function() {
-      const dayInput = document.getElementById('printDayDate');
-      const formDateInput = document.getElementById('printNewDate');
-      const dateStr = (dayInput && dayInput.value) || getLocalTodayString();
-      if (formDateInput && !formDateInput.value) formDateInput.value = dateStr;
-
-      const items = getTasksForDate(dateStr);
-      const countEl = document.getElementById('printDayCount');
-      const listEl = document.getElementById('printDayPreviewList');
-      if (countEl) countEl.textContent = `${items.length} ${items.length === 1 ? 'elemento' : 'elementi'}`;
-      if (!listEl) return;
-
-      listEl.innerHTML = items.length ? items.map(t => {
-        const timeRange = `${getTaskStartTimePart(t)}${t.endTime ? ` - ${t.endTime}` : ''}`;
-        return `
-          <div class="p-2.5 rounded-xl bg-slate-950/80 border border-white/10 flex items-start justify-between gap-2">
-            <div>
-              <p class="text-xs font-bold text-white">${t.done ? '✓ ' : ''}${t.title}</p>
-              <p class="text-[11px] text-indigo-300 font-mono">Ora: ${timeRange}</p>
-              ${t.location ? `<p class="text-[11px] text-emerald-300">Luogo: ${t.location}</p>` : ''}
-              ${t.notes ? `<p class="text-[11px] text-slate-400 mt-0.5">${t.notes}</p>` : ''}
-            </div>
-          </div>
-        `;
-      }).join('') : '<p class="text-xs text-slate-500 text-center py-4">Nessun impegno o promemoria per questa data.</p>';
-    };
-
-    window.printSelectedDayAgenda = function() {
-      const dateStr = document.getElementById('printDayDate')?.value || getLocalTodayString();
-      const items = getTasksForDate(dateStr);
-      const formattedTitleDate = new Date(`${dateStr}T12:00:00`).toLocaleDateString('it-IT', {
-        weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'
-      });
-
-      const printArea = document.getElementById('dayPrintArea');
-      if (!printArea) return;
-
-      printArea.innerHTML = `
-        <div style="font-family: Inter, Arial, sans-serif; color: #0f172a; max-width: 800px; margin: 0 auto;">
-          <div style="border-bottom: 2px solid #0f172a; padding-bottom: 10px; margin-bottom: 16px;">
-            <h1 style="margin: 0; font-size: 22px; font-weight: 800;">Impegni & Promemoria della Giornata</h1>
-            <p style="margin: 4px 0 0; font-size: 14px; color: #334155; text-transform: capitalize;">Data: ${formattedTitleDate}</p>
-          </div>
-          ${items.length ? items.map(t => {
-            const timeRange = `${getTaskStartTimePart(t)}${t.endTime ? ` - ${t.endTime}` : ''}`;
-            return `
-              <div style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; margin-bottom: 10px;">
-                <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px;">
-                  <strong style="font-size: 15px; ${t.done ? 'text-decoration: line-through; color: #64748b;' : ''}">${t.title}</strong>
-                  <span style="font-size: 13px; font-weight: 700; color: #1e293b;">${timeRange}</span>
-                </div>
-                ${t.location ? `<div style="font-size: 13px; color: #1e293b; margin-top: 4px;"><strong>Luogo:</strong> ${t.location}</div>` : ''}
-                ${t.notes ? `<div style="font-size: 12px; color: #475569; margin-top: 4px;">${t.notes}</div>` : ''}
-              </div>
-            `;
-          }).join('') : '<p style="font-size: 14px; color: #475569;">Nessun impegno o promemoria registrato per questa giornata.</p>'}
-        </div>
-      `;
-
-      document.body.classList.add('printing-day-agenda');
-      window.addEventListener('afterprint', function cleanupPrint() {
-        document.body.classList.remove('printing-day-agenda');
-        window.removeEventListener('afterprint', cleanupPrint);
-      });
-      window.print();
-      setTimeout(() => {
-        document.body.classList.remove('printing-day-agenda');
-      }, 1500);
-    };
-
-    window.toggleTask = function(id) {
-      const t = state.tasks.find(x => x.id === id);
-      if (t) t.done = !t.done;
-      persist();
-    };
-
-    window.deleteTask = function(id) {
-      state.tasks = state.tasks.filter(x => x.id !== id);
-      persist();
-    };
-
-    // ==================== SCADENZE ====================
-    window.setExpiryFilter = function(cat) {
-      currentExpFilter = cat;
-      document.querySelectorAll('.exp-filter-btn').forEach(btn => {
-        const active = btn.dataset.expFilter === cat;
-        btn.className = `exp-filter-btn px-2.5 py-1 rounded-lg font-semibold ${active ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-300'}`;
-      });
-      renderAll();
-    };
-
-    window.saveExpiry = function(e) {
-      e.preventDefault();
-      state.expiries.push({
-        id: Date.now(),
-        title: document.getElementById('expTitle').value,
-        category: document.getElementById('expCategory').value,
-        date: document.getElementById('expDate').value,
-        number: document.getElementById('expNumber').value,
-        notifyDays: parseInt(document.getElementById('expNotifyDays').value),
-        notified: false
-      });
-      e.target.reset();
-      closeModal('expiryModal');
-      persist();
-    };
-
-    window.renewExpiryOneYear = function(id) {
-      const item = state.expiries.find(x => x.id === id);
-      if (!item) return;
-      const d = new Date(item.date);
-      d.setFullYear(d.getFullYear() + 1);
-      item.date = d.toISOString().slice(0, 10);
-      item.notified = false;
-      persist();
-      showToast(`"${item.title}" rinnovata di 1 anno!`);
-    };
-
-    window.deleteExpiry = function(id) {
-      state.expiries = state.expiries.filter(x => x.id !== id);
-      persist();
-    };
-
-    // ==================== NOTE ====================
-    window.saveNote = function(e) {
-      e.preventDefault();
-      state.notes.unshift({
-        id: Date.now(),
-        title: document.getElementById('noteTitle').value,
-        body: document.getElementById('noteBody').value,
-        color: document.getElementById('noteColor').value,
-        pinned: document.getElementById('notePinned').checked
-      });
-      e.target.reset();
-      closeModal('noteModal');
-      persist();
-    };
-
-    window.deleteNote = function(id) {
-      state.notes = state.notes.filter(x => x.id !== id);
-      persist();
-    };
-
-    // ==================== CASSAFORTE PASSWORD ====================
-    window.unlockVault = function() {
-      const val = document.getElementById('vaultPinInput').value;
-      if (val === state.pin) {
-        vaultUnlocked = true;
-        document.getElementById('vaultPinInput').value = '';
-        renderAll();
-      } else {
-        vaultUnlocked = false;
-        document.getElementById('passwordsList').innerHTML = '';
-        showToast('PIN errato!');
-      }
-    };
-
-    window.toggleVaultLock = function() {
-      vaultUnlocked = false;
-      revealedPasswords = {};
-      document.getElementById('passwordsList').innerHTML = '';
-      renderAll();
-    };
-
-    window.toggleRevealPassword = function(id) {
-      if (!vaultUnlocked) return;
-      revealedPasswords[id] = !revealedPasswords[id];
-      renderAll();
-    };
-
-    window.changeMasterPin = function() {
-      const newPin = prompt('Inserisci il nuovo PIN Master (4-8 cifre):');
-      if (newPin && newPin.trim().length >= 4) {
-        state.pin = newPin.trim();
-        persist();
-        showToast('Nuovo PIN Master salvato!');
-      }
-    };
-
-    window.generateStrongPassword = function() {
-      if (!vaultUnlocked) return;
-      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%&*';
-      let pw = '';
-      for (let i = 0; i < 16; i++) pw += chars[Math.floor(Math.random() * chars.length)];
-      document.getElementById('pwPass').value = pw;
-    };
-
-    window.savePassword = function(e) {
-      e.preventDefault();
-      if (!vaultUnlocked) {
-        showToast('Sblocca la cassaforte prima di salvare.');
-        return;
-      }
-      state.passwords.unshift({
-        id: Date.now(),
-        site: document.getElementById('pwSite').value,
-        user: document.getElementById('pwUser').value,
-        pass: btoa(document.getElementById('pwPass').value)
-      });
-      e.target.reset();
-      closeModal('passwordModal');
-      persist();
-    };
-
-    window.copySecret = function(text, label) {
-      if (!vaultUnlocked) return;
-      navigator.clipboard.writeText(text);
-      showToast(`${label} copiata! Appunti puliti tra 20s.`);
-      setTimeout(() => navigator.clipboard.writeText('').catch(()=>{}), 20000);
-    };
-
-    window.deletePassword = function(id) {
-      if (!vaultUnlocked) return;
-      state.passwords = state.passwords.filter(x => x.id !== id);
-      persist();
-    };
-
-    // ==================== REGISTRAZIONI VOCALI ====================
-    window.toggleQuickRecord = async function() {
-      const btn = document.getElementById('recordBtn');
-      const label = document.getElementById('recordBtnLabel');
-      const timer = document.getElementById('recTimer');
-
-      if (mediaRecorder && mediaRecorder.state === 'recording') {
-        mediaRecorder.stop();
-        clearInterval(recInterval);
-        btn.classList.remove('recording-pulse', 'bg-red-700');
-        label.textContent = 'Avvia Registrazione Vocale';
-        timer.classList.add('hidden');
-        return;
-      }
-
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        audioChunks = [];
-        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-        mediaRecorder.onstop = () => {
-          const blob = new Blob(audioChunks, { type: 'audio/webm' });
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            state.voices.unshift({
-              id: Date.now(),
-              title: `Nota Vocale ${new Date().toLocaleTimeString('it-IT', {hour:'2-digit', minute:'2-digit'})}`,
-              dataUrl: reader.result,
-              duration: `${recSeconds}s`
-            });
-            persist();
-          };
-          reader.readAsDataURL(blob);
-          stream.getTracks().forEach(t => t.stop());
-        };
-        mediaRecorder.start();
-        recSeconds = 0;
-        timer.textContent = '00:00';
-        timer.classList.remove('hidden');
-        btn.classList.add('recording-pulse', 'bg-red-700');
-        label.textContent = 'Ferma e Salva Vocale';
-        recInterval = setInterval(() => {
-          recSeconds++;
-          const m = String(Math.floor(recSeconds/60)).padStart(2,'0');
-          const s = String(recSeconds%60).padStart(2,'0');
-          timer.textContent = `${m}:${s}`;
-        }, 1000);
-      } catch (err) {
-        showToast('Permesso microfono negato o non disponibile.');
-      }
-    };
-
-    window.deleteVoice = function(id) {
-      state.voices = state.voices.filter(x => x.id !== id);
-      persist();
-    };
-
-    // ==================== FOTO, PDF & RICEVUTE ====================
-    window.handlePhotoUpload = function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
-
-      if (isPdf) {
-        if (file.size > 700 * 1024) {
-          showToast('PDF troppo grande (consigliato sotto 700 KB per sync cloud veloce).');
-        }
-        const reader = new FileReader();
-        reader.onload = ev => {
-          state.photos.unshift({
-            id: Date.now(),
-            type: 'pdf',
-            name: file.name,
-            date: new Date().toLocaleDateString('it-IT'),
-            dataUrl: ev.target.result
-          });
-          persist();
-          showToast(`PDF "${file.name}" salvato!`);
-        };
-        reader.readAsDataURL(file);
-        e.target.value = '';
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = ev => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const maxW = 800;
-          const scale = Math.min(1, maxW / img.width);
-          canvas.width = img.width * scale;
-          canvas.height = img.height * scale;
-          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-          state.photos.unshift({
-            id: Date.now(),
-            type: 'image',
-            name: file.name,
-            date: new Date().toLocaleDateString('it-IT'),
-            dataUrl: canvas.toDataURL('image/jpeg', 0.75)
-          });
-          persist();
-          showToast('Foto salvata nella galleria!');
-        };
-        img.src = ev.target.result;
-      };
-      reader.readAsDataURL(file);
-      e.target.value = '';
-    };
-
-    window.openPhotoOrPdf = function(id) {
-      const item = state.photos.find(x => x.id === id);
-      if (!item) return;
-      const win = window.open('', '_blank');
-      if (!win) {
-        showToast('Consenti i pop-up per aprire il file.');
-        return;
-      }
-      if (item.type === 'pdf') {
-        win.document.write(`
-          <html><head><title>${item.name}</title></head>
-          <body style="margin:0;background:#0b0f19;display:flex;flex-direction:column;height:100vh;">
-            <div style="padding:10px 16px;background:#111827;color:#fff;font-family:sans-serif;display:flex;justify-content:space-between;align-items:center;">
-              <span>${item.name}</span>
-              <a href="${item.dataUrl}" download="${item.name}" style="color:#38bdf8;text-decoration:none;font-weight:bold;">Scarica PDF</a>
-            </div>
-            <iframe src="${item.dataUrl}" style="flex:1;border:none;width:100%;"></iframe>
-          </body></html>
-        `);
-      } else {
-        win.document.write(`
-          <html><head><title>${item.name}</title></head>
-          <body style="margin:0;background:#0b0f19;display:flex;justify-content:center;align-items:center;min-height:100vh;">
-            <img src="${item.dataUrl}" style="max-width:100%;max-height:100vh;object-fit:contain;" />
-          </body></html>
-        `);
-      }
-    };
-
-    window.deletePhoto = function(id) {
-      state.photos = state.photos.filter(x => x.id !== id);
-      persist();
-    };
-
-    // ==================== EXPORT / IMPORT JSON ====================
-    window.exportData = function() {
-      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `omnidesk-backup-${new Date().toISOString().slice(0,10)}.json`;
-      a.click();
-    };
-
-    window.importData = function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = ev => {
+    function stampaPdfDaUrl(url) {
+      const iframeStampa = document.createElement('iframe');
+      iframeStampa.style.position = 'fixed';
+      iframeStampa.style.right = '0';
+      iframeStampa.style.bottom = '0';
+      iframeStampa.style.width = '0';
+      iframeStampa.style.height = '0';
+      iframeStampa.style.border = '0';
+      iframeStampa.src = url;
+
+      iframeStampa.onload = () => {
         try {
-          state = JSON.parse(ev.target.result);
-          persist();
-          showToast('Dati importati con successo!');
-        } catch {
-          showToast('File JSON non valido.');
+          iframeStampa.contentWindow.focus();
+          iframeStampa.contentWindow.print();
+        } catch (err) {
+          window.open(url, '_blank');
         }
       };
-      reader.readAsText(file);
-    };
 
-    // ==================== RENDERING ====================
-    window.renderAll = function() {
-      const q = (document.getElementById('globalSearch')?.value || '').toLowerCase();
+      document.body.appendChild(iframeStampa);
+    }
 
-      const filteredTasks = state.tasks.filter(t =>
-        t.title.toLowerCase().includes(q) ||
-        (t.notes||'').toLowerCase().includes(q) ||
-        (t.location||'').toLowerCase().includes(q) ||
-        getTaskDatePart(t).includes(q)
-      );
-      document.getElementById('taskCountBadge').textContent = filteredTasks.filter(t => !t.done).length;
-      document.getElementById('tasksList').innerHTML = filteredTasks.length ? filteredTasks.map(t => `
-        <div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-slate-900/80 border border-white/5 ${t.done ? 'opacity-50' : ''}">
-          <div class="flex items-start gap-2.5">
-            <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${t.id})" class="mt-1 accent-indigo-500 w-4 h-4 cursor-pointer" />
-            <div>
-              <p class="text-sm font-semibold ${t.done ? 'line-through text-slate-400' : 'text-white'}">${t.title}</p>
-              <p class="text-xs text-indigo-300">${formatTaskSchedule(t)} • Avviso ${t.advance || 15}m prima</p>
-              ${t.location ? `<p class="text-xs text-emerald-300 mt-0.5">Luogo: ${t.location}</p>` : ''}
-              ${t.notes ? `<p class="text-xs text-slate-400 mt-0.5">${t.notes}</p>` : ''}
-            </div>
-          </div>
-          <button onclick="deleteTask(${t.id})" class="text-slate-500 hover:text-rose-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-        </div>
-      `).join('') : '<p class="text-xs text-slate-500 text-center py-4">Nessun impegno registrato.</p>';
-
-      const filteredExp = state.expiries
-        .filter(e => (currentExpFilter === 'all' || e.category === currentExpFilter))
-        .filter(e => e.title.toLowerCase().includes(q) || (e.number||'').toLowerCase().includes(q))
-        .sort((a,b) => new Date(a.date) - new Date(b.date));
-      document.getElementById('expiryCountBadge').textContent = filteredExp.length;
-      document.getElementById('expiriesList').innerHTML = filteredExp.length ? filteredExp.map(e => {
-        const days = Math.ceil((new Date(e.date) - new Date()) / 86400000);
-        const badgeColor = days <= 7 ? 'bg-rose-500/20 text-rose-300 border-rose-500/40' : days <= 30 ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
-        const statusText = days < 0 ? `Scaduto da ${Math.abs(days)}g` : days === 0 ? 'Scade OGGI' : `Tra ${days} giorni`;
-        return `
-          <div class="flex items-center justify-between gap-2 p-3 rounded-xl bg-slate-900/80 border border-white/5">
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="text-[10px] px-2 py-0.5 rounded bg-white/10 text-slate-300">${e.category}</span>
-                <span class="text-[11px] px-2 py-0.5 rounded border ${badgeColor} font-bold">${statusText}</span>
-              </div>
-              <p class="text-sm font-semibold text-white mt-1">${e.title}</p>
-              <p class="text-xs text-slate-400">Scadenza: ${new Date(e.date).toLocaleDateString('it-IT')} ${e.number ? `• <span class="font-mono text-slate-300">${e.number}</span>` : ''}</p>
-            </div>
-            <div class="flex items-center gap-1.5">
-              ${e.number ? `<button onclick="copySecret('${e.number}', 'Codice')" title="Copia numero" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>` : ''}
-              <button onclick="renewExpiryOneYear(${e.id})" title="Rinnova di 1 anno" class="p-1.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-300"><i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i></button>
-              <button onclick="deleteExpiry(${e.id})" class="p-1.5 text-slate-500 hover:text-rose-400"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-            </div>
-          </div>
-        `;
-      }).join('') : '<p class="text-xs text-slate-500 text-center py-4">Nessuna scadenza inserita.</p>';
-
-      const colorMap = {
-        yellow: 'bg-yellow-500/10 border-yellow-500/30 text-yellow-100',
-        indigo: 'bg-indigo-500/10 border-indigo-500/30 text-indigo-100',
-        emerald: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-100',
-        rose: 'bg-rose-500/10 border-rose-500/30 text-rose-100'
-      };
-      const sortedNotes = [...state.notes]
-        .filter(n => n.title.toLowerCase().includes(q) || n.body.toLowerCase().includes(q))
-        .sort((a,b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
-      document.getElementById('notesGrid').innerHTML = sortedNotes.length ? sortedNotes.map(n => `
-        <div class="p-3 rounded-xl border ${colorMap[n.color] || colorMap.yellow} flex flex-col justify-between gap-2">
-          <div>
-            <div class="flex items-center justify-between gap-1">
-              <h4 class="text-xs font-bold">${n.pinned ? '📌 ' : ''}${n.title}</h4>
-              <button onclick="deleteNote(${n.id})" class="opacity-60 hover:opacity-100"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
-            </div>
-            <p class="text-xs opacity-85 mt-1 whitespace-pre-line">${n.body}</p>
-          </div>
-        </div>
-      `).join('') : '<p class="text-xs text-slate-500 col-span-2 text-center py-4">Nessun appunto salvato.</p>';
-
-      // Cassaforte: finché vaultUnlocked è false, non viene renderizzato alcun dato di user/password
-      const vaultLockedEl = document.getElementById('vaultLockedView');
-      const vaultUnlockedEl = document.getElementById('vaultUnlockedView');
-      const vaultLockBtnEl = document.getElementById('vaultLockBtn');
-      const passwordsListEl = document.getElementById('passwordsList');
-
-      if (!vaultUnlocked) {
-        vaultLockedEl.classList.remove('hidden');
-        vaultUnlockedEl.classList.add('hidden');
-        vaultLockBtnEl.classList.add('hidden');
-        passwordsListEl.innerHTML = '';
-      } else {
-        vaultLockedEl.classList.add('hidden');
-        vaultUnlockedEl.classList.remove('hidden');
-        vaultLockBtnEl.classList.remove('hidden');
-        const filteredPw = (state.passwords || []).filter(p =>
-          p.site.toLowerCase().includes(q) || p.user.toLowerCase().includes(q)
-        );
-        passwordsListEl.innerHTML = filteredPw.length ? filteredPw.map(p => {
-          let decodedPass = '';
-          try { decodedPass = atob(p.pass); } catch { decodedPass = p.pass || ''; }
-          const isShown = !!revealedPasswords[p.id];
-          const safeDecodedForAttr = decodedPass.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-          const safeUserForAttr = String(p.user || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-          return `
-            <div class="p-2.5 rounded-xl bg-slate-900/90 border border-white/5 space-y-2">
-              <div class="flex items-center justify-between gap-2">
-                <div class="truncate pr-1">
-                  <p class="text-xs font-bold text-white truncate">${p.site}</p>
-                  <p class="text-[11px] text-slate-300 truncate">User: <span class="font-mono text-slate-200">${p.user}</span></p>
-                </div>
-                <div class="flex items-center gap-1 shrink-0">
-                  <button onclick="copySecret('${safeUserForAttr}', 'Username')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300">User</button>
-                  <button onclick="toggleRevealPassword(${p.id})" title="${isShown ? 'Nascondi password' : 'Mostra password'}" class="p-1.5 rounded bg-slate-800 hover:bg-slate-700 text-emerald-300 transition">
-                    <i data-lucide="${isShown ? 'eye-off' : 'eye'}" class="w-3.5 h-3.5"></i>
-                  </button>
-                  <button onclick="copySecret('${safeDecodedForAttr}', 'Password')" class="px-2 py-1 rounded bg-emerald-600/30 hover:bg-emerald-600/50 text-[11px] text-emerald-200 font-semibold">Copia PW</button>
-                  <button onclick="deletePassword(${p.id})" class="text-slate-500 hover:text-rose-400 p-1"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-                </div>
-              </div>
-              <div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-slate-950/80 border border-white/5 text-[11px] font-mono">
-                <span class="text-slate-400">PW:</span>
-                <span class="${isShown ? 'text-emerald-300 select-all break-all' : 'text-slate-500 tracking-widest'}">${isShown ? decodedPass : '••••••••••••'}</span>
-              </div>
-            </div>
-          `;
-        }).join('') : '<p class="text-xs text-slate-500 text-center py-3">Nessuna credenziale salvata.</p>';
-      }
-
-      document.getElementById('voiceList').innerHTML = state.voices.length ? state.voices.map(v => `
-        <div class="p-2.5 rounded-xl bg-slate-900/90 border border-white/5 space-y-1.5">
-          <div class="flex justify-between items-center text-xs">
-            <span class="font-semibold text-rose-200">${v.title} (${v.duration})</span>
-            <button onclick="deleteVoice(${v.id})" class="text-slate-500 hover:text-rose-400"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-          </div>
-          <audio controls src="${v.dataUrl}" class="w-full h-8"></audio>
-        </div>
-      `).join('') : '<p class="text-xs text-slate-500 text-center py-2">Nessuna registrazione vocale.</p>';
-
-      document.getElementById('photosGrid').innerHTML = state.photos.length ? state.photos.map(ph => {
-        if (ph.type === 'pdf') {
-          return `
-            <div class="relative group rounded-xl border border-rose-500/30 bg-slate-900/90 p-2.5 flex flex-col justify-between min-h-[104px]">
-              <button onclick="deletePhoto(${ph.id})" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-black/70 text-rose-400 opacity-80 hover:opacity-100 transition">
-                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-              </button>
-              <button onclick="openPhotoOrPdf(${ph.id})" class="text-left flex flex-col gap-1.5 mt-1">
-                <div class="w-7 h-7 rounded-lg bg-rose-500/20 text-rose-300 flex items-center justify-center">
-                  <i data-lucide="file-text" class="w-4 h-4"></i>
-                </div>
-                <span class="text-[11px] font-semibold text-white line-clamp-2 break-all">${ph.name}</span>
-                <span class="text-[10px] text-sky-300 font-medium">Apri PDF</span>
-              </button>
-            </div>
-          `;
-        }
-        return `
-          <div class="relative group rounded-xl overflow-hidden border border-white/10 aspect-square bg-slate-900">
-            <img src="${ph.dataUrl}" alt="${ph.name}" onclick="openPhotoOrPdf(${ph.id})" class="w-full h-full object-cover cursor-pointer" />
-            <button onclick="deletePhoto(${ph.id})" class="absolute top-1 right-1 p-1 rounded-lg bg-black/70 text-rose-400 opacity-0 group-hover:opacity-100 transition">
-              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-            </button>
-          </div>
-        `;
-      }).join('') : '<p class="text-xs text-slate-500 col-span-2 sm:col-span-3 text-center py-3">Nessuna foto o PDF caricato.</p>';
-
-      lucide.createIcons();
-    };
-
-    connectCloud(getActiveRoom());
-    updateClock();
-    renderAll();
+    // Avvio iniziale
+    renderPromemoria();
   </script>
 </body>
 </html>
