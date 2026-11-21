@@ -130,7 +130,7 @@
           <input type="file" accept="image/*,application/pdf,.pdf" onchange="handlePhotoUpload(event)" class="hidden" />
         </label>
 
-        <button onclick="openModal('passwordModal')" class="group flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 transition">
+        <button onclick="openPasswordModalGuarded()" class="group flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 transition">
           <div class="w-9 h-9 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-300 group-hover:scale-110 transition">
             <i data-lucide="key-round" class="w-4 h-4"></i>
           </div>
@@ -216,15 +216,16 @@
             </div>
             <div class="flex items-center gap-1.5">
               <button onclick="changeMasterPin()" title="Cambia PIN Master" class="text-xs px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">PIN</button>
-              <button id="vaultLockBtn" onclick="toggleVaultLock()" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 font-medium transition">Blocca</button>
+              <button id="vaultLockBtn" onclick="toggleVaultLock()" class="hidden text-xs px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 font-medium transition">Blocca</button>
             </div>
           </div>
 
-          <div id="vaultLockedView" class="py-6 text-center space-y-3">
+          <!-- Vista bloccata: nessun elenco, nessun titolo, nessun user o password visibile -->
+          <div id="vaultLockedView" class="py-7 text-center space-y-3">
             <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center mx-auto text-emerald-400">
               <i data-lucide="shield-check" class="w-6 h-6"></i>
             </div>
-            <p class="text-xs text-slate-400">Inserisci il PIN Master per sbloccare (Default: <span class="text-emerald-300 font-mono font-bold">1234</span>)</p>
+            <p class="text-xs text-slate-400">Inserisci il PIN per accedere a user e password</p>
             <div class="flex justify-center gap-2 max-w-xs mx-auto">
               <input id="vaultPinInput" type="password" maxlength="8" placeholder="PIN..." onkeydown="if(event.key==='Enter') unlockVault()"
                 class="w-32 text-center tracking-widest bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500" />
@@ -232,6 +233,7 @@
             </div>
           </div>
 
+          <!-- Vista sbloccata: popolata solo dopo verifica del PIN -->
           <div id="vaultUnlockedView" class="hidden space-y-2.5">
             <div class="flex justify-between items-center">
               <span class="text-[11px] text-slate-400">Auto-pulizia appunti attiva (20s)</span>
@@ -437,7 +439,7 @@
       measurementId: "G-DCV37CLG95"
     };
 
-    const STORAGE_KEY = 'omnidesk_data_v5';
+    const STORAGE_KEY = 'omnidesk_data_v6';
     const ROOM_KEY = 'omnidesk_room_id_v1';
 
     let vaultUnlocked = false;
@@ -463,9 +465,7 @@
       notes: [
         { id: 201, title: 'Lista Spesa Veloce', body: 'Latte, caffè, pane integrale, pile AA', color: 'yellow', pinned: true }
       ],
-      passwords: [
-        { id: 301, site: 'Email Principale', user: 'nome@esempio.it', pass: btoa('SuperSicura2026!') }
-      ],
+      passwords: [],
       voices: [],
       photos: []
     };
@@ -642,6 +642,15 @@
     };
     window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); };
 
+    window.openPasswordModalGuarded = function() {
+      if (!vaultUnlocked) {
+        showToast('Sblocca prima la cassaforte con il PIN.');
+        document.getElementById('vaultPinInput')?.focus();
+        return;
+      }
+      openModal('passwordModal');
+    };
+
     // ==================== IMPEGNI ====================
     window.addQuickReminder = function(e) {
       e.preventDefault();
@@ -753,12 +762,15 @@
         document.getElementById('vaultPinInput').value = '';
         renderAll();
       } else {
+        vaultUnlocked = false;
+        document.getElementById('passwordsList').innerHTML = '';
         showToast('PIN errato!');
       }
     };
 
     window.toggleVaultLock = function() {
       vaultUnlocked = false;
+      document.getElementById('passwordsList').innerHTML = '';
       renderAll();
     };
 
@@ -772,6 +784,7 @@
     };
 
     window.generateStrongPassword = function() {
+      if (!vaultUnlocked) return;
       const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%&*';
       let pw = '';
       for (let i = 0; i < 16; i++) pw += chars[Math.floor(Math.random() * chars.length)];
@@ -780,6 +793,10 @@
 
     window.savePassword = function(e) {
       e.preventDefault();
+      if (!vaultUnlocked) {
+        showToast('Sblocca la cassaforte prima di salvare.');
+        return;
+      }
       state.passwords.unshift({
         id: Date.now(),
         site: document.getElementById('pwSite').value,
@@ -792,12 +809,14 @@
     };
 
     window.copySecret = function(text, label) {
+      if (!vaultUnlocked) return;
       navigator.clipboard.writeText(text);
       showToast(`${label} copiata! Appunti puliti tra 20s.`);
       setTimeout(() => navigator.clipboard.writeText('').catch(()=>{}), 20000);
     };
 
     window.deletePassword = function(id) {
+      if (!vaultUnlocked) return;
       state.passwords = state.passwords.filter(x => x.id !== id);
       persist();
     };
@@ -1040,16 +1059,29 @@
         </div>
       `).join('') : '<p class="text-xs text-slate-500 col-span-2 text-center py-4">Nessun appunto salvato.</p>';
 
-      document.getElementById('vaultLockedView').classList.toggle('hidden', vaultUnlocked);
-      document.getElementById('vaultUnlockedView').classList.toggle('hidden', !vaultUnlocked);
-      document.getElementById('vaultLockBtn').classList.toggle('hidden', !vaultUnlocked);
-      if (vaultUnlocked) {
-        const filteredPw = state.passwords.filter(p => p.site.toLowerCase().includes(q) || p.user.toLowerCase().includes(q));
-        document.getElementById('passwordsList').innerHTML = filteredPw.map(p => `
+      // Cassaforte: finché vaultUnlocked è false, non viene renderizzato alcun dato di user/password
+      const vaultLockedEl = document.getElementById('vaultLockedView');
+      const vaultUnlockedEl = document.getElementById('vaultUnlockedView');
+      const vaultLockBtnEl = document.getElementById('vaultLockBtn');
+      const passwordsListEl = document.getElementById('passwordsList');
+
+      if (!vaultUnlocked) {
+        vaultLockedEl.classList.remove('hidden');
+        vaultUnlockedEl.classList.add('hidden');
+        vaultLockBtnEl.classList.add('hidden');
+        passwordsListEl.innerHTML = '';
+      } else {
+        vaultLockedEl.classList.add('hidden');
+        vaultUnlockedEl.classList.remove('hidden');
+        vaultLockBtnEl.classList.remove('hidden');
+        const filteredPw = (state.passwords || []).filter(p =>
+          p.site.toLowerCase().includes(q) || p.user.toLowerCase().includes(q)
+        );
+        passwordsListEl.innerHTML = filteredPw.length ? filteredPw.map(p => `
           <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/90 border border-white/5">
             <div class="truncate pr-2">
               <p class="text-xs font-bold text-white">${p.site}</p>
-              <p class="text-[11px] text-slate-400 truncate">${p.user}</p>
+              <p class="text-[11px] text-slate-300 truncate">${p.user}</p>
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
               <button onclick="copySecret('${p.user}', 'Username')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300">User</button>
@@ -1057,7 +1089,7 @@
               <button onclick="deletePassword(${p.id})" class="text-slate-500 hover:text-rose-400 p-1"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
             </div>
           </div>
-        `).join('');
+        `).join('') : '<p class="text-xs text-slate-500 text-center py-3">Nessuna credenziale salvata.</p>';
       }
 
       document.getElementById('voiceList').innerHTML = state.voices.length ? state.voices.map(v => `
