@@ -3,725 +3,2112 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agenda Promemoria & Stampa Foto/PDF</title>
+  <title>OmniDesk — Agenda, Scadenze &amp; Stampa Foto/PDF</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
+    /* Tema scuro moderno e personalizzazioni per OmniDesk */
+    :root {
+      color-scheme: dark;
     }
 
     body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #060911;
+      color: #e6edf7;
       margin: 0;
-      padding: 24px;
-      background-color: #f4f6f9;
-      color: #222;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 24px;
-      border-radius: 10px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-    }
-
-    h1 {
-      margin-top: 0;
-      font-size: 1.65rem;
-    }
-
-    h2 {
-      margin-top: 0;
-      font-size: 1.15rem;
-    }
-
-    .sezione {
-      margin-bottom: 32px;
-      padding-bottom: 24px;
-      border-bottom: 1px solid #e5e9f0;
-    }
-
-    .sezione:last-child {
-      margin-bottom: 0;
-      padding-bottom: 0;
-      border-bottom: none;
-    }
-
-    /* Form Agenda */
-    .form-agenda {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr auto;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    @media (max-width: 760px) {
-      .form-agenda {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    input[type="text"],
-    input[type="date"],
-    input[type="time"],
-    input[type="file"],
-    input[type="url"],
-    select {
-      width: 100%;
-      padding: 9px 10px;
-      border: 1px solid #ccd2dc;
-      border-radius: 6px;
-      background: #fff;
-      font-size: 0.95rem;
-    }
-
-    button {
-      background-color: #1d63ed;
-      color: #fff;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.95rem;
-      font-weight: 600;
-    }
-
-    button:hover:not(:disabled) {
-      background-color: #154ec0;
-    }
-
-    button:disabled {
-      background-color: #a9bce6;
-      cursor: not-allowed;
-    }
-
-    button.btn-secondario {
-      background-color: #eef2f7;
-      color: #222;
-      border: 1px solid #cfd6e0;
-    }
-
-    button.btn-secondario:hover:not(:disabled) {
-      background-color: #e2e8f0;
-    }
-
-    button.btn-secondario.attivo {
-      background-color: #1d63ed;
-      color: #fff;
-      border-color: #1d63ed;
-    }
-
-    button.btn-pericolo {
-      background-color: #d92d20;
-      padding: 6px 10px;
-      font-size: 0.85rem;
-    }
-
-    button.btn-pericolo:hover {
-      background-color: #b42318;
-    }
-
-    button.btn-piccolo {
-      padding: 6px 10px;
-      font-size: 0.85rem;
-    }
-
-    /* Barra filtri */
-    .barra-filtri {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 16px;
-      background: #fafbfd;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #e0e4ea;
-    }
-
-    .bottoni-filtro {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .data-riferimento {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.9rem;
-    }
-
-    .data-riferimento input[type="date"] {
-      width: auto;
-    }
-
-    /* Lista promemoria */
-    .lista-promemoria {
-      list-style: none;
       padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      overflow-x: hidden;
     }
 
-    .item-promemoria {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px 14px;
-      border: 1px solid #e0e4ea;
-      border-radius: 8px;
-      background: #fafbfd;
+    /* Scrollbar discreta per tema scuro */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b101d;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1f2a44;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #2f3f64;
     }
 
-    .item-promemoria.completato .titolo-promemoria {
-      text-decoration: line-through;
-      color: #6c757d;
+    .glass-panel {
+      background: linear-gradient(180deg, rgba(15, 22, 38, 0.94) 0%, rgba(10, 15, 27, 0.96) 100%);
+      border: 1px solid rgba(51, 68, 104, 0.45);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
     }
 
-    .info-promemoria {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex: 1;
-      min-width: 220px;
+    .quick-card {
+      transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+    .quick-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
     }
 
-    .meta-promemoria {
-      font-size: 0.85rem;
-      color: #555;
-    }
-
-    .azioni-promemoria {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    /* Sezione Stampa Foto e PDF */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-
-    .card {
-      border: 1px solid #e0e4ea;
-      border-radius: 8px;
-      padding: 16px;
-      background: #fafbfd;
-    }
-
-    .card input[type="file"],
-    .card input[type="url"] {
-      margin: 10px 0 12px;
-    }
-
-    .card button {
-      width: 100%;
-    }
-
-    .preview-box {
-      border: 1px dashed #cbd2d9;
-      border-radius: 8px;
-      padding: 16px;
-      min-height: 300px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #fff;
-      overflow: hidden;
-    }
-
-    .preview-box img {
-      max-width: 100%;
-      max-height: 500px;
-      object-fit: contain;
-      display: none;
-    }
-
-    .preview-box iframe {
-      width: 100%;
-      height: 500px;
-      border: none;
-      display: none;
-    }
-
-    .placeholder {
-      color: #6c757d;
-      text-align: center;
-    }
-
-    .messaggio {
-      margin-top: 12px;
-      font-size: 0.9rem;
-      color: #b42318;
-      min-height: 20px;
-    }
-
-    /* Stili dedicati alla stampa */
+    /* Regole dedicate alla stampa */
     @media print {
       body {
-        background: #fff;
-        padding: 0;
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
       }
-
-      .container > h1,
-      .sezione-agenda,
-      .grid,
-      .messaggio,
-      .placeholder {
+      .no-print {
         display: none !important;
       }
-
-      .container {
-        box-shadow: none;
-        padding: 0;
+      #print-area {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      #print-area img {
         max-width: 100%;
-      }
-
-      .sezione-stampa {
-        margin: 0;
-        padding: 0;
-        border: none;
-      }
-
-      .sezione-stampa > h2 {
-        display: none;
-      }
-
-      .preview-box {
-        border: none;
-        padding: 0;
-        min-height: auto;
-      }
-
-      .preview-box img {
-        max-width: 100%;
-        max-height: 100vh;
+        max-height: 96vh;
+        object-fit: contain;
+        display: block;
+        margin: 0 auto;
         page-break-inside: avoid;
       }
     }
   </style>
 </head>
-<body>
-  <div class="container">
-    <h1>Agenda Promemoria & Stampa Foto / PDF</h1>
+<body class="min-h-screen antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
+  <!-- Contenitore principale dell'applicazione -->
+  <div id="app" class="no-print max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-5">
 
-    <!-- SEZIONE 1: AGENDA E FILTRO PROMEMORIA -->
-    <section class="sezione sezione-agenda">
-      <h2>Nuovo Promemoria</h2>
-      <form class="form-agenda" id="formPromemoria">
-        <input type="text" id="inputTitolo" placeholder="Descrizione o titolo promemoria..." required>
-        <input type="date" id="inputData" required>
-        <input type="time" id="inputOra">
-        <button type="submit">Aggiungi</button>
+    <!-- 1. HEADER / TOPBAR -->
+    <header class="glass-panel rounded-2xl px-4 sm:px-6 py-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div class="flex items-center justify-between sm:justify-start gap-3.5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 shrink-0">
+            <!-- Icona griglia OmniDesk -->
+            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+            </svg>
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-lg font-bold tracking-tight text-white">OmniDesk</span>
+              <span id="sync-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                Live Cloud Synced • Locale
+              </span>
+            </div>
+            <p id="current-datetime" class="text-xs text-slate-400 mt-0.5">Sabato 21 Novembre • Caricamento ora...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ricerca avanzata + Spazio & Cloud + Export/Import -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full lg:w-auto">
+        <div class="relative flex-1 sm:w-72 md:w-80">
+          <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+          <input
+            id="global-search"
+            type="search"
+            placeholder="Cerca ovunque..."
+            aria-label="Cerca ovunque"
+            class="w-full pl-10 pr-8 py-2 rounded-xl bg-slate-900/90 border border-slate-700/70 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+          >
+          <button
+            id="btn-clear-search"
+            type="button"
+            title="Pulisci ricerca"
+            class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs px-1"
+          >✕</button>
+        </div>
+
+        <button
+          id="btn-space-cloud"
+          type="button"
+          class="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-200 border border-indigo-400/30 transition"
+        >
+          <svg class="w-4 h-4 text-indigo-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+          </svg>
+          <span id="space-label">Spazio &amp; Cloud</span>
+        </button>
+
+        <div class="flex items-center gap-2">
+          <button
+            id="btn-export-json"
+            type="button"
+            title="Esporta backup JSON"
+            class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700/70 transition"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>JSON</span>
+          </button>
+
+          <button
+            id="btn-import-json"
+            type="button"
+            title="Importa backup JSON"
+            class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700/70 transition"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span>Importa</span>
+          </button>
+          <input id="input-import-json" type="file" accept="application/json,.json" class="hidden">
+        </div>
+      </div>
+    </header>
+
+    <!-- 2. SEZIONE AZIONI RAPIDE (1-TAP) -->
+    <section class="glass-panel rounded-2xl p-4 sm:p-5 space-y-4">
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <h2 class="text-sm font-semibold text-slate-100">Azioni Rapide (1-Tap)</h2>
+        </div>
+        <button
+          id="btn-reset-demo"
+          type="button"
+          class="text-xs text-slate-400 hover:text-indigo-300 transition"
+        >↻ Ripristina Demo</button>
+      </div>
+
+      <!-- Griglia 6 Azioni Rapide -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <button type="button" data-quick-action="impegno" class="quick-card group rounded-xl p-3.5 text-center bg-gradient-to-b from-indigo-950/80 to-slate-900/90 border border-indigo-500/30 hover:border-indigo-400/70 flex flex-col items-center justify-center gap-2">
+          <div class="w-9 h-9 rounded-lg bg-indigo-500/20 text-indigo-300 flex items-center justify-center group-hover:scale-105 transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          </div>
+          <span class="text-xs font-semibold text-indigo-100">+ Impegno</span>
+        </button>
+
+        <button type="button" data-quick-action="scadenza" class="quick-card group rounded-xl p-3.5 text-center bg-gradient-to-b from-amber-950/70 to-slate-900/90 border border-amber-500/30 hover:border-amber-400/70 flex flex-col items-center justify-center gap-2">
+          <div class="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center group-hover:scale-105 transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+          </div>
+          <span class="text-xs font-semibold text-amber-100">+ Scadenza</span>
+        </button>
+
+        <button type="button" data-quick-action="nota" class="quick-card group rounded-xl p-3.5 text-center bg-gradient-to-b from-yellow-950/60 to-slate-900/90 border border-yellow-500/30 hover:border-yellow-400/70 flex flex-col items-center justify-center gap-2">
+          <div class="w-9 h-9 rounded-lg bg-yellow-500/20 text-yellow-300 flex items-center justify-center group-hover:scale-105 transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          </div>
+          <span class="text-xs font-semibold text-yellow-100">+ Nota</span>
+        </button>
+
+        <button type="button" data-quick-action="vocale" class="quick-card group rounded-xl p-3.5 text-center bg-gradient-to-b from-rose-950/70 to-slate-900/90 border border-rose-500/30 hover:border-rose-400/70 flex flex-col items-center justify-center gap-2">
+          <div class="w-9 h-9 rounded-lg bg-rose-500/20 text-rose-300 flex items-center justify-center group-hover:scale-105 transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
+          </div>
+          <span class="text-xs font-semibold text-rose-100">+ Vocale</span>
+        </button>
+
+        <button type="button" data-quick-action="fotopdf" class="quick-card group rounded-xl p-3.5 text-center bg-gradient-to-b from-sky-950/75 to-slate-900/90 border border-sky-500/30 hover:border-sky-400/70 flex flex-col items-center justify-center gap-2">
+          <div class="w-9 h-9 rounded-lg bg-sky-500/20 text-sky-300 flex items-center justify-center group-hover:scale-105 transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          </div>
+          <span class="text-xs font-semibold text-sky-100">+ Foto/PDF</span>
+        </button>
+
+        <button type="button" data-quick-action="password" class="quick-card group rounded-xl p-3.5 text-center bg-gradient-to-b from-emerald-950/70 to-slate-900/90 border border-emerald-500/30 hover:border-emerald-400/70 flex flex-col items-center justify-center gap-2">
+          <div class="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-300 flex items-center justify-center group-hover:scale-105 transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><circle cx="12" cy="11" r="2"></circle></svg>
+          </div>
+          <span class="text-xs font-semibold text-emerald-100">+ Password</span>
+        </button>
+      </div>
+
+      <!-- Barra inserimento rapido o comando (es. avvisa tra 15 min) -->
+      <form id="quick-command-form" class="flex flex-col sm:flex-row gap-2.5">
+        <input
+          id="quick-command-input"
+          type="text"
+          placeholder="Scrivi un promemoria veloce o comando rapido (es. avvisa tra 15 min)..."
+          class="flex-1 px-4 py-2.5 rounded-xl bg-slate-900/95 border border-slate-700/80 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+        >
+        <button
+          type="submit"
+          class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white text-sm font-semibold shadow-lg shadow-indigo-600/25 transition shrink-0"
+        >
+          Aggiungi
+        </button>
       </form>
-
-      <div class="barra-filtri">
-        <div class="bottoni-filtro" role="group" aria-label="Filtro promemoria">
-          <button type="button" class="btn-secondario attivo" data-filtro="giornaliero">Giornaliero</button>
-          <button type="button" class="btn-secondario" data-filtro="settimanale">Settimanale</button>
-          <button type="button" class="btn-secondario" data-filtro="mensile">Mensile</button>
-          <button type="button" class="btn-secondario" data-filtro="tutti">Tutti</button>
-        </div>
-
-        <div class="data-riferimento">
-          <label for="inputDataRiferimento">Data riferimento:</label>
-          <input type="date" id="inputDataRiferimento">
-        </div>
-      </div>
-
-      <ul class="lista-promemoria" id="listaPromemoria"></ul>
     </section>
 
-    <!-- SEZIONE 2: STAMPA FOTO E PDF -->
-    <section class="sezione sezione-stampa">
-      <h2>Stampa Foto e PDF</h2>
+    <!-- LAYOUT PRINCIPALE A DUE COLONNE SU DESKTOP -->
+    <div class="grid grid-cols-1 xl:grid-cols-12 gap-5 items-start">
 
-      <div class="grid">
-        <!-- 1. Foto da file locale -->
-        <div class="card">
-          <h2>1. Foto dal dispositivo</h2>
-          <input type="file" id="inputFoto" accept="image/*">
-          <button id="btnStampaFoto" disabled>Stampa Foto</button>
-        </div>
+      <!-- COLONNA SINISTRA (7/12): IMPEGNI & PROMEMORIA + SCADENZE -->
+      <div class="xl:col-span-7 space-y-5">
 
-        <!-- 2. PDF da file locale -->
-        <div class="card">
-          <h2>2. PDF dal dispositivo</h2>
-          <input type="file" id="inputPdf" accept="application/pdf">
-          <button id="btnStampaPdfLocale" disabled>Stampa PDF</button>
-        </div>
+        <!-- 3. SEZIONE IMPEGNI & PROMEMORIA -->
+        <section id="section-reminders" class="glass-panel rounded-2xl p-4 sm:p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5">
+              <span class="text-indigo-400">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              </span>
+              <h2 class="text-base font-bold text-white">Impegni &amp; Promemoria</h2>
+              <span id="reminders-count" class="px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">0</span>
+            </div>
 
-        <!-- 3. File tramite URL -->
-        <div class="card">
-          <h2>3. Foto o PDF da URL</h2>
-          <input type="url" id="inputUrl" placeholder="https://esempio.it/file.pdf">
-          <button id="btnStampaUrl">Carica e Stampa URL</button>
-        </div>
+            <div class="flex items-center gap-2">
+              <button
+                id="btn-notify-reminders"
+                type="button"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700/70 transition"
+              >
+                <span>🔔</span>
+                <span>Avvisa</span>
+              </button>
+              <button
+                id="btn-new-reminder"
+                type="button"
+                class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition"
+              >
+                <span>+ Nuovo</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Filtri Temporali: Giornaliero, Settimanale, Mensile, Tutti + Data Riferimento -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-2.5 rounded-xl bg-slate-900/75 border border-slate-800">
+            <div id="period-filters" class="flex flex-wrap items-center gap-1.5" role="group" aria-label="Filtro periodo promemoria">
+              <button type="button" data-period="giornaliero" class="period-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition">Giornaliero</button>
+              <button type="button" data-period="settimanale" class="period-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Settimanale</button>
+              <button type="button" data-period="mensile" class="period-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Mensile</button>
+              <button type="button" data-period="tutti" class="period-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Tutti</button>
+            </div>
+
+            <div class="flex items-center gap-2 text-xs text-slate-300">
+              <label for="reference-date" class="text-slate-400 shrink-0">Rif:</label>
+              <input
+                id="reference-date"
+                type="date"
+                class="px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+              >
+            </div>
+          </div>
+
+          <!-- Form espandibile / rapido per nuovo impegno o modifica -->
+          <form id="reminder-form" class="hidden grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 p-3.5 rounded-xl bg-slate-900/90 border border-indigo-500/30">
+            <input type="hidden" id="reminder-edit-id">
+            <input
+              id="reminder-title"
+              type="text"
+              placeholder="Titolo impegno o promemoria..."
+              required
+              class="sm:col-span-2 px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500"
+            >
+            <input
+              id="reminder-date"
+              type="date"
+              required
+              class="px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-indigo-500"
+            >
+            <input
+              id="reminder-time"
+              type="time"
+              class="px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-indigo-500"
+            >
+            <input
+              id="reminder-location"
+              type="text"
+              placeholder="Luogo / Note (es. Studio • Telefono)"
+              class="sm:col-span-2 px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500"
+            >
+            <input
+              id="reminder-alert"
+              type="text"
+              placeholder="Avviso (es. Avviso 15m prima)"
+              class="px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500"
+            >
+            <input
+              id="reminder-file"
+              type="file"
+              accept="image/*,application/pdf"
+              class="px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-xs text-slate-300 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-indigo-600 file:text-white"
+            >
+            <div class="sm:col-span-2 lg:col-span-4 flex items-center justify-end gap-2 pt-1">
+              <button type="button" id="btn-cancel-reminder" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300">Annulla</button>
+              <button type="submit" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white">Salva Impegno</button>
+            </div>
+          </form>
+
+          <!-- Input file nascosto per allegare foto/PDF a un impegno esistente -->
+          <input id="attach-reminder-file" type="file" accept="image/*,application/pdf" class="hidden">
+
+          <!-- Lista impegni & promemoria -->
+          <ul id="reminders-list" class="space-y-2.5"></ul>
+        </section>
+
+        <!-- 4. SEZIONE SCADENZE CARTE, POLIZZE & DOC -->
+        <section id="section-deadlines" class="glass-panel rounded-2xl p-4 sm:p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5">
+              <span class="text-amber-400">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              </span>
+              <h2 class="text-base font-bold text-white">Scadenze Carte, Polizze &amp; Doc</h2>
+              <span id="deadlines-count" class="px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-400/30">0</span>
+            </div>
+
+            <button
+              id="btn-new-deadline"
+              type="button"
+              class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-400/40 transition"
+            >
+              <span>+ Scadenza</span>
+            </button>
+          </div>
+
+          <!-- Filtri per categoria -->
+          <div id="deadline-filters" class="flex flex-wrap items-center gap-1.5" role="group" aria-label="Filtro categoria scadenze">
+            <button type="button" data-category="Tutte" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 text-slate-950 transition">Tutte</button>
+            <button type="button" data-category="Carte" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Carte</button>
+            <button type="button" data-category="Assicurazioni" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Assicurazioni</button>
+            <button type="button" data-category="Documenti" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Documenti</button>
+            <button type="button" data-category="Ricevute" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Ricevute</button>
+          </div>
+
+          <!-- Form nuova/modifica scadenza -->
+          <form id="deadline-form" class="hidden grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 p-3.5 rounded-xl bg-slate-900/90 border border-amber-500/30">
+            <input type="hidden" id="deadline-edit-id">
+            <input
+              id="deadline-title"
+              type="text"
+              placeholder="Nome (es. Assicurazione Auto RC)"
+              required
+              class="sm:col-span-2 px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-amber-400"
+            >
+            <select
+              id="deadline-category"
+              class="px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-amber-400"
+            >
+              <option value="Assicurazioni">Assicurazioni</option>
+              <option value="Carte">Carte</option>
+              <option value="Documenti">Documenti</option>
+              <option value="Ricevute">Ricevute</option>
+            </select>
+            <input
+              id="deadline-date"
+              type="date"
+              required
+              class="px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-amber-400"
+            >
+            <input
+              id="deadline-code"
+              type="text"
+              placeholder="Riferimento / Numero (es. POL-954021)"
+              class="sm:col-span-2 px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-amber-400"
+            >
+            <input
+              id="deadline-file"
+              type="file"
+              accept="image/*,application/pdf"
+              class="sm:col-span-2 px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-xs text-slate-300 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-amber-500 file:text-slate-950 file:font-semibold"
+            >
+            <div class="sm:col-span-2 lg:col-span-4 flex items-center justify-end gap-2 pt-1">
+              <button type="button" id="btn-cancel-deadline" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300">Annulla</button>
+              <button type="submit" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-slate-950">Salva Scadenza</button>
+            </div>
+          </form>
+
+          <input id="attach-deadline-file" type="file" accept="image/*,application/pdf" class="hidden">
+
+          <!-- Lista scadenze -->
+          <div id="deadlines-list" class="space-y-2.5"></div>
+        </section>
+
+        <!-- Note rapide salvate in localStorage (collegato a + Nota) -->
+        <section id="section-notes" class="glass-panel rounded-2xl p-4 sm:p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-yellow-300">📝</span>
+              <h2 class="text-sm font-bold text-white">Note Rapide</h2>
+              <span id="notes-count" class="px-2 py-0.5 rounded-full text-xs font-semibold bg-yellow-500/15 text-yellow-200 border border-yellow-500/30">0</span>
+            </div>
+            <button id="btn-new-note" type="button" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-yellow-500/15 hover:bg-yellow-500/25 text-yellow-200 border border-yellow-400/30 transition">+ Nuova Nota</button>
+          </div>
+
+          <form id="note-form" class="hidden flex flex-col sm:flex-row gap-2">
+            <input id="note-text" type="text" placeholder="Scrivi una nota rapida..." required class="flex-1 px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-yellow-400">
+            <button type="submit" class="px-4 py-2 rounded-lg text-xs font-semibold bg-yellow-500 hover:bg-yellow-400 text-slate-950">Salva</button>
+          </form>
+
+          <ul id="notes-list" class="space-y-2"></ul>
+        </section>
       </div>
 
-      <div class="preview-box" id="previewBox">
-        <div class="placeholder" id="placeholder">
-          Seleziona una foto, un PDF o inserisci un URL per visualizzare l'anteprima e stampare.
-        </div>
-        <img id="anteprimaFoto" alt="Anteprima foto">
-        <iframe id="anteprimaPdf" title="Anteprima PDF"></iframe>
-      </div>
+      <!-- COLONNA DESTRA (5/12): CASSAFORTE PASSWORD + REGISTRAZIONI VOCALI + FOTO, PDF & RICEVUTE -->
+      <div class="xl:col-span-5 space-y-5">
 
-      <div class="messaggio" id="messaggio"></div>
-    </section>
+        <!-- 5. SEZIONE CASSAFORTE PASSWORD -->
+        <section id="section-vault" class="glass-panel rounded-2xl p-4 sm:p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <span class="text-emerald-400">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              </span>
+              <h2 class="text-base font-bold text-white">Cassaforte Password</h2>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="btn-change-pin" type="button" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">Cambia PIN</button>
+              <span id="vault-status-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">PIN</span>
+            </div>
+          </div>
+
+          <!-- Schermata bloccata -->
+          <div id="vault-locked" class="rounded-xl bg-slate-900/75 border border-slate-800 p-5 text-center space-y-3.5">
+            <div class="w-11 h-11 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+            </div>
+            <p class="text-xs text-slate-400">Inserisci il PIN per accedere alle password <span class="text-slate-300 font-medium">(demo: 1234)</span></p>
+            <form id="vault-unlock-form" class="flex items-center justify-center gap-2 max-w-xs mx-auto">
+              <input
+                id="vault-pin-input"
+                type="password"
+                inputmode="numeric"
+                maxlength="12"
+                placeholder="PIN..."
+                aria-label="Inserisci PIN cassaforte"
+                class="w-32 px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-center text-sm tracking-widest text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+              >
+              <button
+                type="submit"
+                class="px-4 py-2 rounded-lg text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition"
+              >
+                Sblocca
+              </button>
+            </form>
+            <p id="vault-error" class="text-xs text-rose-400 min-h-[16px]"></p>
+          </div>
+
+          <!-- Area sbloccata -->
+          <div id="vault-unlocked" class="hidden space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-xs text-emerald-300 font-medium">🔓 Cassaforte sbloccata</span>
+              <button id="btn-lock-vault" type="button" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">Blocca</button>
+            </div>
+
+            <form id="vault-add-form" class="grid grid-cols-1 sm:grid-cols-3 gap-2 p-3 rounded-xl bg-slate-900/90 border border-slate-800">
+              <input id="vault-service" type="text" placeholder="Servizio (es. Banca)" required class="px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-400">
+              <input id="vault-user" type="text" placeholder="Utente / Email" required class="px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-400">
+              <div class="flex gap-1.5">
+                <input id="vault-pass" type="text" placeholder="Password" required class="flex-1 min-w-0 px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-400">
+                <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-slate-950 shrink-0">+</button>
+              </div>
+            </form>
+
+            <ul id="vault-list" class="space-y-2"></ul>
+          </div>
+        </section>
+
+        <!-- 6. SEZIONE REGISTRAZIONI VOCALI -->
+        <section id="section-voice" class="glass-panel rounded-2xl p-4 sm:p-5 space-y-3.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-rose-400">🎤</span>
+              <h2 class="text-base font-bold text-white">Registrazioni Vocali</h2>
+            </div>
+            <span id="voice-count" class="text-xs text-slate-400">0 salvate</span>
+          </div>
+
+          <button
+            id="btn-toggle-voice"
+            type="button"
+            class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-rose-600/20 flex items-center justify-center gap-2 transition"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+            <span id="voice-btn-label">Avvia Registrazione Vocale</span>
+          </button>
+
+          <p id="voice-live-status" class="text-xs text-slate-400 text-center min-h-[16px]">Nessuna registrazione avviata.</p>
+
+          <ul id="voice-list" class="space-y-2"></ul>
+        </section>
+
+        <!-- 7. SEZIONE FOTO, PDF & RICEVUTE + STAMPA FOTO/PDF -->
+        <section id="section-files" class="glass-panel rounded-2xl p-4 sm:p-5 space-y-4">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="text-sky-400">📄</span>
+              <h2 class="text-base font-bold text-white">Foto, PDF &amp; Ricevute</h2>
+            </div>
+            <button
+              id="btn-upload-file"
+              type="button"
+              class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-sky-500/20 hover:bg-sky-500/30 text-sky-200 border border-sky-400/40 transition"
+            >
+              <span>+ Carica Foto/PDF</span>
+            </button>
+            <input id="input-file-local" type="file" accept="image/*,application/pdf" class="hidden">
+          </div>
+
+          <!-- Stampa / Caricamento da URL -->
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input
+              id="input-file-url"
+              type="url"
+              placeholder="URL foto o PDF (es. https://esempio.it/ricevuta.pdf)..."
+              class="flex-1 px-3 py-2 rounded-xl bg-slate-950 border border-slate-700/80 text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-sky-500"
+            >
+            <button
+              id="btn-load-url"
+              type="button"
+              class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-sky-200 border border-slate-700 transition shrink-0"
+            >
+              Anteprima &amp; Stampa URL
+            </button>
+          </div>
+
+          <!-- Barra elemento attivo + pulsanti stampa -->
+          <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800 flex flex-wrap items-center justify-between gap-2">
+            <div id="active-preview-label" class="text-xs text-slate-300 truncate max-w-full sm:max-w-[220px]">
+              Nessun file in anteprima
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button
+                id="btn-print-active"
+                type="button"
+                disabled
+                class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-800 disabled:text-slate-500 text-white transition"
+              >
+                🖨️ Stampa
+              </button>
+              <button
+                id="btn-clear-preview"
+                type="button"
+                disabled
+                class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-slate-300 transition"
+              >
+                Chiudi
+              </button>
+            </div>
+          </div>
+
+          <!-- Riquadro anteprima live (foto o PDF) -->
+          <div id="preview-container" class="rounded-xl border border-dashed border-slate-700/80 bg-slate-950/80 min-h-[240px] flex items-center justify-center p-3 overflow-hidden">
+            <p id="preview-placeholder" class="text-xs text-slate-400 text-center">
+              Carica una foto o un PDF, inserisci un URL oppure seleziona l'allegato di un impegno o una scadenza per visualizzarlo e stamparlo.
+            </p>
+            <img id="preview-img" alt="Anteprima immagine" class="hidden max-w-full max-h-[360px] object-contain rounded-lg">
+            <iframe id="preview-pdf" title="Anteprima PDF" class="hidden w-full h-[360px] rounded-lg bg-white"></iframe>
+          </div>
+
+          <!-- Archivio file / ricevute salvate -->
+          <ul id="files-list" class="space-y-2"></ul>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Area dedicata alla stampa pulita di immagini -->
+  <div id="print-area" class="hidden"></div>
+
+  <!-- Toast / Notifica in basso a destra -->
+  <div
+    id="toast-box"
+    role="status"
+    aria-live="polite"
+    class="no-print fixed bottom-4 right-4 z-50 max-w-sm w-[calc(100%-2rem)] sm:w-auto translate-y-20 opacity-0 pointer-events-none transition-all duration-300 rounded-xl bg-slate-900/95 border border-indigo-400/40 shadow-2xl px-4 py-3 flex items-start gap-3"
+  >
+    <span class="text-indigo-400 text-base mt-0.5">🔔</span>
+    <div class="flex-1 min-w-0">
+      <p id="toast-title" class="text-xs font-bold text-white">Avviso OmniDesk</p>
+      <p id="toast-message" class="text-xs text-slate-300 mt-0.5 break-words"></p>
+    </div>
+    <button id="btn-close-toast" type="button" aria-label="Chiudi notifica" class="text-slate-400 hover:text-white text-xs">✕</button>
+  </div>
+
+  <!-- Modale leggero per cambi PIN o inserimento nota/vocale -->
+  <div id="modal-backdrop" class="no-print fixed inset-0 z-40 hidden bg-black/75 backdrop-blur-xs items-center justify-center p-4">
+    <div class="glass-panel rounded-2xl max-w-md w-full p-5 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 id="modal-title" class="text-sm font-bold text-white">OmniDesk</h3>
+        <button id="btn-close-modal" type="button" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+      <div id="modal-body" class="space-y-3 text-xs text-slate-300"></div>
+      <div id="modal-footer" class="flex justify-end gap-2 pt-2"></div>
+    </div>
   </div>
 
   <script>
-    // --- GESTIONE AGENDA E FILTRO PROMEMORIA ---
-    const STORAGE_KEY = 'agenda_promemoria_v1';
-    const formPromemoria = document.getElementById('formPromemoria');
-    const inputTitolo = document.getElementById('inputTitolo');
-    const inputData = document.getElementById('inputData');
-    const inputOra = document.getElementById('inputOra');
-    const inputDataRiferimento = document.getElementById('inputDataRiferimento');
-    const listaPromemoria = document.getElementById('listaPromemoria');
-    const bottoniFiltro = document.querySelectorAll('.bottoni-filtro button');
+    (function () {
+      'use strict';
 
-    let promemoria = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    let filtroAttivo = 'giornaliero';
+      const STORAGE_KEY = 'omnidesk_state_v1';
+      let toastTimer = null;
 
-    function oggiISO() {
-      const now = new Date();
-      const anno = now.getFullYear();
-      const mese = String(now.getMonth() + 1).padStart(2, '0');
-      const giorno = String(now.getDate()).padStart(2, '0');
-      return `${anno}-${mese}-${giorno}`;
-    }
-
-    inputData.value = oggiISO();
-    inputDataRiferimento.value = oggiISO();
-
-    function salvaPromemoria() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(promemoria));
-    }
-
-    function filtraPromemoria(lista, filtro, dataRiferimentoStr) {
-      const [annoRif, meseRif, giornoRif] = dataRiferimentoStr.split('-').map(Number);
-      const rif = new Date(annoRif, meseRif - 1, giornoRif);
-      rif.setHours(0, 0, 0, 0);
-
-      // Lunedì - Domenica
-      const giornoSettimana = (rif.getDay() + 6) % 7;
-      const inizioSettimana = new Date(rif);
-      inizioSettimana.setDate(rif.getDate() - giornoSettimana);
-      inizioSettimana.setHours(0, 0, 0, 0);
-
-      const fineSettimana = new Date(inizioSettimana);
-      fineSettimana.setDate(inizioSettimana.getDate() + 6);
-      fineSettimana.setHours(23, 59, 59, 999);
-
-      return lista.filter((item) => {
-        if (filtro === 'tutti') return true;
-
-        const [a, m, g] = item.data.split('-').map(Number);
-        const d = new Date(a, m - 1, g);
-        d.setHours(0, 0, 0, 0);
-
-        if (filtro === 'giornaliero') {
-          return d.getTime() === rif.getTime();
-        }
-        if (filtro === 'settimanale') {
-          return d >= inizioSettimana && d <= fineSettimana;
-        }
-        if (filtro === 'mensile') {
-          return d.getFullYear() === rif.getFullYear() && d.getMonth() === rif.getMonth();
-        }
-        return true;
-      });
-    }
-
-    function renderPromemoria() {
-      const dataRif = inputDataRiferimento.value || oggiISO();
-      const filtrati = filtraPromemoria(promemoria, filtroAttivo, dataRif)
-        .sort((a, b) => `${a.data} ${a.ora || ''}`.localeCompare(`${b.data} ${b.ora || ''}`));
-
-      listaPromemoria.innerHTML = '';
-
-      if (filtrati.length === 0) {
-        const vuoto = document.createElement('li');
-        vuoto.className = 'placeholder';
-        vuoto.style.padding = '16px';
-        vuoto.textContent = `Nessun promemoria per il filtro "${filtroAttivo}".`;
-        listaPromemoria.appendChild(vuoto);
-        return;
+      // Data odierna in formato YYYY-MM-DD (rispetta il fuso locale)
+      function getTodayISO() {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const d = String(now.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
       }
 
-      filtrati.forEach((item) => {
-        const li = document.createElement('li');
-        li.className = `item-promemoria ${item.completato ? 'completato' : ''}`;
+      function addDaysISO(baseISO, deltaDays) {
+        const [y, m, d] = baseISO.split('-').map(Number);
+        const dt = new Date(y, m - 1, d);
+        dt.setDate(dt.getDate() + deltaDays);
+        return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+      }
 
-        const info = document.createElement('div');
-        info.className = 'info-promemoria';
+      // Dati precaricati al primo avvio
+      function createDefaultState() {
+        const oggi = getTodayISO();
+        return {
+          pin: '1234',
+          reminders: [
+            {
+              id: 'rem-1',
+              title: 'Chiamare commercialista',
+              date: oggi,
+              timeStart: '10:00',
+              timeEnd: '10:30',
+              location: 'Studio • Telefono',
+              alert: 'Avviso 15m prima',
+              completed: false,
+              attachment: null
+            },
+            {
+              id: 'rem-2',
+              title: 'Revisione documenti fiscali settimanali',
+              date: addDaysISO(oggi, 2),
+              timeStart: '15:30',
+              timeEnd: '16:15',
+              location: 'Ufficio',
+              alert: 'Promemoria attivo',
+              completed: false,
+              attachment: null
+            },
+            {
+              id: 'rem-3',
+              title: 'Controllo estratti conto mensili',
+              date: addDaysISO(oggi, 12),
+              timeStart: '09:30',
+              timeEnd: '10:00',
+              location: 'Home Banking',
+              alert: 'Avviso mensile',
+              completed: false,
+              attachment: null
+            }
+          ],
+          deadlines: [
+            {
+              id: 'dl-1',
+              title: 'Assicurazione Auto RC',
+              category: 'Assicurazioni',
+              date: addDaysISO(oggi, 14),
+              code: 'POL-954021',
+              attachment: null
+            },
+            {
+              id: 'dl-2',
+              title: 'Carta di Credito Principale',
+              category: 'Carte',
+              date: addDaysISO(oggi, 28),
+              code: '**** 4829',
+              attachment: null
+            }
+          ],
+          notes: [
+            {
+              id: 'note-1',
+              text: 'Chiedere fattura proforma per rinnovo polizza e archiviare ricevuta in PDF.',
+              createdAt: oggi
+            }
+          ],
+          vaultItems: [
+            {
+              id: 'vault-1',
+              service: 'Portale Assicurazioni',
+              username: 'mario.rossi@email.it',
+              password: 'RcAuto#2026!'
+            },
+            {
+              id: 'vault-2',
+              service: 'Home Banking',
+              username: 'utente_4829',
+              password: 'BankSecure#4829'
+            }
+          ],
+          voiceNotes: [],
+          files: []
+        };
+      }
 
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.checked = Boolean(item.completato);
-        checkbox.addEventListener('change', () => {
-          item.completato = checkbox.checked;
-          salvaPromemoria();
-          renderPromemoria();
+      let state = loadState();
+      let activePeriod = 'giornaliero';
+      let activeCategory = 'Tutte';
+      let searchQuery = '';
+      let vaultUnlocked = false;
+      let visiblePasswords = {};
+      let currentPreview = null; // { type: 'foto' | 'pdf', src: string, name: string, sourceId?: string }
+      let pendingAttachTarget = null; // { kind: 'reminder' | 'deadline', id: string }
+
+      // Registrazione vocale (Web Speech API / MediaRecorder)
+      let recognition = null;
+      let mediaRecorder = null;
+      let audioChunks = [];
+      let isRecording = false;
+      let liveTranscript = '';
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            const initial = createDefaultState();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
+            return initial;
+          }
+          const parsed = JSON.parse(raw);
+          return {
+            ...createDefaultState(),
+            ...parsed
+          };
+        } catch (err) {
+          return createDefaultState();
+        }
+      }
+
+      function saveState(silent = false) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          updateSpaceBadge();
+        } catch (err) {
+          if (!silent) {
+            showToast('Spazio locale quasi pieno', 'Alcuni allegati pesanti restano nella sessione attuale.');
+          }
+        }
+      }
+
+      function updateSpaceBadge() {
+        try {
+          const bytes = new Blob([JSON.stringify(state)]).size;
+          const kb = (bytes / 1024).toFixed(1);
+          const el = document.getElementById('space-label');
+          if (el) el.textContent = `Spazio & Cloud (${kb} KB)`;
+        } catch (_) {}
+      }
+
+      function showToast(title, message) {
+        const box = document.getElementById('toast-box');
+        const titleEl = document.getElementById('toast-title');
+        const msgEl = document.getElementById('toast-message');
+        if (!box || !titleEl || !msgEl) return;
+
+        titleEl.textContent = title;
+        msgEl.textContent = message;
+        box.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+        box.classList.add('translate-y-0', 'opacity-100');
+
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          hideToast();
+        }, 4500);
+      }
+
+      function hideToast() {
+        const box = document.getElementById('toast-box');
+        if (!box) return;
+        box.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+        box.classList.remove('translate-y-0', 'opacity-100');
+      }
+
+      function openModal(title, bodyHtml, buttons = []) {
+        const backdrop = document.getElementById('modal-backdrop');
+        const titleEl = document.getElementById('modal-title');
+        const bodyEl = document.getElementById('modal-body');
+        const footerEl = document.getElementById('modal-footer');
+        if (!backdrop || !titleEl || !bodyEl || !footerEl) return;
+
+        titleEl.textContent = title;
+        bodyEl.innerHTML = bodyHtml;
+        footerEl.innerHTML = '';
+
+        buttons.forEach((btnCfg) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = btnCfg.className || 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white';
+          btn.textContent = btnCfg.label;
+          btn.addEventListener('click', () => {
+            if (typeof btnCfg.onClick === 'function') {
+              btnCfg.onClick();
+            }
+          });
+          footerEl.appendChild(btn);
         });
 
-        const testoBox = document.createElement('div');
-        const titolo = document.createElement('div');
-        titolo.className = 'titolo-promemoria';
-        titolo.textContent = item.titolo;
+        backdrop.classList.remove('hidden');
+        backdrop.classList.add('flex');
+      }
 
-        const meta = document.createElement('div');
-        meta.className = 'meta-promemoria';
-        meta.textContent = `Data: ${item.data}${item.ora ? ` • Ora: ${item.ora}` : ''}`;
+      function closeModal() {
+        const backdrop = document.getElementById('modal-backdrop');
+        if (!backdrop) return;
+        backdrop.classList.add('hidden');
+        backdrop.classList.remove('flex');
+      }
 
-        testoBox.appendChild(titolo);
-        testoBox.appendChild(meta);
+      // Aggiornamento data e ora nell'header
+      function updateDateTime() {
+        const el = document.getElementById('current-datetime');
+        if (!el) return;
+        const now = new Date();
+        const weekday = now.toLocaleDateString('it-IT', { weekday: 'long' });
+        const day = now.getDate();
+        const month = now.toLocaleDateString('it-IT', { month: 'long' });
+        const time = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+        const capWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+        const capMonth = month.charAt(0).toUpperCase() + month.slice(1);
+        el.textContent = `${capWeekday} ${day} ${capMonth} • ore ${time}`;
+      }
 
-        info.appendChild(checkbox);
-        info.appendChild(testoBox);
+      // Lettura file locale come Data URL
+      function readFileAsAttachment(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+            resolve({
+              name: file.name,
+              mimeType: file.type || (isPdf ? 'application/pdf' : 'image/png'),
+              type: isPdf ? 'pdf' : 'foto',
+              dataUrl: reader.result
+            });
+          };
+          reader.onerror = () => reject(new Error('Errore nella lettura del file'));
+          reader.readAsDataURL(file);
+        });
+      }
 
-        const azioni = document.createElement('div');
-        azioni.className = 'azioni-promemoria';
+      // Anteprima live di foto o PDF
+      function setPreview(item) {
+        currentPreview = item;
+        const placeholder = document.getElementById('preview-placeholder');
+        const img = document.getElementById('preview-img');
+        const iframe = document.getElementById('preview-pdf');
+        const label = document.getElementById('active-preview-label');
+        const btnPrint = document.getElementById('btn-print-active');
+        const btnClear = document.getElementById('btn-clear-preview');
 
-        const btnUsaUrl = document.createElement('button');
-        btnUsaUrl.type = 'button';
-        btnUsaUrl.className = 'btn-secondario btn-piccolo';
-        btnUsaUrl.textContent = 'Stampa URL';
-        btnUsaUrl.addEventListener('click', () => {
-          inputUrl.value = prompt('Inserisci URL di foto o PDF da stampare:', '') || '';
-          if (inputUrl.value.trim()) {
-            btnStampaUrl.click();
+        if (!item) {
+          placeholder.classList.remove('hidden');
+          img.classList.add('hidden');
+          iframe.classList.add('hidden');
+          img.src = '';
+          iframe.src = '';
+          label.textContent = 'Nessun file in anteprima';
+          btnPrint.disabled = true;
+          btnClear.disabled = true;
+          return;
+        }
+
+        placeholder.classList.add('hidden');
+        label.textContent = `${item.type === 'pdf' ? 'PDF' : 'FOTO'}: ${item.name}`;
+        btnPrint.disabled = false;
+        btnClear.disabled = false;
+
+        if (item.type === 'pdf') {
+          img.classList.add('hidden');
+          img.src = '';
+          iframe.src = item.src;
+          iframe.classList.remove('hidden');
+        } else {
+          iframe.classList.add('hidden');
+          iframe.src = '';
+          img.src = item.src;
+          img.classList.remove('hidden');
+        }
+      }
+
+      // Stampa dedicata per foto o PDF
+      function printItem(item) {
+        if (!item) {
+          showToast('Nessun file selezionato', 'Seleziona una foto o un PDF da stampare.');
+          return;
+        }
+
+        if (item.type === 'pdf') {
+          const printFrame = document.createElement('iframe');
+          printFrame.style.position = 'fixed';
+          printFrame.style.right = '0';
+          printFrame.style.bottom = '0';
+          printFrame.style.width = '1px';
+          printFrame.style.height = '1px';
+          printFrame.style.opacity = '0.01';
+          printFrame.src = item.src;
+
+          printFrame.onload = () => {
+            try {
+              printFrame.contentWindow.focus();
+              printFrame.contentWindow.print();
+            } catch (err) {
+              // Fallback su nuova scheda per PDF esterni bloccati da CORS o iframe
+              window.open(item.src, '_blank', 'noopener,noreferrer');
+              showToast('Apertura PDF', 'PDF aperto in una nuova scheda per la stampa.');
+            }
+          };
+
+          document.body.appendChild(printFrame);
+          setTimeout(() => {
+            if (printFrame.parentNode) {
+              printFrame.parentNode.removeChild(printFrame);
+            }
+          }, 8000);
+          return;
+        }
+
+        // Stampa foto tramite finestra dedicata (con fallback su #print-area se popup bloccati)
+        const win = window.open('', '_blank', 'width=850,height=650');
+        if (win) {
+          win.document.write(`
+            <!DOCTYPE html>
+            <html lang="it">
+            <head>
+              <meta charset="UTF-8">
+              <title>Stampa - ${escapeHtml(item.name)}</title>
+              <style>
+                @page { margin: 10mm; }
+                body {
+                  margin: 0;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  min-height: 100vh;
+                  background: #fff;
+                }
+                img {
+                  max-width: 100%;
+                  max-height: 95vh;
+                  object-fit: contain;
+                }
+              </style>
+            </head>
+            <body>
+              <img id="fotoStampa" src="${item.src}" alt="${escapeHtml(item.name)}">
+              <script>
+                const img = document.getElementById('fotoStampa');
+                img.onload = function () {
+                  window.focus();
+                  window.print();
+                  window.close();
+                };
+              <\/script>
+            </body>
+            </html>
+          `);
+          win.document.close();
+        } else {
+          const printArea = document.getElementById('print-area');
+          printArea.innerHTML = `<img src="${item.src}" alt="${escapeHtml(item.name)}">`;
+          printArea.classList.remove('hidden');
+          window.print();
+          printArea.classList.add('hidden');
+          printArea.innerHTML = '';
+        }
+      }
+
+      function escapeHtml(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function matchesSearch(text) {
+        if (!searchQuery.trim()) return true;
+        return String(text || '').toLowerCase().includes(searchQuery.trim().toLowerCase());
+      }
+
+      // Filtro temporale impegni & promemoria
+      function filterRemindersByPeriod(items, period, refDateStr) {
+        const [ry, rm, rd] = (refDateStr || getTodayISO()).split('-').map(Number);
+        const ref = new Date(ry, rm - 1, rd);
+        ref.setHours(0, 0, 0, 0);
+
+        const dayOfWeek = (ref.getDay() + 6) % 7; // Lun = 0 .. Dom = 6
+        const weekStart = new Date(ref);
+        weekStart.setDate(ref.getDate() - dayOfWeek);
+        weekStart.setHours(0, 0, 0, 0);
+
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 6);
+        weekEnd.setHours(23, 59, 59, 999);
+
+        return items.filter((item) => {
+          const [y, m, d] = (item.date || getTodayISO()).split('-').map(Number);
+          const dt = new Date(y, m - 1, d);
+          dt.setHours(0, 0, 0, 0);
+
+          if (period === 'giornaliero') {
+            return dt.getTime() === ref.getTime();
+          }
+          if (period === 'settimanale') {
+            return dt >= weekStart && dt <= weekEnd;
+          }
+          if (period === 'mensile') {
+            return dt.getFullYear() === ref.getFullYear() && dt.getMonth() === ref.getMonth();
+          }
+          return true; // 'tutti'
+        });
+      }
+
+      // Render Impegni & Promemoria
+      function renderReminders() {
+        const refDate = document.getElementById('reference-date').value || getTodayISO();
+        const periodFiltered = filterRemindersByPeriod(state.reminders, activePeriod, refDate);
+        const filtered = periodFiltered.filter((item) =>
+          matchesSearch(`${item.title} ${item.date} ${item.timeStart || ''} ${item.location || ''} ${item.alert || ''} ${item.attachment?.name || ''}`)
+        );
+
+        const listEl = document.getElementById('reminders-list');
+        const countEl = document.getElementById('reminders-count');
+        countEl.textContent = String(filtered.length);
+        listEl.innerHTML = '';
+
+        if (filtered.length === 0) {
+          listEl.innerHTML = `
+            <li class="rounded-xl bg-slate-900/60 border border-slate-800/80 p-4 text-center text-xs text-slate-400">
+              Nessun impegno o promemoria trovato per il filtro <span class="text-slate-200 font-medium">${escapeHtml(activePeriod)}</span>.
+            </li>
+          `;
+          return;
+        }
+
+        filtered.forEach((item) => {
+          const li = document.createElement('li');
+          li.className = `rounded-xl bg-slate-900/85 border ${item.completed ? 'border-slate-800/60 opacity-75' : 'border-slate-800 hover:border-slate-700'} p-3.5 flex flex-col sm:flex-row sm:items-start justify-between gap-3 transition`;
+
+          const timeLabel = item.timeStart
+            ? (item.timeEnd ? `${item.timeStart} – ${item.timeEnd}` : item.timeStart)
+            : '';
+
+          const attBadge = item.attachment
+            ? `<span class="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium bg-sky-500/15 text-sky-300 border border-sky-500/30">📎 ${escapeHtml(item.attachment.type.toUpperCase())}: ${escapeHtml(item.attachment.name)}</span>`
+            : '';
+
+          li.innerHTML = `
+            <div class="flex items-start gap-3 min-w-0 flex-1">
+              <input
+                type="checkbox"
+                ${item.completed ? 'checked' : ''}
+                data-action="toggle-reminder"
+                data-id="${item.id}"
+                class="mt-1 w-4 h-4 rounded accent-indigo-500 cursor-pointer shrink-0"
+              >
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-semibold ${item.completed ? 'line-through text-slate-400' : 'text-white'} break-words">${escapeHtml(item.title)}</p>
+                <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs mt-1">
+                  <span class="text-indigo-300 font-medium">${escapeHtml(item.date)}${timeLabel ? ` • ${escapeHtml(timeLabel)}` : ''}</span>
+                  ${item.alert ? `<span class="text-indigo-400/90">• ${escapeHtml(item.alert)}</span>` : ''}
+                </div>
+                ${item.location ? `<p class="text-xs text-slate-400 mt-0.5">Luogo: ${escapeHtml(item.location)}</p>` : ''}
+                ${attBadge}
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-1.5 sm:justify-end shrink-0">
+              ${item.attachment ? `
+                <button type="button" data-action="preview-reminder" data-id="${item.id}" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-sky-200 border border-slate-700">Anteprima</button>
+                <button type="button" data-action="print-reminder" data-id="${item.id}" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-600/80 hover:bg-indigo-600 text-white">Stampa</button>
+                <button type="button" data-action="remove-reminder-file" data-id="${item.id}" class="px-2 py-1 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300">Rimuovi File</button>
+              ` : `
+                <button type="button" data-action="attach-reminder" data-id="${item.id}" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">+ Foto/PDF</button>
+              `}
+              <button type="button" data-action="edit-reminder" data-id="${item.id}" title="Modifica" class="px-2 py-1 rounded-lg text-xs bg-slate-800/80 hover:bg-slate-700 text-slate-300">✎</button>
+              <button type="button" data-action="delete-reminder" data-id="${item.id}" title="Elimina" class="px-2 py-1 rounded-lg text-xs bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800/40">🗑</button>
+            </div>
+          `;
+
+          listEl.appendChild(li);
+        });
+      }
+
+      // Render Scadenze Carte, Polizze & Doc
+      function renderDeadlines() {
+        const filtered = state.deadlines.filter((dl) => {
+          const catOk = activeCategory === 'Tutte' || dl.category === activeCategory;
+          const searchOk = matchesSearch(`${dl.title} ${dl.category} ${dl.date} ${dl.code || ''} ${dl.attachment?.name || ''}`);
+          return catOk && searchOk;
+        });
+
+        const listEl = document.getElementById('deadlines-list');
+        const countEl = document.getElementById('deadlines-count');
+        countEl.textContent = String(filtered.length);
+        listEl.innerHTML = '';
+
+        if (filtered.length === 0) {
+          listEl.innerHTML = `
+            <div class="rounded-xl bg-slate-900/60 border border-slate-800/80 p-4 text-center text-xs text-slate-400">
+              Nessuna scadenza nella categoria <span class="text-slate-200 font-medium">${escapeHtml(activeCategory)}</span>.
+            </div>
+          `;
+          return;
+        }
+
+        filtered.forEach((dl) => {
+          const card = document.createElement('div');
+          card.className = 'rounded-xl bg-slate-900/85 border border-slate-800 hover:border-slate-700 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition';
+
+          card.innerHTML = `
+            <div class="min-w-0 flex-1">
+              <div class="flex flex-wrap items-center gap-1.5 mb-1">
+                <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30">${escapeHtml(dl.category)}</span>
+                <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Attiva</span>
+                ${dl.attachment ? `<span class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-sky-500/15 text-sky-300 border border-sky-500/30">📎 ${escapeHtml(dl.attachment.name)}</span>` : ''}
+              </div>
+              <p class="text-sm font-bold text-white truncate">${escapeHtml(dl.title)}</p>
+              <p class="text-xs text-slate-400 mt-0.5">Scadenza: <span class="text-slate-200">${escapeHtml(dl.date)}</span>${dl.code ? ` • <span class="text-amber-200/90">${escapeHtml(dl.code)}</span>` : ''}</p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-1.5 shrink-0">
+              ${dl.attachment ? `
+                <button type="button" data-action="preview-deadline" data-id="${dl.id}" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-sky-200 border border-slate-700">Anteprima</button>
+                <button type="button" data-action="print-deadline" data-id="${dl.id}" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-600/80 hover:bg-indigo-600 text-white">Stampa</button>
+              ` : `
+                <button type="button" data-action="attach-deadline" data-id="${dl.id}" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">+ File</button>
+              `}
+              <button type="button" data-action="edit-deadline" data-id="${dl.id}" title="Modifica" class="px-2 py-1 rounded-lg text-xs bg-slate-800/80 hover:bg-slate-700 text-slate-300">✎</button>
+              <button type="button" data-action="delete-deadline" data-id="${dl.id}" title="Elimina" class="px-2 py-1 rounded-lg text-xs bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800/40">🗑</button>
+            </div>
+          `;
+
+          listEl.appendChild(card);
+        });
+      }
+
+      // Render Note Rapide
+      function renderNotes() {
+        const filtered = state.notes.filter((n) => matchesSearch(`${n.text} ${n.createdAt || ''}`));
+        const listEl = document.getElementById('notes-list');
+        const countEl = document.getElementById('notes-count');
+        countEl.textContent = String(filtered.length);
+        listEl.innerHTML = '';
+
+        if (filtered.length === 0) {
+          listEl.innerHTML = `<li class="text-xs text-slate-400 py-2">Nessuna nota salvata.</li>`;
+          return;
+        }
+
+        filtered.forEach((note) => {
+          const li = document.createElement('li');
+          li.className = 'rounded-xl bg-slate-900/75 border border-slate-800 px-3 py-2.5 flex items-start justify-between gap-2';
+          li.innerHTML = `
+            <div class="min-w-0 flex-1">
+              <p class="text-xs text-slate-200 break-words">${escapeHtml(note.text)}</p>
+              <span class="text-[11px] text-slate-500">${escapeHtml(note.createdAt || '')}</span>
+            </div>
+            <button type="button" data-action="delete-note" data-id="${note.id}" class="text-xs text-slate-400 hover:text-rose-400 px-1.5">✕</button>
+          `;
+          listEl.appendChild(li);
+        });
+      }
+
+      // Render Cassaforte Password
+      function renderVault() {
+        const lockedEl = document.getElementById('vault-locked');
+        const unlockedEl = document.getElementById('vault-unlocked');
+        const badgeEl = document.getElementById('vault-status-badge');
+
+        if (!vaultUnlocked) {
+          lockedEl.classList.remove('hidden');
+          unlockedEl.classList.add('hidden');
+          badgeEl.textContent = 'PIN';
+          return;
+        }
+
+        lockedEl.classList.add('hidden');
+        unlockedEl.classList.remove('hidden');
+        badgeEl.textContent = `${state.vaultItems.length} voci`;
+
+        const filtered = state.vaultItems.filter((v) => matchesSearch(`${v.service} ${v.username}`));
+        const listEl = document.getElementById('vault-list');
+        listEl.innerHTML = '';
+
+        if (filtered.length === 0) {
+          listEl.innerHTML = `<li class="text-xs text-slate-400 text-center py-2">Nessuna credenziale salvata.</li>`;
+          return;
+        }
+
+        filtered.forEach((v) => {
+          const isShown = Boolean(visiblePasswords[v.id]);
+          const li = document.createElement('li');
+          li.className = 'rounded-xl bg-slate-900/90 border border-slate-800 p-3 flex items-center justify-between gap-2';
+          li.innerHTML = `
+            <div class="min-w-0 flex-1">
+              <p class="text-xs font-bold text-emerald-300 truncate">${escapeHtml(v.service)}</p>
+              <p class="text-xs text-slate-300 truncate">${escapeHtml(v.username)}</p>
+              <p class="text-xs font-mono text-slate-400 mt-0.5">${isShown ? escapeHtml(v.password) : '••••••••••••'}</p>
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+              <button type="button" data-action="toggle-pass" data-id="${v.id}" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-200">${isShown ? 'Nascondi' : 'Mostra'}</button>
+              <button type="button" data-action="delete-vault" data-id="${v.id}" class="px-2 py-1 rounded bg-rose-950/60 hover:bg-rose-900 text-[11px] text-rose-300">✕</button>
+            </div>
+          `;
+          listEl.appendChild(li);
+        });
+      }
+
+      // Render Registrazioni Vocali
+      function renderVoiceNotes() {
+        const filtered = state.voiceNotes.filter((vn) => matchesSearch(`${vn.title} ${vn.transcript || ''} ${vn.date || ''}`));
+        const countEl = document.getElementById('voice-count');
+        const listEl = document.getElementById('voice-list');
+        countEl.textContent = `${filtered.length} salvate`;
+        listEl.innerHTML = '';
+
+        if (filtered.length === 0) {
+          listEl.innerHTML = `<li class="text-xs text-slate-400 text-center py-2">Nessuna registrazione salvata.</li>`;
+          return;
+        }
+
+        filtered.forEach((vn) => {
+          const li = document.createElement('li');
+          li.className = 'rounded-xl bg-slate-900/85 border border-slate-800 p-3 space-y-2';
+          li.innerHTML = `
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0 flex-1">
+                <p class="text-xs font-semibold text-white truncate">${escapeHtml(vn.title)}</p>
+                <span class="text-[11px] text-slate-400">${escapeHtml(vn.date)}</span>
+              </div>
+              <button type="button" data-action="delete-voice" data-id="${vn.id}" class="text-xs text-slate-400 hover:text-rose-400">✕</button>
+            </div>
+            ${vn.transcript ? `<p class="text-xs text-rose-200/90 bg-slate-950/80 rounded-lg p-2 border border-slate-800/80">"${escapeHtml(vn.transcript)}"</p>` : ''}
+            ${vn.audioUrl ? `<audio controls src="${vn.audioUrl}" class="w-full h-8"></audio>` : ''}
+          `;
+          listEl.appendChild(li);
+        });
+      }
+
+      // Render Archivio Foto, PDF & Ricevute
+      function renderFiles() {
+        const filtered = state.files.filter((f) => matchesSearch(`${f.name} ${f.type} ${f.date || ''}`));
+        const listEl = document.getElementById('files-list');
+        listEl.innerHTML = '';
+
+        if (filtered.length === 0) {
+          listEl.innerHTML = `<li class="text-xs text-slate-400 text-center py-1">Nessun file archiviato.</li>`;
+          return;
+        }
+
+        filtered.forEach((f) => {
+          const li = document.createElement('li');
+          li.className = 'rounded-xl bg-slate-900/85 border border-slate-800 px-3 py-2.5 flex items-center justify-between gap-2';
+          li.innerHTML = `
+            <div class="min-w-0 flex-1">
+              <p class="text-xs font-semibold text-white truncate">${f.type === 'pdf' ? '📕' : '🖼️'} ${escapeHtml(f.name)}</p>
+              <span class="text-[11px] text-slate-400">${escapeHtml(f.type.toUpperCase())} • ${escapeHtml(f.date || '')}</span>
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+              <button type="button" data-action="preview-file" data-id="${f.id}" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-sky-200">Vedi</button>
+              <button type="button" data-action="print-file" data-id="${f.id}" class="px-2 py-1 rounded bg-indigo-600 hover:bg-indigo-500 text-[11px] text-white font-semibold">Stampa</button>
+              <button type="button" data-action="delete-file" data-id="${f.id}" class="px-2 py-1 rounded bg-rose-950/60 hover:bg-rose-900 text-[11px] text-rose-300">✕</button>
+            </div>
+          `;
+          listEl.appendChild(li);
+        });
+      }
+
+      function renderAll() {
+        renderReminders();
+        renderDeadlines();
+        renderNotes();
+        renderVault();
+        renderVoiceNotes();
+        renderFiles();
+        updateSpaceBadge();
+      }
+
+      // Comando rapido testuale (es. "avvisa tra 15 min ...")
+      function handleQuickCommand(rawText) {
+        const text = rawText.trim();
+        if (!text) return;
+
+        const today = getTodayISO();
+        const now = new Date();
+        const minMatch = text.match(/tra\s+(\d+)\s*min/i);
+
+        if (minMatch) {
+          const mins = parseInt(minMatch[1], 10);
+          const targetTime = new Date(now.getTime() + mins * 60000);
+          const hh = String(targetTime.getHours()).padStart(2, '0');
+          const mm = String(targetTime.getMinutes()).padStart(2, '0');
+
+          state.reminders.unshift({
+            id: `rem-${Date.now()}`,
+            title: text,
+            date: today,
+            timeStart: `${hh}:${mm}`,
+            timeEnd: '',
+            location: 'Comando Rapido',
+            alert: `Avviso tra ${mins} min`,
+            completed: false,
+            attachment: null
+          });
+          saveState();
+          renderReminders();
+          showToast(`Avviso impostato tra ${mins} min`, `"${text}" programmato per le ${hh}:${mm}.`);
+          return;
+        }
+
+        state.reminders.unshift({
+          id: `rem-${Date.now()}`,
+          title: text,
+          date: today,
+          timeStart: '',
+          timeEnd: '',
+          location: 'Promemoria Veloce',
+          alert: 'Promemoria attivo',
+          completed: false,
+          attachment: null
+        });
+        saveState();
+        renderReminders();
+        showToast('Promemoria aggiunto', `"${text}" aggiunto per oggi (${today}).`);
+      }
+
+      // Registrazione vocale reale (SpeechRecognition + MediaRecorder se disponibile)
+      async function startVoiceRecording() {
+        liveTranscript = '';
+        isRecording = true;
+        document.getElementById('voice-btn-label').textContent = 'Ferma e Salva Registrazione';
+        document.getElementById('voice-live-status').textContent = '🔴 Registrazione in corso... parla ora.';
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+          try {
+            recognition = new SpeechRecognition();
+            recognition.lang = 'it-IT';
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.onresult = (event) => {
+              let transcript = '';
+              for (let i = 0; i < event.results.length; i++) {
+                transcript += event.results[i][0].transcript;
+              }
+              liveTranscript = transcript.trim();
+              document.getElementById('voice-live-status').textContent = liveTranscript ? `🎙️ "${liveTranscript}"` : '🔴 In ascolto...';
+            };
+            recognition.start();
+          } catch (_) {}
+        }
+
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            audioChunks = [];
+            mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.ondataavailable = (e) => {
+              if (e.data.size > 0) audioChunks.push(e.data);
+            };
+            mediaRecorder.onstop = () => {
+              stream.getTracks().forEach((t) => t.stop());
+              const blob = new Blob(audioChunks, { type: 'audio/webm' });
+              const reader = new FileReader();
+              reader.onload = () => {
+                finalizeVoiceNote(reader.result);
+              };
+              reader.readAsDataURL(blob);
+            };
+            mediaRecorder.start();
+            return;
+          } catch (_) {
+            // Se il microfono non è disponibile o viene negato, prosegue con nota vocale testuale
+          }
+        }
+      }
+
+      function stopVoiceRecording() {
+        isRecording = false;
+        document.getElementById('voice-btn-label').textContent = 'Avvia Registrazione Vocale';
+        document.getElementById('voice-live-status').textContent = 'Registrazione salvata.';
+
+        if (recognition) {
+          try { recognition.stop(); } catch (_) {}
+          recognition = null;
+        }
+
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+          mediaRecorder.stop();
+          mediaRecorder = null;
+        } else {
+          finalizeVoiceNote(null);
+        }
+      }
+
+      function finalizeVoiceNote(audioUrl) {
+        const noteText = liveTranscript || 'Nota vocale registrata su OmniDesk';
+        state.voiceNotes.unshift({
+          id: `voice-${Date.now()}`,
+          title: `Nota Vocale #${state.voiceNotes.length + 1}`,
+          transcript: noteText,
+          audioUrl,
+          date: `${getTodayISO()} ${new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}`
+        });
+        saveState(true);
+        renderVoiceNotes();
+        showToast('Registrazione vocale salvata', noteText);
+      }
+
+      // Event Listeners
+      function bindEvents() {
+        // Ricerca globale
+        const searchInput = document.getElementById('global-search');
+        const clearSearchBtn = document.getElementById('btn-clear-search');
+        searchInput.addEventListener('input', (e) => {
+          searchQuery = e.target.value;
+          clearSearchBtn.classList.toggle('hidden', !searchQuery);
+          renderAll();
+        });
+        clearSearchBtn.addEventListener('click', () => {
+          searchInput.value = '';
+          searchQuery = '';
+          clearSearchBtn.classList.add('hidden');
+          renderAll();
+        });
+
+        // Spazio & Cloud / Export / Import JSON
+        document.getElementById('btn-space-cloud').addEventListener('click', () => {
+          const bytes = new Blob([JSON.stringify(state)]).size;
+          openModal(
+            'Spazio & Sincronizzazione Locale',
+            `
+              <p>Tutti i dati di <strong>OmniDesk</strong> sono salvati in <code>localStorage</code> per un accesso immediato offline.</p>
+              <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                <p>Occupazione attuale: <strong class="text-white">${(bytes / 1024).toFixed(2)} KB</strong></p>
+                <p>Impegni: <strong class="text-white">${state.reminders.length}</strong> • Scadenze: <strong class="text-white">${state.deadlines.length}</strong> • File: <strong class="text-white">${state.files.length}</strong></p>
+              </div>
+            `,
+            [{ label: 'Chiudi', onClick: closeModal }]
+          );
+        });
+
+        document.getElementById('btn-export-json').addEventListener('click', () => {
+          const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `omnidesk-backup-${getTodayISO()}.json`;
+          a.click();
+          URL.revokeObjectURL(url);
+          showToast('Backup esportato', 'File JSON scaricato correttamente.');
+        });
+
+        const importInput = document.getElementById('input-import-json');
+        document.getElementById('btn-import-json').addEventListener('click', () => importInput.click());
+        importInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => {
+            try {
+              const imported = JSON.parse(reader.result);
+              state = { ...createDefaultState(), ...imported };
+              saveState();
+              renderAll();
+              showToast('Backup importato', 'Dati ripristinati da file JSON.');
+            } catch (err) {
+              showToast('Errore importazione', 'Il file JSON selezionato non è valido.');
+            }
+          };
+          reader.readAsText(file);
+          importInput.value = '';
+        });
+
+        document.getElementById('btn-reset-demo').addEventListener('click', () => {
+          state = createDefaultState();
+          saveState();
+          setPreview(null);
+          renderAll();
+          showToast('Demo ripristinata', 'Dati iniziali caricati.');
+        });
+
+        // Azioni Rapide 1-Tap
+        document.querySelectorAll('[data-quick-action]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const action = btn.dataset.quickAction;
+            if (action === 'impegno') {
+              const form = document.getElementById('reminder-form');
+              form.classList.remove('hidden');
+              form.classList.add('grid');
+              document.getElementById('reminder-edit-id').value = '';
+              document.getElementById('reminder-date').value = getTodayISO();
+              document.getElementById('reminder-title').focus();
+            } else if (action === 'scadenza') {
+              const form = document.getElementById('deadline-form');
+              form.classList.remove('hidden');
+              form.classList.add('grid');
+              document.getElementById('deadline-edit-id').value = '';
+              document.getElementById('deadline-date').value = addDaysISO(getTodayISO(), 7);
+              document.getElementById('deadline-title').focus();
+            } else if (action === 'nota') {
+              const form = document.getElementById('note-form');
+              form.classList.remove('hidden');
+              form.classList.add('flex');
+              document.getElementById('note-text').focus();
+            } else if (action === 'vocale') {
+              document.getElementById('btn-toggle-voice').click();
+            } else if (action === 'fotopdf') {
+              document.getElementById('input-file-local').click();
+            } else if (action === 'password') {
+              document.getElementById('section-vault').scrollIntoView({ behavior: 'smooth' });
+              if (!vaultUnlocked) {
+                document.getElementById('vault-pin-input').focus();
+              } else {
+                document.getElementById('vault-service').focus();
+              }
+            }
+          });
+        });
+
+        // Comando rapido
+        document.getElementById('quick-command-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const input = document.getElementById('quick-command-input');
+          handleQuickCommand(input.value);
+          input.value = '';
+        });
+
+        // Filtri periodo promemoria
+        document.querySelectorAll('.period-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            activePeriod = btn.dataset.period;
+            document.querySelectorAll('.period-btn').forEach((b) => {
+              const active = b.dataset.period === activePeriod;
+              b.className = `period-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition ${active ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`;
+            });
+            renderReminders();
+          });
+        });
+
+        document.getElementById('reference-date').value = getTodayISO();
+        document.getElementById('reference-date').addEventListener('change', renderReminders);
+
+        document.getElementById('btn-new-reminder').addEventListener('click', () => {
+          const form = document.getElementById('reminder-form');
+          form.classList.toggle('hidden');
+          form.classList.toggle('grid');
+          document.getElementById('reminder-edit-id').value = '';
+          document.getElementById('reminder-date').value = document.getElementById('reference-date').value || getTodayISO();
+          document.getElementById('reminder-title').focus();
+        });
+
+        document.getElementById('btn-cancel-reminder').addEventListener('click', () => {
+          const form = document.getElementById('reminder-form');
+          form.reset();
+          form.classList.add('hidden');
+          form.classList.remove('grid');
+        });
+
+        document.getElementById('btn-notify-reminders').addEventListener('click', () => {
+          const refDate = document.getElementById('reference-date').value || getTodayISO();
+          const items = filterRemindersByPeriod(state.reminders, activePeriod, refDate).filter((r) => !r.completed);
+          if (items.length === 0) {
+            showToast('Nessun promemoria attivo', `Non ci sono impegni aperti per il filtro ${activePeriod}.`);
+          } else {
+            showToast(`Promemoria (${items.length})`, `Prossimo: "${items[0].title}" (${items[0].date}${items[0].timeStart ? ' ' + items[0].timeStart : ''}).`);
           }
         });
 
-        const btnElimina = document.createElement('button');
-        btnElimina.type = 'button';
-        btnElimina.className = 'btn-pericolo';
-        btnElimina.textContent = 'Elimina';
-        btnElimina.addEventListener('click', () => {
-          promemoria = promemoria.filter((p) => p.id !== item.id);
-          salvaPromemoria();
-          renderPromemoria();
+        // Salvataggio form impegno/promemoria
+        document.getElementById('reminder-form').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const editId = document.getElementById('reminder-edit-id').value;
+          const title = document.getElementById('reminder-title').value.trim();
+          const date = document.getElementById('reminder-date').value || getTodayISO();
+          const timeStart = document.getElementById('reminder-time').value;
+          const location = document.getElementById('reminder-location').value.trim();
+          const alertText = document.getElementById('reminder-alert').value.trim();
+          const fileInput = document.getElementById('reminder-file');
+
+          if (!title) return;
+
+          let attachment = null;
+          if (fileInput.files[0]) {
+            try {
+              attachment = await readFileAsAttachment(fileInput.files[0]);
+            } catch (_) {
+              showToast('Errore file', 'Impossibile leggere l\'allegato.');
+            }
+          }
+
+          if (editId) {
+            const target = state.reminders.find((r) => r.id === editId);
+            if (target) {
+              target.title = title;
+              target.date = date;
+              target.timeStart = timeStart;
+              target.location = location;
+              target.alert = alertText;
+              if (attachment) target.attachment = attachment;
+            }
+          } else {
+            const created = {
+              id: `rem-${Date.now()}`,
+              title,
+              date,
+              timeStart,
+              timeEnd: '',
+              location,
+              alert: alertText,
+              completed: false,
+              attachment
+            };
+            state.reminders.unshift(created);
+            if (attachment) {
+              setPreview({ type: attachment.type, src: attachment.dataUrl, name: attachment.name });
+            }
+          }
+
+          saveState();
+          renderReminders();
+          e.target.reset();
+          e.target.classList.add('hidden');
+          e.target.classList.remove('grid');
+          showToast('Impegno salvato', `"${title}" aggiornato in agenda.`);
         });
 
-        azioni.appendChild(btnUsaUrl);
-        azioni.appendChild(btnElimina);
+        // Azioni sulla lista impegni
+        document.getElementById('reminders-list').addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-action]');
+          if (!btn) return;
+          const action = btn.dataset.action;
+          const id = btn.dataset.id;
+          const item = state.reminders.find((r) => r.id === id);
+          if (!item) return;
 
-        li.appendChild(info);
-        li.appendChild(azioni);
-        listaPromemoria.appendChild(li);
-      });
-    }
+          if (action === 'toggle-reminder') {
+            item.completed = btn.checked;
+            saveState();
+            renderReminders();
+          } else if (action === 'preview-reminder' && item.attachment) {
+            setPreview({ type: item.attachment.type, src: item.attachment.dataUrl, name: item.attachment.name });
+            document.getElementById('section-files').scrollIntoView({ behavior: 'smooth' });
+          } else if (action === 'print-reminder' && item.attachment) {
+            const el = { type: item.attachment.type, src: item.attachment.dataUrl, name: item.attachment.name };
+            setPreview(el);
+            printItem(el);
+          } else if (action === 'remove-reminder-file') {
+            item.attachment = null;
+            saveState();
+            renderReminders();
+            showToast('Allegato rimosso', `File scollegato da "${item.title}".`);
+          } else if (action === 'attach-reminder') {
+            pendingAttachTarget = { kind: 'reminder', id };
+            document.getElementById('attach-reminder-file').click();
+          } else if (action === 'edit-reminder') {
+            const form = document.getElementById('reminder-form');
+            form.classList.remove('hidden');
+            form.classList.add('grid');
+            document.getElementById('reminder-edit-id').value = item.id;
+            document.getElementById('reminder-title').value = item.title;
+            document.getElementById('reminder-date').value = item.date;
+            document.getElementById('reminder-time').value = item.timeStart || '';
+            document.getElementById('reminder-location').value = item.location || '';
+            document.getElementById('reminder-alert').value = item.alert || '';
+          } else if (action === 'delete-reminder') {
+            state.reminders = state.reminders.filter((r) => r.id !== id);
+            saveState();
+            renderReminders();
+            showToast('Impegno eliminato', `"${item.title}" rimosso.`);
+          }
+        });
 
-    formPromemoria.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const titolo = inputTitolo.value.trim();
-      const data = inputData.value;
-      const ora = inputOra.value;
+        // Allega file a impegno esistente
+        document.getElementById('attach-reminder-file').addEventListener('change', async (e) => {
+          const file = e.target.files[0];
+          if (!file || !pendingAttachTarget || pendingAttachTarget.kind !== 'reminder') return;
+          const item = state.reminders.find((r) => r.id === pendingAttachTarget.id);
+          pendingAttachTarget = null;
+          e.target.value = '';
+          if (!item) return;
 
-      if (!titolo || !data) return;
+          try {
+            const att = await readFileAsAttachment(file);
+            item.attachment = att;
+            saveState();
+            renderReminders();
+            setPreview({ type: att.type, src: att.dataUrl, name: att.name });
+            showToast('File collegato', `${att.name} collegato a "${item.title}".`);
+          } catch (_) {
+            showToast('Errore file', 'Impossibile allegare il file.');
+          }
+        });
 
-      promemoria.push({
-        id: Date.now().toString(),
-        titolo,
-        data,
-        ora,
-        completato: false
-      });
+        // Filtri categoria scadenze
+        document.querySelectorAll('.cat-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            activeCategory = btn.dataset.category;
+            document.querySelectorAll('.cat-btn').forEach((b) => {
+              const active = b.dataset.category === activeCategory;
+              b.className = `cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition ${active ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`;
+            });
+            renderDeadlines();
+          });
+        });
 
-      salvaPromemoria();
-      inputTitolo.value = '';
-      renderPromemoria();
-    });
+        document.getElementById('btn-new-deadline').addEventListener('click', () => {
+          const form = document.getElementById('deadline-form');
+          form.classList.toggle('hidden');
+          form.classList.toggle('grid');
+          document.getElementById('deadline-edit-id').value = '';
+          document.getElementById('deadline-date').value = addDaysISO(getTodayISO(), 7);
+          document.getElementById('deadline-title').focus();
+        });
 
-    bottoniFiltro.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        bottoniFiltro.forEach((b) => b.classList.remove('attivo'));
-        btn.classList.add('attivo');
-        filtroAttivo = btn.dataset.filtro;
-        renderPromemoria();
-      });
-    });
+        document.getElementById('btn-cancel-deadline').addEventListener('click', () => {
+          const form = document.getElementById('deadline-form');
+          form.reset();
+          form.classList.add('hidden');
+          form.classList.remove('grid');
+        });
 
-    inputDataRiferimento.addEventListener('change', renderPromemoria);
+        document.getElementById('deadline-form').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const editId = document.getElementById('deadline-edit-id').value;
+          const title = document.getElementById('deadline-title').value.trim();
+          const category = document.getElementById('deadline-category').value;
+          const date = document.getElementById('deadline-date').value || getTodayISO();
+          const code = document.getElementById('deadline-code').value.trim();
+          const fileInput = document.getElementById('deadline-file');
 
-    // --- GESTIONE STAMPA FOTO E PDF ---
-    const inputFoto = document.getElementById('inputFoto');
-    const inputPdf = document.getElementById('inputPdf');
-    const inputUrl = document.getElementById('inputUrl');
+          if (!title) return;
 
-    const btnStampaFoto = document.getElementById('btnStampaFoto');
-    const btnStampaPdfLocale = document.getElementById('btnStampaPdfLocale');
-    const btnStampaUrl = document.getElementById('btnStampaUrl');
+          let attachment = null;
+          if (fileInput.files[0]) {
+            try {
+              attachment = await readFileAsAttachment(fileInput.files[0]);
+            } catch (_) {}
+          }
 
-    const anteprimaFoto = document.getElementById('anteprimaFoto');
-    const anteprimaPdf = document.getElementById('anteprimaPdf');
-    const placeholder = document.getElementById('placeholder');
-    const messaggio = document.getElementById('messaggio');
-
-    let urlOggettoCorrente = null;
-    let urlPdfCorrente = null;
-
-    function mostraMessaggio(testo) {
-      messaggio.textContent = testo;
-    }
-
-    function resetAnteprima() {
-      mostraMessaggio('');
-      placeholder.style.display = 'none';
-      anteprimaFoto.style.display = 'none';
-      anteprimaPdf.style.display = 'none';
-      btnStampaFoto.disabled = true;
-      btnStampaPdfLocale.disabled = true;
-
-      if (urlOggettoCorrente) {
-        URL.revokeObjectURL(urlOggettoCorrente);
-        urlOggettoCorrente = null;
-      }
-    }
-
-    inputFoto.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      resetAnteprima();
-      urlOggettoCorrente = URL.createObjectURL(file);
-      anteprimaFoto.src = urlOggettoCorrente;
-      anteprimaFoto.style.display = 'block';
-      btnStampaFoto.disabled = false;
-      inputPdf.value = '';
-    });
-
-    btnStampaFoto.addEventListener('click', () => {
-      if (!anteprimaFoto.src) return;
-
-      const finestra = window.open('', '_blank', 'width=800,height=600');
-      if (!finestra) {
-        mostraMessaggio('Consenti i popup nel browser per avviare la stampa.');
-        return;
-      }
-
-      finestra.document.write(`
-        <!DOCTYPE html>
-        <html lang="it">
-        <head>
-          <meta charset="UTF-8">
-          <title>Stampa Foto</title>
-          <style>
-            @page { margin: 10mm; }
-            body {
-              margin: 0;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              min-height: 100vh;
+          if (editId) {
+            const target = state.deadlines.find((d) => d.id === editId);
+            if (target) {
+              target.title = title;
+              target.category = category;
+              target.date = date;
+              target.code = code;
+              if (attachment) target.attachment = attachment;
             }
-            img {
-              max-width: 100%;
-              max-height: 95vh;
-              object-fit: contain;
-            }
-          </style>
-        </head>
-        <body>
-          <img id="imgStampa" src="${anteprimaFoto.src}" alt="Foto da stampare">
-          <script>
-            const img = document.getElementById('imgStampa');
-            img.onload = () => {
-              window.focus();
-              window.print();
-              window.close();
+          } else {
+            state.deadlines.unshift({
+              id: `dl-${Date.now()}`,
+              title,
+              category,
+              date,
+              code,
+              attachment
+            });
+          }
+
+          saveState();
+          renderDeadlines();
+          e.target.reset();
+          e.target.classList.add('hidden');
+          e.target.classList.remove('grid');
+          showToast('Scadenza salvata', `"${title}" (${category}) aggiunta.`);
+        });
+
+        document.getElementById('deadlines-list').addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-action]');
+          if (!btn) return;
+          const action = btn.dataset.action;
+          const id = btn.dataset.id;
+          const dl = state.deadlines.find((d) => d.id === id);
+          if (!dl) return;
+
+          if (action === 'preview-deadline' && dl.attachment) {
+            setPreview({ type: dl.attachment.type, src: dl.attachment.dataUrl, name: dl.attachment.name });
+            document.getElementById('section-files').scrollIntoView({ behavior: 'smooth' });
+          } else if (action === 'print-deadline' && dl.attachment) {
+            const el = { type: dl.attachment.type, src: dl.attachment.dataUrl, name: dl.attachment.name };
+            setPreview(el);
+            printItem(el);
+          } else if (action === 'attach-deadline') {
+            pendingAttachTarget = { kind: 'deadline', id };
+            document.getElementById('attach-deadline-file').click();
+          } else if (action === 'edit-deadline') {
+            const form = document.getElementById('deadline-form');
+            form.classList.remove('hidden');
+            form.classList.add('grid');
+            document.getElementById('deadline-edit-id').value = dl.id;
+            document.getElementById('deadline-title').value = dl.title;
+            document.getElementById('deadline-category').value = dl.category;
+            document.getElementById('deadline-date').value = dl.date;
+            document.getElementById('deadline-code').value = dl.code || '';
+          } else if (action === 'delete-deadline') {
+            state.deadlines = state.deadlines.filter((d) => d.id !== id);
+            saveState();
+            renderDeadlines();
+            showToast('Scadenza rimossa', `"${dl.title}" eliminata.`);
+          }
+        });
+
+        document.getElementById('attach-deadline-file').addEventListener('change', async (e) => {
+          const file = e.target.files[0];
+          if (!file || !pendingAttachTarget || pendingAttachTarget.kind !== 'deadline') return;
+          const dl = state.deadlines.find((d) => d.id === pendingAttachTarget.id);
+          pendingAttachTarget = null;
+          e.target.value = '';
+          if (!dl) return;
+
+          try {
+            const att = await readFileAsAttachment(file);
+            dl.attachment = att;
+            saveState();
+            renderDeadlines();
+            setPreview({ type: att.type, src: att.dataUrl, name: att.name });
+            showToast('Documento allegato', `${att.name} collegato a "${dl.title}".`);
+          } catch (_) {}
+        });
+
+        // Note rapide
+        document.getElementById('btn-new-note').addEventListener('click', () => {
+          const form = document.getElementById('note-form');
+          form.classList.toggle('hidden');
+          form.classList.toggle('flex');
+          document.getElementById('note-text').focus();
+        });
+
+        document.getElementById('note-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const input = document.getElementById('note-text');
+          const text = input.value.trim();
+          if (!text) return;
+          state.notes.unshift({
+            id: `note-${Date.now()}`,
+            text,
+            createdAt: getTodayISO()
+          });
+          saveState();
+          renderNotes();
+          input.value = '';
+          e.target.classList.add('hidden');
+          e.target.classList.remove('flex');
+          showToast('Nota salvata', 'Nota aggiunta a OmniDesk.');
+        });
+
+        document.getElementById('notes-list').addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-action="delete-note"]');
+          if (!btn) return;
+          state.notes = state.notes.filter((n) => n.id !== btn.dataset.id);
+          saveState();
+          renderNotes();
+        });
+
+        // Cassaforte Password
+        document.getElementById('vault-unlock-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const pinInput = document.getElementById('vault-pin-input');
+          const errEl = document.getElementById('vault-error');
+          if (pinInput.value.trim() === state.pin) {
+            errEl.textContent = '';
+            pinInput.value = '';
+            vaultUnlocked = true;
+            renderVault();
+            showToast('Cassaforte sbloccata', 'Credenziali visibili.');
+          } else {
+            errEl.textContent = 'PIN non corretto. Riprova (PIN demo: 1234).';
+          }
+        });
+
+        document.getElementById('btn-lock-vault').addEventListener('click', () => {
+          vaultUnlocked = false;
+          visiblePasswords = {};
+          renderVault();
+        });
+
+        document.getElementById('btn-change-pin').addEventListener('click', () => {
+          openModal(
+            'Imposta nuovo PIN Cassaforte',
+            `
+              <p>Inserisci un nuovo PIN numerico o alfanumerico per la cassaforte.</p>
+              <input id="new-pin-field" type="password" placeholder="Nuovo PIN..." class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-sm text-white">
+            `,
+            [
+              { label: 'Annulla', className: 'px-3 py-1.5 rounded-lg text-xs bg-slate-800 text-slate-300', onClick: closeModal },
+              {
+                label: 'Salva PIN',
+                className: 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-slate-950',
+                onClick: () => {
+                  const val = document.getElementById('new-pin-field').value.trim();
+                  if (!val) return;
+                  state.pin = val;
+                  saveState();
+                  closeModal();
+                  showToast('PIN aggiornato', 'Nuovo PIN salvato in locale.');
+                }
+              }
+            ]
+          );
+        });
+
+        document.getElementById('vault-add-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const service = document.getElementById('vault-service').value.trim();
+          const username = document.getElementById('vault-user').value.trim();
+          const password = document.getElementById('vault-pass').value;
+          if (!service || !username || !password) return;
+
+          state.vaultItems.unshift({
+            id: `vault-${Date.now()}`,
+            service,
+            username,
+            password
+          });
+          saveState();
+          renderVault();
+          e.target.reset();
+          showToast('Credenziale salvata', `"${service}" aggiunto alla cassaforte.`);
+        });
+
+        document.getElementById('vault-list').addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-action]');
+          if (!btn) return;
+          const id = btn.dataset.id;
+          if (btn.dataset.action === 'toggle-pass') {
+            visiblePasswords[id] = !visiblePasswords[id];
+            renderVault();
+          } else if (btn.dataset.action === 'delete-vault') {
+            state.vaultItems = state.vaultItems.filter((v) => v.id !== id);
+            saveState();
+            renderVault();
+          }
+        });
+
+        // Registrazioni Vocali
+        document.getElementById('btn-toggle-voice').addEventListener('click', () => {
+          if (!isRecording) {
+            startVoiceRecording();
+          } else {
+            stopVoiceRecording();
+          }
+        });
+
+        document.getElementById('voice-list').addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-action="delete-voice"]');
+          if (!btn) return;
+          state.voiceNotes = state.voiceNotes.filter((vn) => vn.id !== btn.dataset.id);
+          saveState(true);
+          renderVoiceNotes();
+        });
+
+        // Foto, PDF & Ricevute + Stampa
+        const localFileInput = document.getElementById('input-file-local');
+        document.getElementById('btn-upload-file').addEventListener('click', () => localFileInput.click());
+
+        localFileInput.addEventListener('change', async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          try {
+            const att = await readFileAsAttachment(file);
+            const record = {
+              id: `file-${Date.now()}`,
+              name: att.name,
+              type: att.type,
+              src: att.dataUrl,
+              date: getTodayISO()
             };
-          <\/script>
-        </body>
-        </html>
-      `);
-      finestra.document.close();
-    });
+            state.files.unshift(record);
+            saveState(true);
+            renderFiles();
+            setPreview({ type: att.type, src: att.dataUrl, name: att.name });
+            showToast('File caricato', `${att.name} pronto per l'anteprima e la stampa.`);
+          } catch (_) {
+            showToast('Errore caricamento', 'Impossibile aprire il file selezionato.');
+          }
+          localFileInput.value = '';
+        });
 
-    inputPdf.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
+        document.getElementById('btn-load-url').addEventListener('click', () => {
+          const url = document.getElementById('input-file-url').value.trim();
+          if (!url) {
+            showToast('URL mancante', 'Inserisci l\'indirizzo di una foto o di un PDF.');
+            return;
+          }
+          const isPdf = url.toLowerCase().includes('.pdf');
+          const item = {
+            type: isPdf ? 'pdf' : 'foto',
+            src: url,
+            name: url.split('/').pop() || url
+          };
+          setPreview(item);
+          printItem(item);
+        });
 
-      resetAnteprima();
-      urlOggettoCorrente = URL.createObjectURL(file);
-      urlPdfCorrente = urlOggettoCorrente;
-      anteprimaPdf.src = urlOggettoCorrente;
-      anteprimaPdf.style.display = 'block';
-      btnStampaPdfLocale.disabled = false;
-      inputFoto.value = '';
-    });
+        document.getElementById('btn-print-active').addEventListener('click', () => {
+          printItem(currentPreview);
+        });
 
-    btnStampaPdfLocale.addEventListener('click', () => {
-      if (!urlPdfCorrente) return;
-      stampaPdfDaUrl(urlPdfCorrente);
-    });
+        document.getElementById('btn-clear-preview').addEventListener('click', () => {
+          setPreview(null);
+        });
 
-    btnStampaUrl.addEventListener('click', () => {
-      const url = inputUrl.value.trim();
-      if (!url) {
-        mostraMessaggio('Inserisci un URL valido.');
-        return;
+        document.getElementById('files-list').addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-action]');
+          if (!btn) return;
+          const fileRec = state.files.find((f) => f.id === btn.dataset.id);
+          if (!fileRec) return;
+
+          if (btn.dataset.action === 'preview-file') {
+            setPreview({ type: fileRec.type, src: fileRec.src, name: fileRec.name });
+          } else if (btn.dataset.action === 'print-file') {
+            const item = { type: fileRec.type, src: fileRec.src, name: fileRec.name };
+            setPreview(item);
+            printItem(item);
+          } else if (btn.dataset.action === 'delete-file') {
+            state.files = state.files.filter((f) => f.id !== fileRec.id);
+            saveState(true);
+            renderFiles();
+          }
+        });
+
+        // Toast e Modale
+        document.getElementById('btn-close-toast').addEventListener('click', hideToast);
+        document.getElementById('btn-close-modal').addEventListener('click', closeModal);
+        document.getElementById('modal-backdrop').addEventListener('click', (e) => {
+          if (e.target.id === 'modal-backdrop') closeModal();
+        });
       }
 
-      resetAnteprima();
-      const ePdf = url.toLowerCase().includes('.pdf');
+      // Avvio applicazione
+      window.addEventListener('DOMContentLoaded', () => {
+        updateDateTime();
+        setInterval(updateDateTime, 30000);
+        bindEvents();
+        renderAll();
 
-      if (ePdf) {
-        urlPdfCorrente = url;
-        anteprimaPdf.src = url;
-        anteprimaPdf.style.display = 'block';
-        stampaPdfDaUrl(url);
-      } else {
-        anteprimaFoto.onload = () => {
-          btnStampaFoto.disabled = false;
-          btnStampaFoto.click();
-        };
-        anteprimaFoto.onerror = () => {
-          placeholder.style.display = 'block';
-          mostraMessaggio('Impossibile caricare la foto dall’URL indicato.');
-        };
-        anteprimaFoto.src = url;
-        anteprimaFoto.style.display = 'block';
-      }
-    });
-
-    function stampaPdfDaUrl(url) {
-      const iframeStampa = document.createElement('iframe');
-      iframeStampa.style.position = 'fixed';
-      iframeStampa.style.right = '0';
-      iframeStampa.style.bottom = '0';
-      iframeStampa.style.width = '0';
-      iframeStampa.style.height = '0';
-      iframeStampa.style.border = '0';
-      iframeStampa.src = url;
-
-      iframeStampa.onload = () => {
-        try {
-          iframeStampa.contentWindow.focus();
-          iframeStampa.contentWindow.print();
-        } catch (err) {
-          window.open(url, '_blank');
-        }
-      };
-
-      document.body.appendChild(iframeStampa);
-    }
-
-    // Avvio iniziale
-    renderPromemoria();
+        // Notifica iniziale discreta in basso a destra
+        setTimeout(() => {
+          const firstDeadline = state.deadlines[0];
+          if (firstDeadline) {
+            showToast('Promemoria scadenze', `${firstDeadline.title} in scadenza (${firstDeadline.date}).`);
+          }
+        }, 600);
+      });
+    })();
   </script>
 </body>
 </html>
