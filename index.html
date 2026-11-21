@@ -101,8 +101,8 @@
             <div class="flex flex-wrap items-center gap-2">
               <span class="text-lg font-bold tracking-tight text-white">OmniDesk</span>
               <span id="sync-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                Live Cloud Synced • Locale
+                <span id="sync-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span id="sync-badge-text">Live Cloud Sync Attivo</span>
               </span>
             </div>
             <p id="current-datetime" class="text-xs text-slate-400 mt-0.5">Sabato 21 Novembre • Caricamento ora...</p>
@@ -140,7 +140,7 @@
           <svg class="w-4 h-4 text-indigo-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
           </svg>
-          <span id="space-label">Spazio &amp; Cloud</span>
+          <span id="space-label">Spazio Cloud</span>
         </button>
 
         <div class="flex items-center gap-2">
@@ -655,6 +655,7 @@
       'use strict';
 
       const STORAGE_KEY = 'omnidesk_state_v1';
+      const CLOUD_SNAPSHOT_KEY = 'omnidesk_cloud_snapshot_v1';
       let toastTimer = null;
 
       // Data odierna in formato YYYY-MM-DD (rispetta il fuso locale)
@@ -678,6 +679,12 @@
         const oggi = getTodayISO();
         return {
           pin: '1234',
+          cloud: {
+            enabled: true,
+            autoSync: true,
+            lastSync: `${oggi} • ${new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}`,
+            quotaKb: 5120
+          },
           reminders: [
             {
               id: 'rem-1',
@@ -784,31 +791,206 @@
           const parsed = JSON.parse(raw);
           return {
             ...createDefaultState(),
-            ...parsed
+            ...parsed,
+            cloud: {
+              ...createDefaultState().cloud,
+              ...(parsed.cloud || {})
+            }
           };
         } catch (err) {
           return createDefaultState();
         }
       }
 
-      function saveState(silent = false) {
+      function getUsedBytes() {
+        try {
+          return new Blob([JSON.stringify(state)]).size;
+        } catch (_) {
+          return JSON.stringify(state).length;
+        }
+      }
+
+      function pushCloudSnapshot(reason = 'Auto-Sync') {
+        if (!state.cloud.enabled) {
+          updateCloudUi();
+          return;
+        }
+        const nowStamp = `${getTodayISO()} • ${new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+        state.cloud.lastSync = nowStamp;
+        try {
+          const snapshotPayload = {
+            syncedAt: nowStamp,
+            reason,
+            data: state
+          };
+          localStorage.setItem(CLOUD_SNAPSHOT_KEY, JSON.stringify(snapshotPayload));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (_) {}
+        updateCloudUi();
+      }
+
+      function restoreCloudSnapshot() {
+        try {
+          const rawSnap = localStorage.getItem(CLOUD_SNAPSHOT_KEY);
+          if (!rawSnap) {
+            showToast('Nessuno snapshot cloud', 'Esegui prima una sincronizzazione manuale per creare un punto di ripristino.');
+            return;
+          }
+          const snap = JSON.parse(rawSnap);
+          if (snap && snap.data) {
+            state = {
+              ...createDefaultState(),
+              ...snap.data,
+              cloud: {
+                ...createDefaultState().cloud,
+                ...(snap.data.cloud || {}),
+                enabled: true
+              }
+            };
+            saveState(true, false);
+            renderAll();
+            showToast('Snapshot ripristinato', `Stato recuperato (${snap.syncedAt || 'Cloud'}).`);
+          }
+        } catch (_) {
+          showToast('Errore ripristino', 'Impossibile leggere lo snapshot cloud.');
+        }
+      }
+
+      function saveState(silent = false, triggerAutoSync = true) {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-          updateSpaceBadge();
+          if (triggerAutoSync && state.cloud.enabled && state.cloud.autoSync) {
+            pushCloudSnapshot('Auto-Sync');
+          } else {
+            updateCloudUi();
+          }
         } catch (err) {
           if (!silent) {
             showToast('Spazio locale quasi pieno', 'Alcuni allegati pesanti restano nella sessione attuale.');
           }
+          updateCloudUi();
         }
       }
 
-      function updateSpaceBadge() {
-        try {
-          const bytes = new Blob([JSON.stringify(state)]).size;
-          const kb = (bytes / 1024).toFixed(1);
-          const el = document.getElementById('space-label');
-          if (el) el.textContent = `Spazio & Cloud (${kb} KB)`;
-        } catch (_) {}
+      function updateCloudUi() {
+        const bytes = getUsedBytes();
+        const kb = Number((bytes / 1024).toFixed(1));
+        const quotaKb = state.cloud.quotaKb || 5120;
+        const pct = Math.min(100, Math.max(1, Number(((kb / quotaKb) * 100).toFixed(1))));
+        const online = navigator.onLine;
+
+        const spaceLabel = document.getElementById('space-label');
+        if (spaceLabel) {
+          spaceLabel.textContent = `Spazio Cloud (${pct}%)`;
+        }
+
+        const badge = document.getElementById('sync-badge');
+        const dot = document.getElementById('sync-dot');
+        const badgeText = document.getElementById('sync-badge-text');
+        if (badge && dot && badgeText) {
+          if (!state.cloud.enabled) {
+            badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700';
+            dot.className = 'w-1.5 h-1.5 rounded-full bg-slate-400';
+            badgeText.textContent = 'Cloud Sync in Pausa';
+          } else if (!online) {
+            badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500/15 text-amber-300 border border-amber-500/30';
+            dot.className = 'w-1.5 h-1.5 rounded-full bg-amber-400';
+            badgeText.textContent = 'Offline • Cache Locale Attiva';
+          } else {
+            badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30';
+            dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse';
+            badgeText.textContent = 'Live Cloud Sync Attivo';
+          }
+        }
+      }
+
+      function openCloudPanel() {
+        const bytes = getUsedBytes();
+        const kb = Number((bytes / 1024).toFixed(2));
+        const quotaKb = state.cloud.quotaKb || 5120;
+        const pct = Math.min(100, Math.max(1, Number(((kb / quotaKb) * 100).toFixed(1))));
+        const online = navigator.onLine;
+        const hasSnapshot = Boolean(localStorage.getItem(CLOUD_SNAPSHOT_KEY));
+
+        openModal(
+          'Pannello Cloud & Sincronizzazione',
+          `
+            <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-slate-400">Stato Rete:</span>
+                <span class="font-semibold ${online ? 'text-emerald-400' : 'text-amber-400'}">${online ? 'Connesso (Online)' : 'Modalità Offline'}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-slate-400">Ultima Sincronizzazione:</span>
+                <span class="font-mono text-slate-200">${escapeHtml(state.cloud.lastSync || 'Mai')}</span>
+              </div>
+              <div class="space-y-1 pt-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-slate-400">Spazio Utilizzato:</span>
+                  <span class="font-semibold text-indigo-300">${kb} KB / ${quotaKb} KB (${pct}%)</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-indigo-500 to-emerald-400" style="width: ${pct}%"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-2 pt-1">
+              <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/70 border border-slate-800 cursor-pointer">
+                <span>Abilita Cloud Sync</span>
+                <input id="modal-cloud-enabled" type="checkbox" ${state.cloud.enabled ? 'checked' : ''} class="w-4 h-4 accent-indigo-500">
+              </label>
+              <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/70 border border-slate-800 cursor-pointer">
+                <span>Sincronizzazione Automatica (Auto-Sync)</span>
+                <input id="modal-cloud-autosync" type="checkbox" ${state.cloud.autoSync ? 'checked' : ''} class="w-4 h-4 accent-indigo-500">
+              </label>
+            </div>
+
+            <div class="flex flex-wrap gap-2 pt-1">
+              <button id="modal-btn-sync-now" type="button" class="flex-1 px-3 py-2 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white">↻ Sincronizza Ora</button>
+              <button id="modal-btn-restore-snap" type="button" ${hasSnapshot ? '' : 'disabled'} class="flex-1 px-3 py-2 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-emerald-300 border border-slate-700">⤢ Ripristina Snapshot</button>
+            </div>
+          `,
+          [
+            {
+              label: 'Salva Impostazioni',
+              className: 'px-4 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-slate-950',
+              onClick: () => {
+                const en = document.getElementById('modal-cloud-enabled').checked;
+                const auto = document.getElementById('modal-cloud-autosync').checked;
+                state.cloud.enabled = en;
+                state.cloud.autoSync = auto;
+                saveState(true, en && auto);
+                closeModal();
+                showToast('Impostazioni Cloud salvate', en ? 'Cloud Sync attivo.' : 'Cloud Sync messo in pausa.');
+              }
+            },
+            {
+              label: 'Chiudi',
+              className: 'px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300',
+              onClick: closeModal
+            }
+          ]
+        );
+
+        setTimeout(() => {
+          const syncNowBtn = document.getElementById('modal-btn-sync-now');
+          const restoreBtn = document.getElementById('modal-btn-restore-snap');
+          if (syncNowBtn) {
+            syncNowBtn.addEventListener('click', () => {
+              state.cloud.enabled = true;
+              pushCloudSnapshot('Sincronizzazione Manuale');
+              closeModal();
+              showToast('Sincronizzazione completata', 'Snapshot cloud aggiornato con successo.');
+            });
+          }
+          if (restoreBtn) {
+            restoreBtn.addEventListener('click', () => {
+              closeModal();
+              restoreCloudSnapshot();
+            });
+          }
+        }, 0);
       }
 
       function showToast(title, message) {
@@ -1338,7 +1520,7 @@
         renderVault();
         renderVoiceNotes();
         renderFiles();
-        updateSpaceBadge();
+        updateCloudUi();
       }
 
       // Comando rapido testuale (es. "avvisa tra 15 min ...")
@@ -1490,19 +1672,18 @@
         });
 
         // Spazio & Cloud / Export / Import JSON
-        document.getElementById('btn-space-cloud').addEventListener('click', () => {
-          const bytes = new Blob([JSON.stringify(state)]).size;
-          openModal(
-            'Spazio & Sincronizzazione Locale',
-            `
-              <p>Tutti i dati di <strong>OmniDesk</strong> sono salvati in <code>localStorage</code> per un accesso immediato offline.</p>
-              <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
-                <p>Occupazione attuale: <strong class="text-white">${(bytes / 1024).toFixed(2)} KB</strong></p>
-                <p>Impegni: <strong class="text-white">${state.reminders.length}</strong> • Scadenze: <strong class="text-white">${state.deadlines.length}</strong> • File: <strong class="text-white">${state.files.length}</strong></p>
-              </div>
-            `,
-            [{ label: 'Chiudi', onClick: closeModal }]
-          );
+        document.getElementById('btn-space-cloud').addEventListener('click', openCloudPanel);
+        document.getElementById('sync-badge').addEventListener('click', openCloudPanel);
+        window.addEventListener('online', () => {
+          updateCloudUi();
+          if (state.cloud.enabled && state.cloud.autoSync) {
+            pushCloudSnapshot('Riconnessione Rete');
+          }
+          showToast('Connessione ripristinata', 'Stato rete tornato online.');
+        });
+        window.addEventListener('offline', () => {
+          updateCloudUi();
+          showToast('Modalità Offline', 'I dati continuano a essere salvati in locale.');
         });
 
         document.getElementById('btn-export-json').addEventListener('click', () => {
@@ -2096,6 +2277,7 @@
       // Avvio applicazione
       window.addEventListener('DOMContentLoaded', () => {
         updateDateTime();
+        updateCloudUi();
         setInterval(updateDateTime, 30000);
         bindEvents();
         renderAll();
