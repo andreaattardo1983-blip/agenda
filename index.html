@@ -124,10 +124,10 @@
 
         <label class="cursor-pointer group flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/25 transition">
           <div class="w-9 h-9 rounded-lg bg-sky-500/20 flex items-center justify-center text-sky-300 group-hover:scale-110 transition">
-            <i data-lucide="camera" class="w-4 h-4"></i>
+            <i data-lucide="file-up" class="w-4 h-4"></i>
           </div>
-          <span class="text-xs font-semibold text-sky-200">+ Foto</span>
-          <input type="file" accept="image/*" capture="environment" onchange="handlePhotoUpload(event)" class="hidden" />
+          <span class="text-xs font-semibold text-sky-200">+ Foto/PDF</span>
+          <input type="file" accept="image/*,application/pdf,.pdf" onchange="handlePhotoUpload(event)" class="hidden" />
         </label>
 
         <button onclick="openModal('passwordModal')" class="group flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 transition">
@@ -263,15 +263,15 @@
         <section id="sec-photos" class="bento-card rounded-2xl p-4">
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
-              <i data-lucide="image" class="w-5 h-5 text-sky-400"></i>
-              <h2 class="font-bold text-base">Foto & Ricevute</h2>
+              <i data-lucide="file-text" class="w-5 h-5 text-sky-400"></i>
+              <h2 class="font-bold text-base">Foto, PDF & Ricevute</h2>
             </div>
             <label class="cursor-pointer text-xs px-2.5 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/40 text-sky-300 font-medium transition">
-              + Carica
-              <input type="file" accept="image/*" onchange="handlePhotoUpload(event)" class="hidden" />
+              + Carica Foto/PDF
+              <input type="file" accept="image/*,application/pdf,.pdf" onchange="handlePhotoUpload(event)" class="hidden" />
             </label>
           </div>
-          <div id="photosGrid" class="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto pr-1"></div>
+          <div id="photosGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-64 overflow-y-auto pr-1"></div>
         </section>
 
       </div>
@@ -427,7 +427,6 @@
     import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getFirestore, doc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-    // Configurazione Firebase collegata al tuo progetto agenda-f2631
     const FIREBASE_CONFIG = {
       apiKey: "AIzaSyAmxzeE4N_2f0Rj8Uw7azx6p43JXJiOJ6g",
       authDomain: "agenda-f2631.firebaseapp.com",
@@ -438,7 +437,7 @@
       measurementId: "G-DCV37CLG95"
     };
 
-    const STORAGE_KEY = 'omnidesk_data_v4';
+    const STORAGE_KEY = 'omnidesk_data_v5';
     const ROOM_KEY = 'omnidesk_room_id_v1';
 
     let vaultUnlocked = false;
@@ -496,7 +495,8 @@
         }, { merge: true });
       } catch (err) {
         console.error('Errore sync cloud:', err);
-        updateSyncBadge('warn', 'Cloud Offline');
+        updateSyncBadge('warn', 'File grande o Offline');
+        showToast('Sync cloud non riuscita: il file potrebbe essere troppo grande per Firestore.');
       }
     }
 
@@ -543,7 +543,12 @@
     };
 
     function persist() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (err) {
+        showToast('Spazio locale pieno: rimuovi qualche foto o PDF pesante.');
+        return;
+      }
       renderAll();
       pushStateToCloud();
     }
@@ -854,10 +859,33 @@
       persist();
     };
 
-    // ==================== FOTO & RICEVUTE ====================
+    // ==================== FOTO, PDF & RICEVUTE ====================
     window.handlePhotoUpload = function(e) {
       const file = e.target.files[0];
       if (!file) return;
+      const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+
+      if (isPdf) {
+        if (file.size > 700 * 1024) {
+          showToast('PDF troppo grande (consigliato sotto 700 KB per sync cloud veloce).');
+        }
+        const reader = new FileReader();
+        reader.onload = ev => {
+          state.photos.unshift({
+            id: Date.now(),
+            type: 'pdf',
+            name: file.name,
+            date: new Date().toLocaleDateString('it-IT'),
+            dataUrl: ev.target.result
+          });
+          persist();
+          showToast(`PDF "${file.name}" salvato!`);
+        };
+        reader.readAsDataURL(file);
+        e.target.value = '';
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = ev => {
         const img = new Image();
@@ -870,6 +898,7 @@
           canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
           state.photos.unshift({
             id: Date.now(),
+            type: 'image',
             name: file.name,
             date: new Date().toLocaleDateString('it-IT'),
             dataUrl: canvas.toDataURL('image/jpeg', 0.75)
@@ -880,6 +909,36 @@
         img.src = ev.target.result;
       };
       reader.readAsDataURL(file);
+      e.target.value = '';
+    };
+
+    window.openPhotoOrPdf = function(id) {
+      const item = state.photos.find(x => x.id === id);
+      if (!item) return;
+      const win = window.open('', '_blank');
+      if (!win) {
+        showToast('Consenti i pop-up per aprire il file.');
+        return;
+      }
+      if (item.type === 'pdf') {
+        win.document.write(`
+          <html><head><title>${item.name}</title></head>
+          <body style="margin:0;background:#0b0f19;display:flex;flex-direction:column;height:100vh;">
+            <div style="padding:10px 16px;background:#111827;color:#fff;font-family:sans-serif;display:flex;justify-content:space-between;align-items:center;">
+              <span>${item.name}</span>
+              <a href="${item.dataUrl}" download="${item.name}" style="color:#38bdf8;text-decoration:none;font-weight:bold;">Scarica PDF</a>
+            </div>
+            <iframe src="${item.dataUrl}" style="flex:1;border:none;width:100%;"></iframe>
+          </body></html>
+        `);
+      } else {
+        win.document.write(`
+          <html><head><title>${item.name}</title></head>
+          <body style="margin:0;background:#0b0f19;display:flex;justify-content:center;align-items:center;min-height:100vh;">
+            <img src="${item.dataUrl}" style="max-width:100%;max-height:100vh;object-fit:contain;" />
+          </body></html>
+        `);
+      }
     };
 
     window.deletePhoto = function(id) {
@@ -1011,14 +1070,32 @@
         </div>
       `).join('') : '<p class="text-xs text-slate-500 text-center py-2">Nessuna registrazione vocale.</p>';
 
-      document.getElementById('photosGrid').innerHTML = state.photos.length ? state.photos.map(ph => `
-        <div class="relative group rounded-xl overflow-hidden border border-white/10 aspect-square bg-slate-900">
-          <img src="${ph.dataUrl}" alt="${ph.name}" class="w-full h-full object-cover" />
-          <button onclick="deletePhoto(${ph.id})" class="absolute top-1 right-1 p-1 rounded-lg bg-black/70 text-rose-400 opacity-0 group-hover:opacity-100 transition">
-            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-          </button>
-        </div>
-      `).join('') : '<p class="text-xs text-slate-500 col-span-3 text-center py-3">Nessuna foto caricata.</p>';
+      document.getElementById('photosGrid').innerHTML = state.photos.length ? state.photos.map(ph => {
+        if (ph.type === 'pdf') {
+          return `
+            <div class="relative group rounded-xl border border-rose-500/30 bg-slate-900/90 p-2.5 flex flex-col justify-between min-h-[104px]">
+              <button onclick="deletePhoto(${ph.id})" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-black/70 text-rose-400 opacity-80 hover:opacity-100 transition">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="openPhotoOrPdf(${ph.id})" class="text-left flex flex-col gap-1.5 mt-1">
+                <div class="w-7 h-7 rounded-lg bg-rose-500/20 text-rose-300 flex items-center justify-center">
+                  <i data-lucide="file-text" class="w-4 h-4"></i>
+                </div>
+                <span class="text-[11px] font-semibold text-white line-clamp-2 break-all">${ph.name}</span>
+                <span class="text-[10px] text-sky-300 font-medium">Apri PDF</span>
+              </button>
+            </div>
+          `;
+        }
+        return `
+          <div class="relative group rounded-xl overflow-hidden border border-white/10 aspect-square bg-slate-900">
+            <img src="${ph.dataUrl}" alt="${ph.name}" onclick="openPhotoOrPdf(${ph.id})" class="w-full h-full object-cover cursor-pointer" />
+            <button onclick="deletePhoto(${ph.id})" class="absolute top-1 right-1 p-1 rounded-lg bg-black/70 text-rose-400 opacity-0 group-hover:opacity-100 transition">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        `;
+      }).join('') : '<p class="text-xs text-slate-500 col-span-2 sm:col-span-3 text-center py-3">Nessuna foto o PDF caricato.</p>';
 
       lucide.createIcons();
     };
