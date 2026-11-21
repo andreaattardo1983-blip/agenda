@@ -49,7 +49,6 @@
       gap: 16px;
     }
 
-    /* Topbar */
     .topbar {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -211,7 +210,6 @@
       justify-content: center;
     }
 
-    /* Quick Actions Bento */
     .bento-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -314,7 +312,6 @@
       font-size: 0.88rem;
     }
 
-    /* Main 2-Column Bento Grid */
     .main-bento {
       display: grid;
       grid-template-columns: 1.55fr 1fr;
@@ -335,7 +332,6 @@
       gap: 16px;
     }
 
-    /* Filters & Forms */
     .filter-row {
       display: flex;
       flex-wrap: wrap;
@@ -492,7 +488,6 @@
       font-size: 0.76rem;
     }
 
-    /* Vault & Voice */
     .vault-box {
       background: var(--bg-input);
       border: 1px solid var(--border-soft);
@@ -547,7 +542,6 @@
       50% { opacity: 0.7; }
     }
 
-    /* Preview Box */
     .preview-surface {
       margin-top: 10px;
       background: var(--bg-input);
@@ -601,7 +595,6 @@
       display: none;
     }
 
-    /* Modal Cloud */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -621,7 +614,7 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      max-width: 620px;
+      max-width: 640px;
       width: 100%;
       padding: 20px;
       max-height: 90vh;
@@ -661,6 +654,16 @@
       border-radius: 8px;
       padding: 8px 10px;
       font-size: 0.84rem;
+    }
+
+    .password-input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .password-input-row input {
+      flex: 1;
     }
 
     .progress-bar {
@@ -715,7 +718,6 @@
 </head>
 <body>
   <div class="app-shell">
-    <!-- TOPBAR -->
     <header class="topbar">
       <div class="brand-group">
         <div class="brand-logo" aria-hidden="true">
@@ -744,7 +746,6 @@
       </div>
     </header>
 
-    <!-- AZIONI RAPIDE (1-TAP) -->
     <section class="bento-card">
       <div class="card-header">
         <div class="card-title-group">
@@ -787,11 +788,8 @@
       </form>
     </section>
 
-    <!-- CORPO PRINCIPALE BENTO -->
     <div class="main-bento">
-      <!-- COLONNA SINISTRA -->
       <div class="left-stack">
-        <!-- IMPEGNI & PROMEMORIA -->
         <section class="bento-card" id="sezioneImpegni">
           <div class="card-header">
             <div class="card-title-group">
@@ -828,7 +826,6 @@
           <div class="list-stack" id="listaImpegni"></div>
         </section>
 
-        <!-- SCADENZE CARTE, POLIZZE & DOC -->
         <section class="bento-card">
           <div class="card-header">
             <div class="card-title-group">
@@ -863,9 +860,7 @@
         </section>
       </div>
 
-      <!-- COLONNA DESTRA -->
       <div class="right-stack">
-        <!-- CASSAFORTE PASSWORD -->
         <section class="bento-card">
           <div class="card-header">
             <div class="card-title-group">
@@ -897,7 +892,6 @@
           </div>
         </section>
 
-        <!-- REGISTRAZIONI VOCALI -->
         <section class="bento-card">
           <div class="card-header">
             <div class="card-title-group">
@@ -913,7 +907,6 @@
           </div>
         </section>
 
-        <!-- FOTO, PDF & RICEVUTE -->
         <section class="bento-card print-target-card">
           <div class="card-header">
             <div class="card-title-group">
@@ -946,7 +939,7 @@
     </div>
   </div>
 
-  <!-- MODALE CLOUD & SYNC (FIREBASE + BACKUP LOCALE) -->
+  <!-- MODALE CLOUD & SYNC CON CODICE / PASSWORD DI SINCRONIZZAZIONE -->
   <div class="modal-backdrop" id="modalCloud" role="dialog" aria-modal="true" aria-labelledby="titoloModalCloud">
     <div class="modal-card">
       <div class="card-header">
@@ -955,16 +948,25 @@
       </div>
 
       <div class="item-meta">
-        Stato attuale: <strong id="statoDettagliatoCloud">Locale</strong>
+        Stato attuale: <strong id="statoDettagliatoCloud">Cloud Locale</strong>
       </div>
       <div class="progress-bar">
         <div class="progress-fill" id="barraSpazioCloud"></div>
       </div>
       <div class="item-meta" id="testoSpazioCloud" style="margin-bottom: 12px;">Spazio locale utilizzato: 0 KB</div>
 
-      <div class="field-group">
-        <label for="cloudRoomCode">Codice Stanza Cloud Condiviso (usa lo stesso codice su PC e cellulare)</label>
-        <input type="text" id="cloudRoomCode" placeholder="es. casa-omni-2026">
+      <div class="modal-grid">
+        <div class="field-group" style="margin-bottom: 0;">
+          <label for="cloudRoomCode">Codice Stanza Cloud Condiviso</label>
+          <input type="text" id="cloudRoomCode" placeholder="es. omnidesk-spazio-personale">
+        </div>
+        <div class="field-group" style="margin-bottom: 0;">
+          <label for="cloudSyncPassword">Codice / Password di Sincronizzazione</label>
+          <div class="password-input-row">
+            <input type="password" id="cloudSyncPassword" placeholder="Inserisci codice/password condiviso">
+            <button type="button" id="btnTogglePasswordCloud" title="Mostra o nascondi password">👁</button>
+          </div>
+        </div>
       </div>
 
       <div class="modal-grid">
@@ -987,7 +989,7 @@
       </div>
 
       <div class="item-meta" style="margin: 8px 0 14px;">
-        Per sincronizzare PC e cellulare in tempo reale via Firebase: crea un progetto su Firebase, attiva il <strong>Realtime Database</strong> (con regole di lettura/scrittura per il tuo test) e incolla qui il <strong>Database URL</strong> e gli altri campi. Senza un URL Firebase valido, i dati restano salvati in locale e puoi trasferirli con Esporta/Importa JSON.
+        Usa lo stesso <strong>Codice / Password di Sincronizzazione</strong> su PC e cellulare per separare e proteggere il percorso di sincronizzazione nella stanza Cloud[cite: 2]. Se inserisci anche il <strong>Firebase Database URL</strong>, la sincronizzazione avviene in rete tra i dispositivi; senza URL Firebase puoi comunque usare Esporta/Importa JSON[cite: 2].
       </div>
 
       <div class="item-actions" style="justify-content: space-between;">
@@ -1005,7 +1007,7 @@
 
   <script>
     const STORAGE_KEY = 'omnidesk_stato_v1';
-    const CLOUD_CFG_KEY = 'omnidesk_cloud_cfg_v1';
+    const CLOUD_CFG_KEY = 'omnidesk_cloud_cfg_v2';
 
     const defaultState = {
       impegni: [
@@ -1052,6 +1054,7 @@
 
     const defaultCloudCfg = {
       roomCode: 'omnidesk-spazio-personale',
+      syncPassword: '',
       apiKey: '',
       databaseUrl: '',
       projectId: '',
@@ -1064,13 +1067,12 @@
     let filtroTemporale = 'giornaliero';
     let categoriaScadenzaAttiva = 'Tutte';
     let vaultSbloccato = false;
-    let elementoAnteprima = null; // { tipo: 'foto' | 'pdf', src: string, nome: string, impegnoId?: string }
+    let elementoAnteprima = null;
     let mediaRecorder = null;
     let chunkVocali = [];
     let pollTimer = null;
     let isSyncingFromRemote = false;
 
-    // Elementi DOM
     const inputRicerca = document.getElementById('inputRicerca');
     const badgeCloud = document.getElementById('badgeCloud');
     const testoBadgeCloud = document.getElementById('testoBadgeCloud');
@@ -1107,6 +1109,7 @@
     const previewPdf = document.getElementById('previewPdf');
 
     const modalCloud = document.getElementById('modalCloud');
+    const cloudSyncPasswordInput = document.getElementById('cloudSyncPassword');
     const inputAllegaVoceItem = document.getElementById('inputAllegaVoceItem');
     const inputAllegaScadenzaItem = document.getElementById('inputAllegaScadenzaItem');
 
@@ -1124,9 +1127,10 @@
         year: 'numeric'
       });
       const hhmm = ora.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+      const passBadge = cloudCfg.syncPassword ? ' • Codice/Password impostato' : '';
       const roomLabel = cloudCfg.databaseUrl
-        ? `Stanza: ${cloudCfg.roomCode || 'default'}`
-        : 'Solo dispositivo locale';
+        ? `Stanza: ${cloudCfg.roomCode || 'default'}${passBadge}`
+        : `Solo dispositivo locale${passBadge}`;
       dataOraHeader.textContent = `${formattata.charAt(0).toUpperCase() + formattata.slice(1)} alle ore ${hhmm} • ${roomLabel}`;
     }
 
@@ -1176,10 +1180,23 @@
       return Boolean(cloudCfg.databaseUrl && cloudCfg.databaseUrl.trim().startsWith('http'));
     }
 
+    function hashSyncKey(room, password) {
+      const cleanRoom = (room || 'omnidesk-spazio-personale').trim();
+      const raw = `${cleanRoom}::${(password || '').trim()}`;
+      let h1 = 0x811c9dc5;
+      for (let i = 0; i < raw.length; i++) {
+        h1 ^= raw.charCodeAt(i);
+        h1 = Math.imul(h1, 0x01000193);
+      }
+      const suffix = (h1 >>> 0).toString(16);
+      const safeRoom = cleanRoom.replace(/[^a-zA-Z0-9_-]/g, '_');
+      return `${safeRoom}_${suffix}`;
+    }
+
     function getFirebaseRoomUrl() {
       const base = cloudCfg.databaseUrl.trim().replace(/\/+$/, '');
-      const room = encodeURIComponent((cloudCfg.roomCode || 'omnidesk-default').trim() || 'omnidesk-default');
-      return `${base}/omnidesk_rooms/${room}.json`;
+      const key = encodeURIComponent(hashSyncKey(cloudCfg.roomCode, cloudCfg.syncPassword));
+      return `${base}/omnidesk_rooms/${key}.json`;
     }
 
     async function pushToFirebase(showFeedback = true) {
@@ -1195,7 +1212,7 @@
         });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         aggiornaStatoCloudUI(true, 'Cloud Sincronizzato');
-        if (showFeedback) mostraToast('Dati inviati al Cloud condiviso.');
+        if (showFeedback) mostraToast('Dati inviati al Cloud con codice/password condiviso.');
       } catch (err) {
         aggiornaStatoCloudUI(false, 'Errore Cloud');
         if (showFeedback) mostraToast('Errore invio Cloud: controlla URL e regole Firebase.');
@@ -1641,7 +1658,6 @@
       aggiornaDataOraHeader();
     }
 
-    // Eventi Form Rapido & Impegni
     formRapido.addEventListener('submit', async (e) => {
       e.preventDefault();
       const titolo = inputRapido.value.trim();
@@ -1712,7 +1728,6 @@
       mostraAnteprima({ tipo: target.allegato.tipo, src: target.allegato.dataUrl, nome: target.allegato.nome, impegnoId: target.id }, `Impegno "${target.titolo}" — ${target.allegato.nome}`);
     });
 
-    // Filtri temporali
     document.querySelectorAll('[data-time-filter]').forEach((btn) => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('[data-time-filter]').forEach((b) => b.classList.remove('active-time-filter'));
@@ -1728,7 +1743,6 @@
       renderScadenze();
     });
 
-    // Scadenze
     document.getElementById('btnToggleFormScadenza').addEventListener('click', () => {
       formScadenza.classList.toggle('hidden');
       document.getElementById('scadenzaData').value = oggiISO();
@@ -1771,7 +1785,6 @@
       });
     });
 
-    // Cassaforte PIN
     document.getElementById('btnSbloccaVault').addEventListener('click', () => {
       const pin = inputPinVault.value.trim();
       if (pin === (state.pinVault || '1234')) {
@@ -1801,7 +1814,6 @@
       renderVault();
     });
 
-    // Registrazioni vocali
     btnRegistrazioneVocale.addEventListener('click', async () => {
       if (mediaRecorder && mediaRecorder.state === 'recording') {
         mediaRecorder.stop();
@@ -1844,7 +1856,6 @@
       }
     });
 
-    // Stampa Foto / PDF
     document.getElementById('btnCaricaFotoPdf').addEventListener('click', () => inputFileStampa.click());
     inputFileStampa.addEventListener('change', async (e) => {
       const file = e.target.files[0];
@@ -1862,7 +1873,6 @@
 
     btnStampaAnteprima.addEventListener('click', () => stampaElemento(elementoAnteprima));
 
-    // Azioni Rapide 1-Tap
     document.getElementById('tileNuovoImpegno').addEventListener('click', () => {
       formImpegnoCompleto.classList.remove('hidden');
       document.getElementById('impegnoData').value = inputDataRiferimento.value || oggiISO();
@@ -1882,7 +1892,6 @@
       document.getElementById('pwdServizio').focus();
     });
 
-    // Backup JSON
     document.getElementById('btnExportJson').addEventListener('click', () => {
       const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -1916,9 +1925,9 @@
       reader.readAsText(file);
     });
 
-    // Modale Cloud
     function apriModalCloud() {
       document.getElementById('cloudRoomCode').value = cloudCfg.roomCode || '';
+      cloudSyncPasswordInput.value = cloudCfg.syncPassword || '';
       document.getElementById('fbApiKey').value = cloudCfg.apiKey || '';
       document.getElementById('fbDatabaseUrl').value = cloudCfg.databaseUrl || '';
       document.getElementById('fbProjectId').value = cloudCfg.projectId || '';
@@ -1926,6 +1935,10 @@
       aggiornaIndicatoreSpazio();
       modalCloud.classList.add('open');
     }
+
+    document.getElementById('btnTogglePasswordCloud').addEventListener('click', () => {
+      cloudSyncPasswordInput.type = cloudSyncPasswordInput.type === 'password' ? 'text' : 'password';
+    });
 
     document.getElementById('btnApriCloud').addEventListener('click', apriModalCloud);
     badgeCloud.addEventListener('click', apriModalCloud);
@@ -1942,6 +1955,7 @@
     document.getElementById('btnSalvaConfigCloud').addEventListener('click', async () => {
       cloudCfg = {
         roomCode: document.getElementById('cloudRoomCode').value.trim() || 'omnidesk-spazio-personale',
+        syncPassword: cloudSyncPasswordInput.value.trim(),
         apiKey: document.getElementById('fbApiKey').value.trim(),
         databaseUrl: document.getElementById('fbDatabaseUrl').value.trim(),
         projectId: document.getElementById('fbProjectId').value.trim(),
@@ -1952,7 +1966,7 @@
       if (isCloudConfigured()) {
         await pushToFirebase(true);
       } else {
-        mostraToast('Impostazioni salvate in modalità locale.');
+        mostraToast('Codice/password e impostazioni salvate in locale.');
       }
     });
 
@@ -1966,7 +1980,6 @@
       mostraToast('Dati reimpostati ai valori iniziali.');
     });
 
-    // Avvio
     inputDataRiferimento.value = oggiISO();
     renderAll();
     avviaPollingCloud();
