@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>OmniDesk — Tutto-in-Uno Widget Dashboard</title>
+  <title>OmniDesk Cloud — Tutto-in-Uno Widget Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -44,27 +44,33 @@
           <i data-lucide="layout-grid" class="w-5 h-5 text-white"></i>
         </div>
         <div>
-          <h1 class="text-lg font-extrabold tracking-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">OmniDesk</h1>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg font-extrabold tracking-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">OmniDesk</h1>
+            <span id="syncStatusBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-white/10 font-semibold">Locale</span>
+          </div>
           <p id="liveClock" class="text-xs text-slate-400">Caricamento orario...</p>
         </div>
       </div>
 
-      <!-- Search + Sync Tools -->
+      <!-- Search + Cloud + Backup Tools -->
       <div class="flex items-center gap-2">
         <div class="relative hidden sm:block">
           <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
           <input id="globalSearch" type="text" placeholder="Cerca ovunque..." oninput="renderAll()"
-            class="bg-slate-900/90 border border-white/10 rounded-xl pl-9 pr-3 py-1.5 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 w-52 lg:w-64" />
+            class="bg-slate-900/90 border border-white/10 rounded-xl pl-9 pr-3 py-1.5 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 w-44 lg:w-56" />
         </div>
-        <button onclick="exportData()" title="Esporta Backup JSON (PC ↔ Telefono)"
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-white/10 text-xs font-medium text-slate-200 transition">
+        <button onclick="openModal('cloudModal')" title="Configura Cloud Firebase (Sync Tempo Reale)"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600/25 hover:bg-indigo-600/40 border border-indigo-400/30 text-xs font-semibold text-indigo-200 transition">
+          <i data-lucide="cloud" class="w-3.5 h-3.5 text-indigo-300"></i>
+          <span class="hidden md:inline">Cloud Sync</span>
+        </button>
+        <button onclick="exportData()" title="Esporta Backup JSON"
+          class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-white/10 text-xs font-medium text-slate-200 transition">
           <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-400"></i>
-          <span class="hidden md:inline">Esporta</span>
         </button>
         <label title="Importa Backup JSON"
-          class="cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-white/10 text-xs font-medium text-slate-200 transition">
+          class="cursor-pointer flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-white/10 text-xs font-medium text-slate-200 transition">
           <i data-lucide="upload" class="w-3.5 h-3.5 text-sky-400"></i>
-          <span class="hidden md:inline">Importa</span>
           <input type="file" accept=".json" onchange="importData(event)" class="hidden" />
         </label>
       </div>
@@ -74,7 +80,7 @@
   <!-- Main Bento Grid -->
   <main class="max-w-7xl mx-auto px-4 pt-5 space-y-5">
 
-    <!-- WIDGET 1: Azioni Rapide (1-Tap) - Una sola riga pulita -->
+    <!-- WIDGET 1: Azioni Rapide (1-Tap) -->
     <section class="bento-card rounded-2xl p-4">
       <div class="flex items-center justify-between mb-3">
         <div class="flex items-center gap-2">
@@ -87,7 +93,6 @@
         </button>
       </div>
 
-      <!-- 6 Pulsanti Rapidi in un'unica griglia -->
       <div class="grid grid-cols-3 sm:grid-cols-6 gap-2.5 mb-3">
         <button onclick="openModal('taskModal')" class="group flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/25 transition">
           <div class="w-9 h-9 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-300 group-hover:scale-110 transition">
@@ -133,7 +138,6 @@
         </button>
       </div>
 
-      <!-- Quick Reminder Input Bar -->
       <form onsubmit="addQuickReminder(event)" class="flex gap-2">
         <input id="quickReminderInput" type="text" placeholder="Scrivi un promemoria veloce e premi Invio (avviso tra 15 min)..."
           class="flex-1 bg-slate-900/90 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500" />
@@ -143,13 +147,12 @@
       </form>
     </section>
 
-    <!-- Bento Grid Principale (2 Colonne su Desktop) -->
+    <!-- Bento Grid Principale -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
 
-      <!-- COLONNA SINISTRA (7 cols): Impegni + Scadenze + Note -->
+      <!-- COLONNA SINISTRA (7 cols) -->
       <div class="lg:col-span-7 space-y-5">
 
-        <!-- WIDGET 2: Impegni & Promemoria con Notifiche -->
         <section id="sec-tasks" class="bento-card rounded-2xl p-4">
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
@@ -164,7 +167,6 @@
           <div id="tasksList" class="space-y-2.5 max-h-80 overflow-y-auto pr-1"></div>
         </section>
 
-        <!-- WIDGET 3: Scadenze Documenti, Carte & Polizze -->
         <section id="sec-expiries" class="bento-card rounded-2xl p-4">
           <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
             <div class="flex items-center gap-2">
@@ -177,7 +179,6 @@
             </button>
           </div>
 
-          <!-- Filtri Categoria Scadenze -->
           <div class="flex gap-1.5 overflow-x-auto pb-2 mb-2 text-xs">
             <button onclick="setExpiryFilter('all')" data-exp-filter="all" class="exp-filter-btn px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-semibold">Tutte</button>
             <button onclick="setExpiryFilter('Carta')" data-exp-filter="Carta" class="exp-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300">Carte</button>
@@ -189,7 +190,6 @@
           <div id="expiriesList" class="space-y-2.5 max-h-80 overflow-y-auto pr-1"></div>
         </section>
 
-        <!-- WIDGET 4: Appunti & Post-it Rapidi -->
         <section id="sec-notes" class="bento-card rounded-2xl p-4">
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
@@ -205,10 +205,9 @@
 
       </div>
 
-      <!-- COLONNA DESTRA (5 cols): Cassaforte Password + Note Vocali + Galleria Foto -->
+      <!-- COLONNA DESTRA (5 cols) -->
       <div class="lg:col-span-5 space-y-5">
 
-        <!-- WIDGET 5: Cassaforte Password -->
         <section id="sec-vault" class="bento-card rounded-2xl p-4">
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
@@ -216,16 +215,11 @@
               <h2 class="font-bold text-base">Cassaforte Password</h2>
             </div>
             <div class="flex items-center gap-1.5">
-              <button onclick="changeMasterPin()" title="Cambia PIN Master" class="text-xs px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">
-                PIN
-              </button>
-              <button id="vaultLockBtn" onclick="toggleVaultLock()" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 font-medium transition">
-                Blocca
-              </button>
+              <button onclick="changeMasterPin()" title="Cambia PIN Master" class="text-xs px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">PIN</button>
+              <button id="vaultLockBtn" onclick="toggleVaultLock()" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 font-medium transition">Blocca</button>
             </div>
           </div>
 
-          <!-- Schermata Bloccata -->
           <div id="vaultLockedView" class="py-6 text-center space-y-3">
             <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center mx-auto text-emerald-400">
               <i data-lucide="shield-check" class="w-6 h-6"></i>
@@ -234,25 +228,19 @@
             <div class="flex justify-center gap-2 max-w-xs mx-auto">
               <input id="vaultPinInput" type="password" maxlength="8" placeholder="PIN..." onkeydown="if(event.key==='Enter') unlockVault()"
                 class="w-32 text-center tracking-widest bg-slate-900 border border-white/15 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500" />
-              <button onclick="unlockVault()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white transition">
-                Sblocca
-              </button>
+              <button onclick="unlockVault()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white transition">Sblocca</button>
             </div>
           </div>
 
-          <!-- Schermata Sbloccata -->
           <div id="vaultUnlockedView" class="hidden space-y-2.5">
             <div class="flex justify-between items-center">
               <span class="text-[11px] text-slate-400">Auto-pulizia appunti attiva (20s)</span>
-              <button onclick="openModal('passwordModal')" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold">
-                + Aggiungi
-              </button>
+              <button onclick="openModal('passwordModal')" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold">+ Aggiungi</button>
             </div>
             <div id="passwordsList" class="space-y-2 max-h-64 overflow-y-auto pr-1"></div>
           </div>
         </section>
 
-        <!-- WIDGET 6: Registratore Vocale -->
         <section id="sec-voice" class="bento-card rounded-2xl p-4">
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
@@ -272,7 +260,6 @@
           <div id="voiceList" class="space-y-2 max-h-56 overflow-y-auto pr-1"></div>
         </section>
 
-        <!-- WIDGET 7: Foto & Documenti Visivi -->
         <section id="sec-photos" class="bento-card rounded-2xl p-4">
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
@@ -301,6 +288,41 @@
   </nav>
 
   <!-- ==================== MODALI ==================== -->
+
+  <!-- Modal Cloud Firebase Sync -->
+  <div id="cloudModal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bento-card rounded-2xl p-5 w-full max-w-lg space-y-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <i data-lucide="cloud" class="w-5 h-5 text-indigo-400"></i>
+          <h3 class="font-bold text-lg">Sincronizzazione Cloud (Firebase)</h3>
+        </div>
+        <button onclick="closeModal('cloudModal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <p class="text-xs text-slate-300 leading-relaxed">
+        Incolla qui la configurazione JSON del tuo progetto <strong>Firebase</strong> (con <em>Firestore Database</em> attivo) e un <strong>Codice Spazio</strong> segreto. Usa lo stesso codice su PC e telefono per aggiornamenti in tempo reale!
+      </p>
+      <form onsubmit="saveCloudConfig(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Codice Spazio Personale (es. casa-2026-xyz)</label>
+          <input id="cloudRoomInput" required placeholder="Inserisci codice spazio..." class="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2 text-sm text-white" />
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Firebase Config (JSON)</label>
+          <textarea id="cloudConfigInput" rows="5" required placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}'
+            class="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs font-mono text-emerald-200"></textarea>
+        </div>
+        <div class="flex items-center justify-between gap-2 pt-1">
+          <button type="button" onclick="disconnectCloud()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-slate-300">
+            Disconnetti Cloud
+          </button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white">
+            Connetti e Sincronizza
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Modal Impegno -->
   <div id="taskModal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
@@ -398,9 +420,7 @@
         <input id="pwUser" required placeholder="Email o Nome Utente" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm" />
         <div class="flex gap-2">
           <input id="pwPass" required placeholder="Password" class="flex-1 bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm font-mono" />
-          <button type="button" onclick="generateStrongPassword()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-emerald-300">
-            Genera
-          </button>
+          <button type="button" onclick="generateStrongPassword()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-emerald-300">Genera</button>
         </div>
         <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-sm">Salva nella Cassaforte</button>
       </form>
@@ -413,15 +433,23 @@
     <p id="toastMsg" class="text-xs font-medium"></p>
   </div>
 
-  <script>
-    // ==================== STATO & STORAGE ====================
-    const STORAGE_KEY = 'omnidesk_data_v2';
+  <script type="module">
+    import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getFirestore, doc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    const STORAGE_KEY = 'omnidesk_data_v3';
+    const CLOUD_KEY = 'omnidesk_firebase_cloud_v1';
+
     let vaultUnlocked = false;
     let currentExpFilter = 'all';
     let mediaRecorder = null;
     let audioChunks = [];
     let recInterval = null;
     let recSeconds = 0;
+
+    let db = null;
+    let unsubscribeCloud = null;
+    let isApplyingRemoteUpdate = false;
 
     let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
       pin: '1234',
@@ -442,9 +470,94 @@
       photos: []
     };
 
+    function updateSyncBadge(mode, text) {
+      const badge = document.getElementById('syncStatusBadge');
+      if (!badge) return;
+      if (mode === 'live') {
+        badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-semibold';
+      } else {
+        badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-white/10 font-semibold';
+      }
+      badge.textContent = text;
+    }
+
+    async function pushStateToCloud() {
+      const cloudSaved = JSON.parse(localStorage.getItem(CLOUD_KEY) || 'null');
+      if (!db || !cloudSaved?.room || isApplyingRemoteUpdate) return;
+      try {
+        await setDoc(doc(db, 'omnidesk_spaces', cloudSaved.room), {
+          payload: state,
+          updatedAt: Date.now()
+        }, { merge: true });
+      } catch (err) {
+        console.error('Errore sync cloud:', err);
+      }
+    }
+
+    function connectFirebaseCloud(configObj, roomId) {
+      if (unsubscribeCloud) {
+        unsubscribeCloud();
+        unsubscribeCloud = null;
+      }
+      const appName = 'omnidesk_sync_' + roomId;
+      const existing = getApps().find(a => a.name === appName);
+      const app = existing || initializeApp(configObj, appName);
+      db = getFirestore(app);
+
+      const spaceRef = doc(db, 'omnidesk_spaces', roomId);
+      updateSyncBadge('live', 'Live Cloud');
+
+      unsubscribeCloud = onSnapshot(spaceRef, (snap) => {
+        if (snap.exists()) {
+          const remote = snap.data();
+          if (remote?.payload) {
+            isApplyingRemoteUpdate = true;
+            state = remote.payload;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            renderAll();
+            isApplyingRemoteUpdate = false;
+          }
+        } else {
+          setDoc(spaceRef, { payload: state, updatedAt: Date.now() }).catch(() => {});
+        }
+      }, () => {
+        updateSyncBadge('local', 'Errore Cloud');
+      });
+    }
+
+    window.saveCloudConfig = function(e) {
+      e.preventDefault();
+      const room = document.getElementById('cloudRoomInput').value.trim();
+      const rawCfg = document.getElementById('cloudConfigInput').value.trim();
+      try {
+        const parsedCfg = JSON.parse(rawCfg);
+        if (!parsedCfg.apiKey || !parsedCfg.projectId) {
+          showToast('Configurazione Firebase incompleta.');
+          return;
+        }
+        localStorage.setItem(CLOUD_KEY, JSON.stringify({ room, config: parsedCfg }));
+        connectFirebaseCloud(parsedCfg, room);
+        closeModal('cloudModal');
+        showToast(`Connesso allo spazio "${room}" in tempo reale!`);
+      } catch {
+        showToast('Il JSON Firebase non è valido.');
+      }
+    };
+
+    window.disconnectCloud = function() {
+      if (unsubscribeCloud) unsubscribeCloud();
+      unsubscribeCloud = null;
+      db = null;
+      localStorage.removeItem(CLOUD_KEY);
+      updateSyncBadge('local', 'Locale');
+      closeModal('cloudModal');
+      showToast('Sincronizzazione cloud disconnessa.');
+    };
+
     function persist() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       renderAll();
+      pushStateToCloud();
     }
 
     // ==================== OROLOGIO & NOTIFICHE ====================
@@ -493,9 +606,9 @@
       }
     }
 
-    function triggerTestNotification() {
+    window.triggerTestNotification = function() {
       sendSystemNotification('OmniDesk Promemoria', 'Le notifiche sono attive e funzionanti!');
-    }
+    };
 
     function checkNotifications() {
       const now = Date.now();
@@ -521,15 +634,25 @@
           }
         }
       });
-      if (changed) localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      if (changed) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        pushStateToCloud();
+      }
     }
 
     // ==================== MODALI ====================
-    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    window.openModal = function(id) {
+      if (id === 'cloudModal') {
+        const saved = JSON.parse(localStorage.getItem(CLOUD_KEY) || 'null');
+        if (saved?.room) document.getElementById('cloudRoomInput').value = saved.room;
+        if (saved?.config) document.getElementById('cloudConfigInput').value = JSON.stringify(saved.config, null, 2);
+      }
+      document.getElementById(id).classList.remove('hidden');
+    };
+    window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); };
 
     // ==================== IMPEGNI ====================
-    function addQuickReminder(e) {
+    window.addQuickReminder = function(e) {
       e.preventDefault();
       const input = document.getElementById('quickReminderInput');
       const title = input.value.trim();
@@ -540,9 +663,9 @@
       input.value = '';
       persist();
       showToast('Promemoria rapido aggiunto (+15 min)');
-    }
+    };
 
-    function saveTask(e) {
+    window.saveTask = function(e) {
       e.preventDefault();
       state.tasks.unshift({
         id: Date.now(),
@@ -556,30 +679,30 @@
       e.target.reset();
       closeModal('taskModal');
       persist();
-    }
+    };
 
-    function toggleTask(id) {
+    window.toggleTask = function(id) {
       const t = state.tasks.find(x => x.id === id);
       if (t) t.done = !t.done;
       persist();
-    }
+    };
 
-    function deleteTask(id) {
+    window.deleteTask = function(id) {
       state.tasks = state.tasks.filter(x => x.id !== id);
       persist();
-    }
+    };
 
     // ==================== SCADENZE ====================
-    function setExpiryFilter(cat) {
+    window.setExpiryFilter = function(cat) {
       currentExpFilter = cat;
       document.querySelectorAll('.exp-filter-btn').forEach(btn => {
         const active = btn.dataset.expFilter === cat;
         btn.className = `exp-filter-btn px-2.5 py-1 rounded-lg font-semibold ${active ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-300'}`;
       });
       renderAll();
-    }
+    };
 
-    function saveExpiry(e) {
+    window.saveExpiry = function(e) {
       e.preventDefault();
       state.expiries.push({
         id: Date.now(),
@@ -593,9 +716,9 @@
       e.target.reset();
       closeModal('expiryModal');
       persist();
-    }
+    };
 
-    function renewExpiryOneYear(id) {
+    window.renewExpiryOneYear = function(id) {
       const item = state.expiries.find(x => x.id === id);
       if (!item) return;
       const d = new Date(item.date);
@@ -604,15 +727,15 @@
       item.notified = false;
       persist();
       showToast(`"${item.title}" rinnovata di 1 anno!`);
-    }
+    };
 
-    function deleteExpiry(id) {
+    window.deleteExpiry = function(id) {
       state.expiries = state.expiries.filter(x => x.id !== id);
       persist();
-    }
+    };
 
     // ==================== NOTE ====================
-    function saveNote(e) {
+    window.saveNote = function(e) {
       e.preventDefault();
       state.notes.unshift({
         id: Date.now(),
@@ -624,15 +747,15 @@
       e.target.reset();
       closeModal('noteModal');
       persist();
-    }
+    };
 
-    function deleteNote(id) {
+    window.deleteNote = function(id) {
       state.notes = state.notes.filter(x => x.id !== id);
       persist();
-    }
+    };
 
     // ==================== CASSAFORTE PASSWORD ====================
-    function unlockVault() {
+    window.unlockVault = function() {
       const val = document.getElementById('vaultPinInput').value;
       if (val === state.pin) {
         vaultUnlocked = true;
@@ -641,30 +764,30 @@
       } else {
         showToast('PIN errato!');
       }
-    }
+    };
 
-    function toggleVaultLock() {
+    window.toggleVaultLock = function() {
       vaultUnlocked = false;
       renderAll();
-    }
+    };
 
-    function changeMasterPin() {
+    window.changeMasterPin = function() {
       const newPin = prompt('Inserisci il nuovo PIN Master (4-8 cifre):');
       if (newPin && newPin.trim().length >= 4) {
         state.pin = newPin.trim();
         persist();
         showToast('Nuovo PIN Master salvato!');
       }
-    }
+    };
 
-    function generateStrongPassword() {
+    window.generateStrongPassword = function() {
       const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%&*';
       let pw = '';
       for (let i = 0; i < 16; i++) pw += chars[Math.floor(Math.random() * chars.length)];
       document.getElementById('pwPass').value = pw;
-    }
+    };
 
-    function savePassword(e) {
+    window.savePassword = function(e) {
       e.preventDefault();
       state.passwords.unshift({
         id: Date.now(),
@@ -675,21 +798,21 @@
       e.target.reset();
       closeModal('passwordModal');
       persist();
-    }
+    };
 
-    function copySecret(text, label) {
+    window.copySecret = function(text, label) {
       navigator.clipboard.writeText(text);
       showToast(`${label} copiata! Appunti puliti tra 20s.`);
       setTimeout(() => navigator.clipboard.writeText('').catch(()=>{}), 20000);
-    }
+    };
 
-    function deletePassword(id) {
+    window.deletePassword = function(id) {
       state.passwords = state.passwords.filter(x => x.id !== id);
       persist();
-    }
+    };
 
     // ==================== REGISTRAZIONI VOCALI ====================
-    async function toggleQuickRecord() {
+    window.toggleQuickRecord = async function() {
       const btn = document.getElementById('recordBtn');
       const label = document.getElementById('recordBtnLabel');
       const timer = document.getElementById('recTimer');
@@ -738,15 +861,15 @@
       } catch (err) {
         showToast('Permesso microfono negato o non disponibile.');
       }
-    }
+    };
 
-    function deleteVoice(id) {
+    window.deleteVoice = function(id) {
       state.voices = state.voices.filter(x => x.id !== id);
       persist();
-    }
+    };
 
     // ==================== FOTO & RICEVUTE ====================
-    function handlePhotoUpload(e) {
+    window.handlePhotoUpload = function(e) {
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
@@ -771,23 +894,23 @@
         img.src = ev.target.result;
       };
       reader.readAsDataURL(file);
-    }
+    };
 
-    function deletePhoto(id) {
+    window.deletePhoto = function(id) {
       state.photos = state.photos.filter(x => x.id !== id);
       persist();
-    }
+    };
 
     // ==================== EXPORT / IMPORT JSON ====================
-    function exportData() {
+    window.exportData = function() {
       const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = `omnidesk-backup-${new Date().toISOString().slice(0,10)}.json`;
       a.click();
-    }
+    };
 
-    function importData(e) {
+    window.importData = function(e) {
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
@@ -801,13 +924,12 @@
         }
       };
       reader.readAsText(file);
-    }
+    };
 
     // ==================== RENDERING ====================
-    function renderAll() {
+    window.renderAll = function() {
       const q = (document.getElementById('globalSearch')?.value || '').toLowerCase();
 
-      // 1. Impegni
       const filteredTasks = state.tasks.filter(t => t.title.toLowerCase().includes(q) || (t.notes||'').toLowerCase().includes(q));
       document.getElementById('taskCountBadge').textContent = filteredTasks.filter(t => !t.done).length;
       document.getElementById('tasksList').innerHTML = filteredTasks.length ? filteredTasks.map(t => `
@@ -824,7 +946,6 @@
         </div>
       `).join('') : '<p class="text-xs text-slate-500 text-center py-4">Nessun impegno registrato.</p>';
 
-      // 2. Scadenze
       const filteredExp = state.expiries
         .filter(e => (currentExpFilter === 'all' || e.category === currentExpFilter))
         .filter(e => e.title.toLowerCase().includes(q) || (e.number||'').toLowerCase().includes(q))
@@ -853,7 +974,6 @@
         `;
       }).join('') : '<p class="text-xs text-slate-500 text-center py-4">Nessuna scadenza inserita.</p>';
 
-      // 3. Note
       const colorMap = {
         yellow: 'bg-yellow-500/10 border-yellow-500/30 text-yellow-100',
         indigo: 'bg-indigo-500/10 border-indigo-500/30 text-indigo-100',
@@ -875,7 +995,6 @@
         </div>
       `).join('') : '<p class="text-xs text-slate-500 col-span-2 text-center py-4">Nessun appunto salvato.</p>';
 
-      // 4. Cassaforte Password
       document.getElementById('vaultLockedView').classList.toggle('hidden', vaultUnlocked);
       document.getElementById('vaultUnlockedView').classList.toggle('hidden', !vaultUnlocked);
       document.getElementById('vaultLockBtn').classList.toggle('hidden', !vaultUnlocked);
@@ -896,7 +1015,6 @@
         `).join('');
       }
 
-      // 5. Vocali
       document.getElementById('voiceList').innerHTML = state.voices.length ? state.voices.map(v => `
         <div class="p-2.5 rounded-xl bg-slate-900/90 border border-white/5 space-y-1.5">
           <div class="flex justify-between items-center text-xs">
@@ -907,7 +1025,6 @@
         </div>
       `).join('') : '<p class="text-xs text-slate-500 text-center py-2">Nessuna registrazione vocale.</p>';
 
-      // 6. Foto
       document.getElementById('photosGrid').innerHTML = state.photos.length ? state.photos.map(ph => `
         <div class="relative group rounded-xl overflow-hidden border border-white/10 aspect-square bg-slate-900">
           <img src="${ph.dataUrl}" alt="${ph.name}" class="w-full h-full object-cover" />
@@ -918,10 +1035,15 @@
       `).join('') : '<p class="text-xs text-slate-500 col-span-3 text-center py-3">Nessuna foto caricata.</p>';
 
       lucide.createIcons();
+    };
+
+    const savedCloud = JSON.parse(localStorage.getItem(CLOUD_KEY) || 'null');
+    if (savedCloud?.config && savedCloud?.room) {
+      connectFirebaseCloud(savedCloud.config, savedCloud.room);
     }
 
     updateClock();
     renderAll();
   </script>
 </body>
-</html>
+</html
