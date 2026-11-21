@@ -443,6 +443,7 @@
     const ROOM_KEY = 'omnidesk_room_id_v1';
 
     let vaultUnlocked = false;
+    let revealedPasswords = {};
     let currentExpFilter = 'all';
     let mediaRecorder = null;
     let audioChunks = [];
@@ -770,7 +771,14 @@
 
     window.toggleVaultLock = function() {
       vaultUnlocked = false;
+      revealedPasswords = {};
       document.getElementById('passwordsList').innerHTML = '';
+      renderAll();
+    };
+
+    window.toggleRevealPassword = function(id) {
+      if (!vaultUnlocked) return;
+      revealedPasswords[id] = !revealedPasswords[id];
       renderAll();
     };
 
@@ -1077,19 +1085,35 @@
         const filteredPw = (state.passwords || []).filter(p =>
           p.site.toLowerCase().includes(q) || p.user.toLowerCase().includes(q)
         );
-        passwordsListEl.innerHTML = filteredPw.length ? filteredPw.map(p => `
-          <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/90 border border-white/5">
-            <div class="truncate pr-2">
-              <p class="text-xs font-bold text-white">${p.site}</p>
-              <p class="text-[11px] text-slate-300 truncate">${p.user}</p>
+        passwordsListEl.innerHTML = filteredPw.length ? filteredPw.map(p => {
+          let decodedPass = '';
+          try { decodedPass = atob(p.pass); } catch { decodedPass = p.pass || ''; }
+          const isShown = !!revealedPasswords[p.id];
+          const safeDecodedForAttr = decodedPass.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+          const safeUserForAttr = String(p.user || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+          return `
+            <div class="p-2.5 rounded-xl bg-slate-900/90 border border-white/5 space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <div class="truncate pr-1">
+                  <p class="text-xs font-bold text-white truncate">${p.site}</p>
+                  <p class="text-[11px] text-slate-300 truncate">User: <span class="font-mono text-slate-200">${p.user}</span></p>
+                </div>
+                <div class="flex items-center gap-1 shrink-0">
+                  <button onclick="copySecret('${safeUserForAttr}', 'Username')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300">User</button>
+                  <button onclick="toggleRevealPassword(${p.id})" title="${isShown ? 'Nascondi password' : 'Mostra password'}" class="p-1.5 rounded bg-slate-800 hover:bg-slate-700 text-emerald-300 transition">
+                    <i data-lucide="${isShown ? 'eye-off' : 'eye'}" class="w-3.5 h-3.5"></i>
+                  </button>
+                  <button onclick="copySecret('${safeDecodedForAttr}', 'Password')" class="px-2 py-1 rounded bg-emerald-600/30 hover:bg-emerald-600/50 text-[11px] text-emerald-200 font-semibold">Copia PW</button>
+                  <button onclick="deletePassword(${p.id})" class="text-slate-500 hover:text-rose-400 p-1"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                </div>
+              </div>
+              <div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-slate-950/80 border border-white/5 text-[11px] font-mono">
+                <span class="text-slate-400">PW:</span>
+                <span class="${isShown ? 'text-emerald-300 select-all break-all' : 'text-slate-500 tracking-widest'}">${isShown ? decodedPass : '••••••••••••'}</span>
+              </div>
             </div>
-            <div class="flex items-center gap-1.5 shrink-0">
-              <button onclick="copySecret('${p.user}', 'Username')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300">User</button>
-              <button onclick="copySecret(atob('${p.pass}'), 'Password')" class="px-2 py-1 rounded bg-emerald-600/30 hover:bg-emerald-600/50 text-[11px] text-emerald-200 font-semibold">Copia PW</button>
-              <button onclick="deletePassword(${p.id})" class="text-slate-500 hover:text-rose-400 p-1"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-            </div>
-          </div>
-        `).join('') : '<p class="text-xs text-slate-500 text-center py-3">Nessuna credenziale salvata.</p>';
+          `;
+        }).join('') : '<p class="text-xs text-slate-500 text-center py-3">Nessuna credenziale salvata.</p>';
       }
 
       document.getElementById('voiceList').innerHTML = state.voices.length ? state.voices.map(v => `
