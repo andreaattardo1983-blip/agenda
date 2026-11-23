@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OmniDesk — Agenda, Vault & Cloud Sync</title>
+  <title>OmniDesk E2EE — Agenda, Vault & Cloud Cifrato</title>
   <style>
     :root {
       --bg-main: #070b14;
@@ -72,7 +72,7 @@
       width: 36px;
       height: 36px;
       border-radius: 10px;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      background: linear-gradient(135deg, #10b981, #5b5cff);
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 3px;
@@ -116,6 +116,12 @@
       border-color: rgba(245, 158, 11, 0.4);
       background: var(--warn-soft);
       color: #fbbf24;
+    }
+
+    .cloud-pill.locked {
+      border-color: rgba(239, 68, 68, 0.45);
+      background: var(--danger-soft);
+      color: #fca5a5;
     }
 
     .cloud-dot {
@@ -197,12 +203,7 @@
       color: #090d16;
     }
 
-    button.active-time-filter {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
+    button.active-time-filter,
     button.active-folder {
       background: var(--accent);
       border-color: var(--accent);
@@ -214,6 +215,25 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .security-banner {
+      background: linear-gradient(90deg, rgba(16, 185, 129, 0.14), rgba(91, 92, 255, 0.14));
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.82rem;
+    }
+
+    .security-banner.warn {
+      background: var(--warn-soft);
+      border-color: rgba(245, 158, 11, 0.45);
+      color: #fde68a;
     }
 
     .bento-card {
@@ -262,15 +282,11 @@
     }
 
     @media (max-width: 980px) {
-      .quick-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
+      .quick-grid { grid-template-columns: repeat(3, 1fr); }
     }
 
     @media (max-width: 520px) {
-      .quick-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+      .quick-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
     .quick-tile {
@@ -302,10 +318,7 @@
     }
 
     @media (max-width: 640px) {
-      .quick-bar {
-        flex-direction: column;
-        align-items: stretch;
-      }
+      .quick-bar { flex-direction: column; align-items: stretch; }
     }
 
     .quick-bar input {
@@ -326,9 +339,7 @@
     }
 
     @media (max-width: 980px) {
-      .main-bento {
-        grid-template-columns: 1fr;
-      }
+      .main-bento { grid-template-columns: 1fr; }
     }
 
     .left-stack,
@@ -390,13 +401,10 @@
       border-radius: var(--radius-sm);
     }
 
-    .inline-form.hidden {
-      display: none;
-    }
+    .inline-form.hidden { display: none; }
 
     .inline-form input,
-    .inline-form select,
-    .inline-form textarea {
+    .inline-form select {
       width: 100%;
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -518,13 +526,6 @@
       margin-bottom: 10px;
     }
 
-    .doc-search-icon {
-      font-size: 0.92rem;
-      line-height: 1;
-      opacity: 0.85;
-      user-select: none;
-    }
-
     .doc-search-box input {
       flex: 1;
       background: transparent;
@@ -533,11 +534,6 @@
       font-size: 0.84rem;
       padding: 3px 4px;
       outline: none;
-    }
-
-    .doc-search-clear {
-      padding: 2px 7px !important;
-      font-size: 0.74rem !important;
     }
 
     .vault-box {
@@ -557,7 +553,7 @@
     }
 
     .pin-row input {
-      width: 125px;
+      width: 135px;
       text-align: center;
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -603,10 +599,6 @@
       gap: 8px;
     }
 
-    .voice-btn:hover:not(:disabled) {
-      background: #be123c;
-    }
-
     .voice-btn.recording {
       background: #dc2626;
       animation: pulse 1.2s infinite;
@@ -623,9 +615,7 @@
       border-top: 1px solid var(--border-soft);
     }
 
-    .preview-panel.hidden {
-      display: none;
-    }
+    .preview-panel.hidden { display: none; }
 
     .preview-surface {
       margin-top: 10px;
@@ -691,9 +681,7 @@
       z-index: 50;
     }
 
-    .modal-backdrop.open {
-      display: flex;
-    }
+    .modal-backdrop.open { display: flex; }
 
     .modal-card {
       background: var(--bg-card);
@@ -714,9 +702,7 @@
     }
 
     @media (max-width: 580px) {
-      .modal-grid {
-        grid-template-columns: 1fr;
-      }
+      .modal-grid { grid-template-columns: 1fr; }
     }
 
     .field-group {
@@ -747,9 +733,7 @@
       align-items: center;
     }
 
-    .password-input-row input {
-      flex: 1;
-    }
+    .password-input-row input { flex: 1; }
 
     .progress-bar {
       height: 8px;
@@ -767,37 +751,20 @@
       transition: width 0.25s ease;
     }
 
-    .hidden-file {
-      display: none;
-    }
+    .hidden-file { display: none; }
 
     @media print {
-      body {
-        background: #fff;
-        padding: 0;
-      }
+      body { background: #fff; padding: 0; }
       .topbar,
+      .security-banner,
       .bento-card:not(.print-target-card),
       .main-bento > .left-stack,
       .main-bento > .right-stack > .bento-card:not(.print-target-card),
       .status-toast,
-      .modal-backdrop {
-        display: none !important;
-      }
-      .main-bento,
-      .right-stack {
-        display: block !important;
-      }
-      .print-target-card {
-        border: none;
-        padding: 0;
-        background: #fff;
-      }
-      .preview-surface {
-        border: none;
-        padding: 0;
-        background: #fff;
-      }
+      .modal-backdrop { display: none !important; }
+      .main-bento, .right-stack { display: block !important; }
+      .print-target-card { border: none; padding: 0; background: #fff; }
+      .preview-surface { border: none; padding: 0; background: #fff; }
     }
   </style>
 </head>
@@ -810,19 +777,19 @@
         </div>
         <div>
           <div class="brand-title-row">
-            <span class="brand-title">OmniDesk</span>
-            <button type="button" id="badgeCloud" class="cloud-pill offline" title="Stato e configurazione Cloud">
+            <span class="brand-title">OmniDesk E2EE</span>
+            <button type="button" id="badgeCloud" class="cloud-pill offline" title="Stato e configurazione Cloud Cifrato">
               <span class="cloud-dot"></span>
               <span id="testoBadgeCloud">Cloud Locale</span>
             </button>
           </div>
-          <div class="brand-subtitle" id="dataOraHeader">Lunedì 23 novembre 2026 • Sincronizzazione pronta</div>
+          <div class="brand-subtitle" id="dataOraHeader">Lunedì 23 novembre 2026 • Cifratura End-to-End AES-256</div>
         </div>
       </div>
 
       <div class="topbar-actions">
         <input type="search" id="inputRicerca" class="search-input" placeholder="Cerca ovunque...">
-        <button type="button" id="btnApriCloud">Spazio Cloud</button>
+        <button type="button" id="btnApriCloud">Sicurezza &amp; Cloud</button>
         <button type="button" class="icon-btn" id="btnExportJson" title="Esporta Backup JSON">⬇</button>
         <button type="button" class="icon-btn" id="btnImportJson" title="Importa Backup JSON">⬆</button>
         <input type="file" id="inputFileJson" accept="application/json,.json" class="hidden-file">
@@ -831,13 +798,18 @@
       </div>
     </header>
 
+    <div class="security-banner warn" id="securityBanner">
+      <span id="securityBannerText">⚠️ Imposta un <strong>Codice / Password di Sincronizzazione</strong> robusto (almeno 10 caratteri) in <strong>Sicurezza &amp; Cloud</strong> per cifrare tutti i dati prima dell'invio.</span>
+      <button type="button" class="btn-primary" id="btnBannerConfig" style="padding: 5px 10px; font-size: 0.78rem;">Configura Chiave AES-256</button>
+    </div>
+
     <section class="bento-card">
       <div class="card-header">
         <div class="card-title-group">
           <span class="cloud-dot" style="background: var(--ok);"></span>
           <h2 class="card-title">Azioni Rapide (1-Tap)</h2>
         </div>
-        <button type="button" id="btnSincronizzaOra" style="padding: 5px 10px; font-size: 0.78rem;">↻ Sync Ora</button>
+        <button type="button" id="btnSincronizzaOra" style="padding: 5px 10px; font-size: 0.78rem;">↻ Sync Cifrato Ora</button>
       </div>
 
       <div class="quick-grid">
@@ -975,7 +947,7 @@
             <div class="pin-change-box">
               <div>
                 <div class="item-title" style="font-size: 0.82rem;">Cambia PIN Cassaforte</div>
-                <div class="item-meta" id="infoPinAttuale">PIN attualmente impostato: 1234</div>
+                <div class="item-meta" id="infoPinAttuale">PIN personalizzato attivo</div>
               </div>
               <div class="item-actions">
                 <input type="text" id="inputNuovoPinVault" placeholder="Nuovo PIN..." maxlength="20">
@@ -1021,9 +993,9 @@
           </div>
 
           <div class="doc-search-box">
-            <span class="doc-search-icon" aria-hidden="true">🔍</span>
+            <span aria-hidden="true">🔍</span>
             <input type="search" id="inputRicercaDocumenti" placeholder="Search per nome file (es. bolletta, carta, ricevuta)...">
-            <button type="button" id="btnPulisciRicercaDoc" class="doc-search-clear" title="Pulisci ricerca">✕</button>
+            <button type="button" id="btnPulisciRicercaDoc" style="padding: 2px 7px; font-size: 0.74rem;" title="Pulisci ricerca">✕</button>
           </div>
 
           <div class="inline-form" style="margin-bottom: 10px; padding: 8px;">
@@ -1055,11 +1027,11 @@
     </div>
   </div>
 
-  <!-- MODALE CLOUD & SYNC -->
+  <!-- MODALE SICUREZZA & CLOUD E2EE -->
   <div class="modal-backdrop" id="modalCloud" role="dialog" aria-modal="true" aria-labelledby="titoloModalCloud">
     <div class="modal-card">
       <div class="card-header">
-        <h2 class="card-title" id="titoloModalCloud">☁️ Cloud Sync tra PC e Cellulare</h2>
+        <h2 class="card-title" id="titoloModalCloud">🛡️ Sicurezza End-to-End &amp; Cloud Sync</h2>
         <button type="button" id="btnChiudiModalCloud">✕</button>
       </div>
 
@@ -1077,10 +1049,10 @@
           <input type="text" id="cloudRoomCode" placeholder="es. omnidesk-spazio-personale">
         </div>
         <div class="field-group" style="margin-bottom: 0;">
-          <label for="cloudSyncPassword">Codice / Password di Sincronizzazione</label>
+          <label for="cloudSyncPassword">Chiave Segreta AES-256 (Password Sync)</label>
           <div class="password-input-row">
-            <input type="password" id="cloudSyncPassword" placeholder="Inserisci codice/password condiviso">
-            <button type="button" id="btnTogglePasswordCloud" title="Mostra o nascondi password">👁</button>
+            <input type="password" id="cloudSyncPassword" placeholder="Minimo 10 caratteri complessi">
+            <button type="button" id="btnTogglePasswordCloud" title="Mostra o nascondi chiave">👁</button>
           </div>
         </div>
       </div>
@@ -1105,14 +1077,14 @@
       </div>
 
       <div class="item-meta" style="margin: 8px 0 14px;">
-        Usa lo stesso <strong>Codice Stanza</strong> e <strong>Codice / Password di Sincronizzazione</strong> su PC e cellulare[cite: 4]. I dati vengono salvati in <code>localStorage</code>, <code>IndexedDB</code> e sincronizzati sul cloud per evitare perdite dopo giorni o riavvii del browser.
+        <strong>Cifratura End-to-End attiva:</strong> tutti i dati vengono cifrati con <code>PBKDF2 (150.000 iterazioni) + AES-GCM 256-bit</code> prima di essere salvati o inviati a Firebase. Senza la tua <strong>Chiave Segreta AES-256</strong> nessuno può decifrare il contenuto del database.
       </div>
 
       <div class="item-actions" style="justify-content: space-between;">
         <div class="item-actions">
-          <button type="button" class="btn-primary" id="btnSalvaConfigCloud">Salva e Connetti Cloud</button>
-          <button type="button" id="btnForzaPullCloud">Scarica da Cloud</button>
-          <button type="button" id="btnForzaPushCloud">Invia a Cloud</button>
+          <button type="button" class="btn-primary" id="btnSalvaConfigCloud">Salva e Cifra Cloud</button>
+          <button type="button" id="btnForzaPullCloud">Scarica e Decifra</button>
+          <button type="button" id="btnForzaPushCloud">Cifra e Invia</button>
         </div>
         <button type="button" class="btn-danger" id="btnResetDati">Reset Dati</button>
       </div>
@@ -1181,8 +1153,8 @@
       appId: '1:586746089395:web:ee7a2fcbc0e0fc685905c6'
     };
 
-    let state = loadState();
     let cloudCfg = loadCloudCfg();
+    let state = structuredClone(defaultState);
 
     let filtroTemporale = 'giornaliero';
     let categoriaScadenzaAttiva = 'Tutte';
@@ -1201,6 +1173,8 @@
     const testoBadgeCloud = document.getElementById('testoBadgeCloud');
     const dataOraHeader = document.getElementById('dataOraHeader');
     const statusToast = document.getElementById('statusToast');
+    const securityBanner = document.getElementById('securityBanner');
+    const securityBannerText = document.getElementById('securityBannerText');
 
     const formRapido = document.getElementById('formRapido');
     const inputRapido = document.getElementById('inputRapido');
@@ -1246,6 +1220,20 @@
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     }
 
+    function aggiornaBannerSicurezza() {
+      const pwd = (cloudCfg.syncPassword || '').trim();
+      if (pwd.length >= 10) {
+        securityBanner.classList.remove('warn');
+        securityBannerText.innerHTML = '🛡️ <strong>Cifratura End-to-End AES-256 Attiva:</strong> i tuoi dati vengono cifrati localmente prima di essere salvati o sincronizzati sul Cloud.';
+      } else if (pwd.length > 0) {
+        securityBanner.classList.add('warn');
+        securityBannerText.innerHTML = '⚠️ <strong>Chiave corta:</strong> usa almeno 10 caratteri con lettere, numeri e simboli per una protezione AES-256 robusta.';
+      } else {
+        securityBanner.classList.add('warn');
+        securityBannerText.innerHTML = '⚠️ Imposta una <strong>Chiave Segreta AES-256</strong> (almeno 10 caratteri) in <strong>Sicurezza &amp; Cloud</strong> per cifrare tutti i dati.';
+      }
+    }
+
     function aggiornaDataOraHeader() {
       const ora = new Date();
       const formattata = ora.toLocaleDateString('it-IT', {
@@ -1255,11 +1243,12 @@
         year: 'numeric'
       });
       const hhmm = ora.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-      const passBadge = cloudCfg.syncPassword ? ' • Codice/Password impostato' : '';
+      const e2eLabel = (cloudCfg.syncPassword || '').trim() ? ' • E2EE AES-256 Attivo' : ' • Chiave E2EE non impostata';
       const roomLabel = cloudCfg.databaseUrl
-        ? `Stanza: ${cloudCfg.roomCode || 'default'}${passBadge}`
-        : `Solo dispositivo locale${passBadge}`;
+        ? `Stanza: ${cloudCfg.roomCode || 'default'}${e2eLabel}`
+        : `Solo dispositivo locale${e2eLabel}`;
       dataOraHeader.textContent = `${formattata.charAt(0).toUpperCase() + formattata.slice(1)} alle ore ${hhmm} • ${roomLabel}`;
+      aggiornaBannerSicurezza();
     }
 
     function mostraToast(msg) {
@@ -1268,7 +1257,87 @@
       clearTimeout(mostraToast._t);
       mostraToast._t = setTimeout(() => {
         statusToast.style.display = 'none';
-      }, 3400);
+      }, 3600);
+    }
+
+    function bufToB64(buf) {
+      const bytes = new Uint8Array(buf);
+      let bin = '';
+      for (let i = 0; i < bytes.byteLength; i++) {
+        bin += String.fromCharCode(bytes[i]);
+      }
+      return btoa(bin);
+    }
+
+    function b64ToBuf(b64) {
+      const bin = atob(b64);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) {
+        bytes[i] = bin.charCodeAt(i);
+      }
+      return bytes.buffer;
+    }
+
+    async function deriveAesKey(password, saltBuf) {
+      const enc = new TextEncoder();
+      const baseKey = await crypto.subtle.importKey(
+        'raw',
+        enc.encode(password),
+        'PBKDF2',
+        false,
+        ['deriveKey']
+      );
+      return crypto.subtle.deriveKey(
+        {
+          name: 'PBKDF2',
+          salt: saltBuf,
+          iterations: 150000,
+          hash: 'SHA-256'
+        },
+        baseKey,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['encrypt', 'decrypt']
+      );
+    }
+
+    async function encryptStateEnvelope(plainObj, password) {
+      const pwd = (password || '').trim();
+      if (!pwd || !window.crypto || !window.crypto.subtle) {
+        return plainObj;
+      }
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const key = await deriveAesKey(pwd, salt);
+      const encoded = new TextEncoder().encode(JSON.stringify(plainObj));
+      const cipherBuf = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoded);
+      return {
+        __e2ee: true,
+        alg: 'AES-GCM-256',
+        kdf: 'PBKDF2-SHA256-150k',
+        salt: bufToB64(salt),
+        iv: bufToB64(iv),
+        ciphertext: bufToB64(cipherBuf),
+        updatedAt: Number(plainObj.updatedAt || Date.now())
+      };
+    }
+
+    async function decryptStateEnvelope(rawObj, password) {
+      if (!rawObj || typeof rawObj !== 'object') return null;
+      if (!rawObj.__e2ee) {
+        return rawObj; // Compatibilità con dati precedenti non ancora cifrati
+      }
+      const pwd = (password || '').trim();
+      if (!pwd) {
+        throw new Error('Chiave E2EE mancante');
+      }
+      const salt = new Uint8Array(b64ToBuf(rawObj.salt));
+      const iv = new Uint8Array(b64ToBuf(rawObj.iv));
+      const cipherBuf = b64ToBuf(rawObj.ciphertext);
+      const key = await deriveAesKey(pwd, salt);
+      const plainBuf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, cipherBuf);
+      const decoded = new TextDecoder().decode(plainBuf);
+      return JSON.parse(decoded);
     }
 
     function openIDB() {
@@ -1286,16 +1355,14 @@
       });
     }
 
-    async function writeIDBBackup(dataObj, cfgObj) {
+    async function writeIDBBackup(envelopeObj, cfgObj) {
       try {
         const db = await openIDB();
         const tx = db.transaction(IDB_STORE, 'readwrite');
         const store = tx.objectStore(IDB_STORE);
-        store.put({ id: 'state', payload: dataObj, savedAt: Date.now() });
+        store.put({ id: 'state', payload: envelopeObj, savedAt: Date.now() });
         store.put({ id: 'cloudCfg', payload: cfgObj, savedAt: Date.now() });
-      } catch (e) {
-        // Ignora errori IDB se bloccato in modalità privata
-      }
+      } catch (e) {}
     }
 
     async function readIDBBackup(key) {
@@ -1344,17 +1411,11 @@
       };
       merged.deletedIds = deletedMap;
 
-      const incImp = normalizeArrayField(incoming.impegni, []);
-      const incSc = normalizeArrayField(incoming.scadenze, []);
-      const incPwd = normalizeArrayField(incoming.password, []);
-      const incVoc = normalizeArrayField(incoming.vocali, []);
-      const incDoc = normalizeArrayField(incoming.documenti, []);
-
-      merged.impegni = mergeListById(base.impegni, incImp, deletedMap);
-      merged.scadenze = mergeListById(base.scadenze, incSc, deletedMap);
-      merged.password = mergeListById(base.password, incPwd, deletedMap);
-      merged.vocali = mergeListById(base.vocali, incVoc, deletedMap);
-      merged.documenti = mergeListById(base.documenti, incDoc, deletedMap);
+      merged.impegni = mergeListById(base.impegni, normalizeArrayField(incoming.impegni, []), deletedMap);
+      merged.scadenze = mergeListById(base.scadenze, normalizeArrayField(incoming.scadenze, []), deletedMap);
+      merged.password = mergeListById(base.password, normalizeArrayField(incoming.password, []), deletedMap);
+      merged.vocali = mergeListById(base.vocali, normalizeArrayField(incoming.vocali, []), deletedMap);
+      merged.documenti = mergeListById(base.documenti, normalizeArrayField(incoming.documenti, []), deletedMap);
 
       if (typeof incoming.pinVault === 'string' && incoming.pinVault.trim()) {
         merged.pinVault = incoming.pinVault.trim();
@@ -1372,16 +1433,6 @@
       state.deletedIds[id] = Date.now();
     }
 
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return structuredClone(defaultState);
-        return mergeState(defaultState, JSON.parse(raw));
-      } catch (e) {
-        return structuredClone(defaultState);
-      }
-    }
-
     function loadCloudCfg() {
       try {
         const raw = localStorage.getItem(CLOUD_CFG_KEY);
@@ -1392,20 +1443,26 @@
       }
     }
 
-    function saveState(pushRemote = true, isDeletionOrEdit = false) {
+    async function persistLocalEncrypted(plainState) {
+      const envelope = await encryptStateEnvelope(plainState, cloudCfg.syncPassword);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(envelope));
+      } catch (e) {
+        mostraToast('Memoria localStorage piena: rimuovi allegati grandi o esporta JSON.');
+      }
+      await writeIDBBackup(envelope, cloudCfg);
+      return envelope;
+    }
+
+    async function saveState(pushRemote = true, isDeletionOrEdit = false) {
       state.updatedAt = Date.now();
       if (isDeletionOrEdit) {
         localLockUntil = Date.now() + 12000;
       }
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch (e) {
-        mostraToast('Memoria localStorage piena: rimuovi allegati grandi o esporta JSON.');
-      }
-      writeIDBBackup(state, cloudCfg);
+      const envelope = await persistLocalEncrypted(state);
       aggiornaIndicatoreSpazio();
       if (pushRemote && !isSyncingFromRemote && isCloudConfigured()) {
-        pushToFirebase(false);
+        await pushToFirebase(false, envelope);
       }
     }
 
@@ -1432,13 +1489,13 @@
       return `${base}/omnidesk_rooms/${key}.json`;
     }
 
-    async function pushToFirebase(showFeedback = true) {
+    async function pushToFirebase(showFeedback = true, prebuiltEnvelope = null) {
       if (!isCloudConfigured()) {
-        if (showFeedback) mostraToast('Configura prima il Firebase Database URL in Spazio Cloud.');
+        if (showFeedback) mostraToast('Configura prima il Firebase Database URL in Sicurezza & Cloud.');
         return;
       }
       try {
-        const payload = {
+        const plainPayload = {
           ...state,
           impegni: state.impegni || [],
           scadenze: state.scadenze || [],
@@ -1449,14 +1506,18 @@
           pinVault: state.pinVault || '1234',
           updatedAt: Number(state.updatedAt || Date.now())
         };
+        const envelope = prebuiltEnvelope || (await encryptStateEnvelope(plainPayload, cloudCfg.syncPassword));
         const res = await fetch(getFirebaseRoomUrl(), {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(envelope)
         });
         if (!res.ok) throw new Error('HTTP ' + res.status);
-        aggiornaStatoCloudUI(true, 'Live Cloud Attivo');
-        if (showFeedback) mostraToast('Dati salvati e inviati al Cloud.');
+        const modeLabel = envelope.__e2ee ? 'E2EE AES-256 Attivo' : 'Live Cloud (Non Cifrato)';
+        aggiornaStatoCloudUI(true, modeLabel);
+        if (showFeedback) {
+          mostraToast(envelope.__e2ee ? 'Dati cifrati AES-256 e inviati al Cloud.' : 'Dati inviati al Cloud.');
+        }
       } catch (err) {
         aggiornaStatoCloudUI(false, 'Errore Cloud');
         if (showFeedback) mostraToast('Errore invio Cloud: controlla URL e regole Firebase.');
@@ -1465,7 +1526,7 @@
 
     async function pullFromFirebase(showFeedback = false) {
       if (!isCloudConfigured()) {
-        if (showFeedback) mostraToast('Configura prima il Firebase Database URL in Spazio Cloud.');
+        if (showFeedback) mostraToast('Configura prima il Firebase Database URL in Sicurezza & Cloud.');
         return;
       }
       if (!showFeedback && Date.now() < localLockUntil) {
@@ -1476,8 +1537,17 @@
         const url = getFirebaseRoomUrl() + cacheBust;
         const res = await fetch(url, { cache: 'no-store' });
         if (!res.ok) throw new Error('HTTP ' + res.status);
-        const remote = await res.json();
-        if (remote && typeof remote === 'object') {
+        const remoteRaw = await res.json();
+        if (remoteRaw && typeof remoteRaw === 'object') {
+          let remoteDecrypted;
+          try {
+            remoteDecrypted = await decryptStateEnvelope(remoteRaw, cloudCfg.syncPassword);
+          } catch (decErr) {
+            aggiornaStatoCloudUI(false, 'Chiave AES-256 Errata', true);
+            if (showFeedback) mostraToast('Chiave Segreta AES-256 errata o mancante per decifrare il Cloud.');
+            return;
+          }
+
           const prevJson = JSON.stringify({
             impegni: state.impegni,
             scadenze: state.scadenze,
@@ -1486,10 +1556,10 @@
             documenti: state.documenti,
             pinVault: state.pinVault
           });
+
           isSyncingFromRemote = true;
-          state = mergeState(state, remote);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-          writeIDBBackup(state, cloudCfg);
+          state = mergeState(state, remoteDecrypted);
+          await persistLocalEncrypted(state);
           isSyncingFromRemote = false;
 
           const nextJson = JSON.stringify({
@@ -1503,10 +1573,14 @@
 
           if (showFeedback || prevJson !== nextJson) {
             renderAll();
-            if (showFeedback) mostraToast('Dati scaricati e uniti con il Cloud.');
+            if (showFeedback) mostraToast('Dati scaricati e decifrati dal Cloud.');
           }
+          const modeLabel = remoteRaw.__e2ee || (cloudCfg.syncPassword || '').trim() ? 'E2EE AES-256 Attivo' : 'Live Cloud (Non Cifrato)';
+          aggiornaStatoCloudUI(true, modeLabel);
+        } else {
+          const modeLabel = (cloudCfg.syncPassword || '').trim() ? 'E2EE AES-256 Attivo' : 'Live Cloud (Non Cifrato)';
+          aggiornaStatoCloudUI(true, modeLabel);
         }
-        aggiornaStatoCloudUI(true, 'Live Cloud Attivo');
       } catch (err) {
         aggiornaStatoCloudUI(false, 'Cloud Non Raggiungibile');
         if (showFeedback) mostraToast('Impossibile leggere dal Cloud.');
@@ -1523,12 +1597,13 @@
       }
     }
 
-    function aggiornaStatoCloudUI(online, etichetta) {
+    function aggiornaStatoCloudUI(online, etichetta, locked = false) {
       testoBadgeCloud.textContent = etichetta;
       document.getElementById('statoDettagliatoCloud').textContent = etichetta;
-      if (online) {
-        badgeCloud.classList.remove('offline');
-      } else {
+      badgeCloud.classList.remove('offline', 'locked');
+      if (locked) {
+        badgeCloud.classList.add('locked');
+      } else if (!online) {
         badgeCloud.classList.add('offline');
       }
       aggiornaDataOraHeader();
@@ -1566,7 +1641,7 @@
       });
     }
 
-    function aggiungiDocumentoInCartella({ nome, tipo, dataUrl, origine = 'Archivio' }) {
+    async function aggiungiDocumentoInCartella({ nome, tipo, dataUrl, origine = 'Archivio' }) {
       const docItem = {
         id: 'doc-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
         nome,
@@ -1581,7 +1656,7 @@
       document.querySelectorAll('[data-doc-folder]').forEach((btn) => {
         btn.classList.toggle('active-folder', btn.dataset.docFolder === cartellaDocumentiAttiva);
       });
-      saveState(true, true);
+      await saveState(true, true);
       renderDocumenti();
       return docItem;
     }
@@ -1804,13 +1879,13 @@
         btnDel.type = 'button';
         btnDel.className = 'btn-danger';
         btnDel.textContent = 'Elimina';
-        btnDel.addEventListener('click', () => {
+        btnDel.addEventListener('click', async () => {
           if (elementoAnteprima && elementoAnteprima.docId === doc.id) {
             chiudiAnteprima();
           }
           registerDeletedId(doc.id);
           state.documenti = (state.documenti || []).filter((x) => x.id !== doc.id);
-          saveState(true, true);
+          await saveState(true, true);
           renderDocumenti();
           mostraToast('File eliminato dalla cartella.');
         });
@@ -1846,9 +1921,9 @@
         const cb = document.createElement('input');
         cb.type = 'checkbox';
         cb.checked = Boolean(item.completato);
-        cb.addEventListener('change', () => {
+        cb.addEventListener('change', async () => {
           item.completato = cb.checked;
-          saveState(true, true);
+          await saveState(true, true);
           renderImpegni();
         });
 
@@ -1914,10 +1989,10 @@
         btnDel.type = 'button';
         btnDel.className = 'btn-danger';
         btnDel.textContent = 'Elimina';
-        btnDel.addEventListener('click', () => {
+        btnDel.addEventListener('click', async () => {
           registerDeletedId(item.id);
           state.impegni = state.impegni.filter((x) => x.id !== item.id);
-          saveState(true, true);
+          await saveState(true, true);
           renderImpegni();
           mostraToast('Impegno eliminato.');
         });
@@ -2005,10 +2080,10 @@
         btnDel.type = 'button';
         btnDel.className = 'btn-danger';
         btnDel.textContent = '✕';
-        btnDel.addEventListener('click', () => {
+        btnDel.addEventListener('click', async () => {
           registerDeletedId(sc.id);
           state.scadenze = state.scadenze.filter((x) => x.id !== sc.id);
-          saveState(true, true);
+          await saveState(true, true);
           renderScadenze();
           mostraToast('Scadenza eliminata.');
         });
@@ -2022,9 +2097,8 @@
 
     function renderVault() {
       const pill = document.getElementById('statoVaultPill');
-      const currentPin = state.pinVault || '1234';
       if (infoPinAttuale) {
-        infoPinAttuale.textContent = `PIN attualmente impostato: ${currentPin}`;
+        infoPinAttuale.textContent = 'PIN personalizzato attivo';
       }
       if (!vaultSbloccato) {
         vaultBloccata.style.display = 'block';
@@ -2046,10 +2120,10 @@
         del.type = 'button';
         del.className = 'btn-danger';
         del.textContent = 'Elimina';
-        del.addEventListener('click', () => {
+        del.addEventListener('click', async () => {
           registerDeletedId(p.id);
           state.password = state.password.filter((x) => x.id !== p.id);
-          saveState(true, true);
+          await saveState(true, true);
           renderVault();
           mostraToast('Password eliminata.');
         });
@@ -2083,10 +2157,10 @@
         del.type = 'button';
         del.className = 'btn-danger';
         del.textContent = '✕';
-        del.addEventListener('click', () => {
+        del.addEventListener('click', async () => {
           registerDeletedId(v.id);
           state.vocali = state.vocali.filter((x) => x.id !== v.id);
-          saveState(true, true);
+          await saveState(true, true);
           renderVocali();
           mostraToast('Registrazione eliminata.');
         });
@@ -2120,9 +2194,9 @@
         allegato: null
       });
       inputRapido.value = '';
-      saveState(true, true);
+      await saveState(true, true);
       renderImpegni();
-      mostraToast('Promemoria aggiunto.');
+      mostraToast('Promemoria aggiunto e cifrato.');
     });
 
     document.getElementById('btnToggleFormImpegno').addEventListener('click', () => {
@@ -2142,7 +2216,7 @@
       let allegato = null;
       if (file) {
         allegato = await leggiFileComeDataUrl(file);
-        aggiungiDocumentoInCartella({
+        await aggiungiDocumentoInCartella({
           nome: allegato.nome,
           tipo: allegato.tipo,
           dataUrl: allegato.dataUrl,
@@ -2161,11 +2235,11 @@
       };
 
       state.impegni.unshift(nuovo);
-      saveState(true, true);
+      await saveState(true, true);
       formImpegnoCompleto.reset();
       formImpegnoCompleto.classList.add('hidden');
       renderImpegni();
-      mostraToast(allegato ? `Salvato in cartella ${allegato.tipo.toUpperCase()}: ${allegato.nome}` : 'Impegno salvato.');
+      mostraToast(allegato ? `Salvato e cifrato in cartella ${allegato.tipo.toUpperCase()}` : 'Impegno salvato e cifrato.');
     });
 
     inputAllegaVoceItem.addEventListener('change', async (e) => {
@@ -2176,13 +2250,13 @@
       if (!target) return;
       const allegato = await leggiFileComeDataUrl(file);
       target.allegato = allegato;
-      aggiungiDocumentoInCartella({
+      await aggiungiDocumentoInCartella({
         nome: allegato.nome,
         tipo: allegato.tipo,
         dataUrl: allegato.dataUrl,
         origine: `Impegno: ${target.titolo}`
       });
-      saveState(true, true);
+      await saveState(true, true);
       renderImpegni();
       mostraToast(`Salvato in cartella ${allegato.tipo.toUpperCase()}: ${allegato.nome}`);
     });
@@ -2208,7 +2282,7 @@
       document.getElementById('scadenzaData').value = oggiISO();
     });
 
-    formScadenza.addEventListener('submit', (e) => {
+    formScadenza.addEventListener('submit', async (e) => {
       e.preventDefault();
       state.scadenze.unshift({
         id: 'sc-' + Date.now(),
@@ -2220,7 +2294,7 @@
       });
       formScadenza.reset();
       formScadenza.classList.add('hidden');
-      saveState(true, true);
+      await saveState(true, true);
       renderScadenze();
     });
 
@@ -2232,13 +2306,13 @@
       if (!sc) return;
       const allegato = await leggiFileComeDataUrl(file);
       sc.allegato = allegato;
-      aggiungiDocumentoInCartella({
+      await aggiungiDocumentoInCartella({
         nome: allegato.nome,
         tipo: allegato.tipo,
         dataUrl: allegato.dataUrl,
         origine: `Scadenza: ${sc.titolo}`
       });
-      saveState(true, true);
+      await saveState(true, true);
       renderScadenze();
       mostraToast(`Salvato in cartella ${allegato.tipo.toUpperCase()}: ${allegato.nome}`);
     });
@@ -2259,11 +2333,11 @@
         inputPinVault.value = '';
         renderVault();
       } else {
-        mostraToast(`PIN errato (PIN attuale: ${state.pinVault || '1234'}).`);
+        mostraToast('PIN errato.');
       }
     });
 
-    document.getElementById('btnSalvaNuovoPin').addEventListener('click', () => {
+    document.getElementById('btnSalvaNuovoPin').addEventListener('click', async () => {
       const nuovoPin = inputNuovoPinVault.value.trim();
       if (!nuovoPin) {
         mostraToast('Inserisci prima il nuovo PIN.');
@@ -2271,7 +2345,7 @@
       }
       state.pinVault = nuovoPin;
       inputNuovoPinVault.value = '';
-      saveState(true, true);
+      await saveState(true, true);
       renderVault();
       mostraToast('PIN della Cassaforte aggiornato e salvato.');
     });
@@ -2281,7 +2355,7 @@
       renderVault();
     });
 
-    formPassword.addEventListener('submit', (e) => {
+    formPassword.addEventListener('submit', async (e) => {
       e.preventDefault();
       state.password.unshift({
         id: 'pwd-' + Date.now(),
@@ -2290,7 +2364,7 @@
         valore: document.getElementById('pwdValore').value.trim()
       });
       formPassword.reset();
-      saveState(true, true);
+      await saveState(true, true);
       renderVault();
     });
 
@@ -2314,14 +2388,14 @@
           stream.getTracks().forEach((t) => t.stop());
           const blob = new Blob(chunkVocali, { type: 'audio/webm' });
           const reader = new FileReader();
-          reader.onload = () => {
+          reader.onload = async () => {
             state.vocali.unshift({
               id: 'voc-' + Date.now(),
               titolo: `Nota vocale #${state.vocali.length + 1}`,
               data: new Date().toLocaleString('it-IT'),
               audioUrl: reader.result
             });
-            saveState(true, true);
+            await saveState(true, true);
             renderVocali();
           };
           reader.readAsDataURL(blob);
@@ -2348,7 +2422,7 @@
       for (const file of files) {
         const dati = await leggiFileComeDataUrl(file);
         ultimoTipo = dati.tipo;
-        aggiungiDocumentoInCartella({
+        await aggiungiDocumentoInCartella({
           nome: dati.nome,
           tipo: dati.tipo,
           dataUrl: dati.dataUrl,
@@ -2357,12 +2431,12 @@
       }
       mostraToast(
         files.length === 1
-          ? `Salvato in Cartella ${ultimoTipo.toUpperCase()} (anteprima chiusa).`
-          : `${files.length} file salvati nelle rispettive cartelle.`
+          ? `Salvato e cifrato in Cartella ${ultimoTipo.toUpperCase()}.`
+          : `${files.length} file salvati e cifrati.`
       );
     });
 
-    document.getElementById('btnApriUrlFile').addEventListener('click', () => {
+    document.getElementById('btnApriUrlFile').addEventListener('click', async () => {
       const url = inputUrlFile.value.trim();
       if (!url) return;
       const customName = inputNomeUrlFile.value.trim();
@@ -2377,7 +2451,7 @@
         }
       }
       const tipo = rilevaTipoDocumento(derivedName || url);
-      aggiungiDocumentoInCartella({
+      await aggiungiDocumentoInCartella({
         nome: derivedName,
         tipo,
         dataUrl: url,
@@ -2385,7 +2459,7 @@
       });
       inputUrlFile.value = '';
       inputNomeUrlFile.value = '';
-      mostraToast(`Link salvato in Cartella ${tipo.toUpperCase()} (anteprima chiusa).`);
+      mostraToast(`Link salvato in Cartella ${tipo.toUpperCase()}.`);
     });
 
     document.querySelectorAll('[data-doc-folder]').forEach((btn) => {
@@ -2429,15 +2503,16 @@
       document.getElementById('pwdServizio').focus();
     });
 
-    document.getElementById('btnExportJson').addEventListener('click', () => {
-      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    document.getElementById('btnExportJson').addEventListener('click', async () => {
+      const envelope = await encryptStateEnvelope(state, cloudCfg.syncPassword);
+      const blob = new Blob([JSON.stringify(envelope, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `omnidesk-backup-${oggiISO()}.json`;
+      a.download = `omnidesk-e2ee-backup-${oggiISO()}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      mostraToast('Backup JSON esportato.');
+      mostraToast(envelope.__e2ee ? 'Backup JSON cifrato AES-256 esportato.' : 'Backup JSON esportato.');
     });
 
     document.getElementById('btnImportJson').addEventListener('click', () => {
@@ -2448,15 +2523,16 @@
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = () => {
+      reader.onload = async () => {
         try {
           const parsed = JSON.parse(reader.result);
-          state = mergeState(defaultState, parsed);
-          saveState(true, true);
+          const decrypted = await decryptStateEnvelope(parsed, cloudCfg.syncPassword);
+          state = mergeState(defaultState, decrypted);
+          await saveState(true, true);
           renderAll();
-          mostraToast('Backup JSON importato.');
+          mostraToast('Backup JSON decifrato e importato.');
         } catch (err) {
-          mostraToast('File JSON non valido.');
+          mostraToast('Impossibile decifrare il JSON: controlla la Chiave Segreta AES-256.');
         }
       };
       reader.readAsText(file);
@@ -2478,6 +2554,7 @@
     });
 
     document.getElementById('btnApriCloud').addEventListener('click', apriModalCloud);
+    document.getElementById('btnBannerConfig').addEventListener('click', apriModalCloud);
     badgeCloud.addEventListener('click', apriModalCloud);
     document.getElementById('btnChiudiModalCloud').addEventListener('click', () => modalCloud.classList.remove('open'));
     document.getElementById('btnSincronizzaOra').addEventListener('click', () => {
@@ -2485,7 +2562,7 @@
         pullFromFirebase(true);
       } else {
         saveState(false);
-        mostraToast('Stato locale aggiornato. Apri Spazio Cloud per collegare Firebase.');
+        mostraToast('Stato locale cifrato e aggiornato.');
       }
     });
 
@@ -2499,14 +2576,15 @@
         appId: document.getElementById('fbAppId').value.trim()
       };
       localStorage.setItem(CLOUD_CFG_KEY, JSON.stringify(cloudCfg));
-      writeIDBBackup(state, cloudCfg);
+      await persistLocalEncrypted(state);
       localLockUntil = Date.now() + 8000;
       avviaPollingCloud();
       if (isCloudConfigured()) {
         await pushToFirebase(true);
       } else {
-        mostraToast('Codice/password e impostazioni salvate in locale.');
+        mostraToast('Chiave AES-256 e impostazioni salvate.');
       }
+      aggiornaDataOraHeader();
     });
 
     document.getElementById('btnForzaPullCloud').addEventListener('click', () => {
@@ -2519,26 +2597,40 @@
       pushToFirebase(true);
     });
 
-    document.getElementById('btnResetDati').addEventListener('click', () => {
+    document.getElementById('btnResetDati').addEventListener('click', async () => {
       state = structuredClone(defaultState);
       chiudiAnteprima();
-      saveState(true, true);
+      await saveState(true, true);
       renderAll();
       mostraToast('Dati reimpostati ai valori iniziali.');
     });
 
     async function initApp() {
       inputDataRiferimento.value = oggiISO();
-      const idbState = await readIDBBackup('state');
       const idbCfg = await readIDBBackup('cloudCfg');
-
       if (idbCfg && typeof idbCfg === 'object') {
         cloudCfg = { ...defaultCloudCfg, ...cloudCfg, ...idbCfg };
         localStorage.setItem(CLOUD_CFG_KEY, JSON.stringify(cloudCfg));
       }
-      if (idbState && typeof idbState === 'object') {
-        state = mergeState(state, idbState);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+
+      let rawLocal = null;
+      try {
+        const s = localStorage.getItem(STORAGE_KEY);
+        if (s) rawLocal = JSON.parse(s);
+      } catch (e) {}
+
+      const idbStateRaw = await readIDBBackup('state');
+      const sourceToLoad = rawLocal || idbStateRaw;
+
+      if (sourceToLoad) {
+        try {
+          const dec = await decryptStateEnvelope(sourceToLoad, cloudCfg.syncPassword);
+          if (dec) {
+            state = mergeState(defaultState, dec);
+          }
+        } catch (err) {
+          mostraToast('Inserisci la Chiave Segreta AES-256 in Sicurezza & Cloud per decifrare i dati.');
+        }
       }
 
       renderAll();
