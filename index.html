@@ -187,6 +187,16 @@
       background: var(--accent-hover);
     }
 
+    button.btn-bio {
+      background: rgba(16, 185, 129, 0.16);
+      border-color: rgba(16, 185, 129, 0.45);
+      color: #6ee7b7;
+    }
+
+    button.btn-bio:hover:not(:disabled) {
+      background: rgba(16, 185, 129, 0.28);
+    }
+
     button.btn-danger {
       background: var(--danger-soft);
       border-color: rgba(239, 68, 68, 0.35);
@@ -563,12 +573,26 @@
       font-size: 0.88rem;
     }
 
+    .bio-row {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
     .pin-change-box {
       margin-top: 12px;
       padding: 10px;
       background: var(--bg-input);
       border: 1px solid var(--border-soft);
       border-radius: 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .pin-change-line {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
@@ -597,6 +621,10 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+    }
+
+    .voice-btn:hover:not(:disabled) {
+      background: #be123c;
     }
 
     .voice-btn.recording {
@@ -799,7 +827,7 @@
     </header>
 
     <div class="security-banner warn" id="securityBanner">
-      <span id="securityBannerText">⚠️ Imposta un <strong>Codice / Password di Sincronizzazione</strong> robusto (almeno 10 caratteri) in <strong>Sicurezza &amp; Cloud</strong> per cifrare tutti i dati prima dell'invio.</span>
+      <span id="securityBannerText">⚠️ Imposta una <strong>Chiave Segreta AES-256</strong> (almeno 10 caratteri) in <strong>Sicurezza &amp; Cloud</strong> per cifrare tutti i dati prima dell'invio.</span>
       <button type="button" class="btn-primary" id="btnBannerConfig" style="padding: 5px 10px; font-size: 0.78rem;">Configura Chiave AES-256</button>
     </div>
 
@@ -923,16 +951,20 @@
             <div class="card-title-group">
               <h2 class="card-title">🔒 Cassaforte Password</h2>
             </div>
-            <span class="pill-tag" id="statoVaultPill">PIN</span>
+            <span class="pill-tag" id="statoVaultPill">PIN + VOLTO</span>
           </div>
 
           <div id="vaultBloccata" class="vault-box">
             <div style="font-size: 1.5rem; margin-bottom: 6px;">🛡️</div>
-            <div class="item-meta">Inserisci il PIN per accedere ai tuoi account</div>
+            <div class="item-meta">Sblocca con il PIN oppure con il riconoscimento del volto / biometria</div>
             <div class="pin-row">
               <input type="password" id="inputPinVault" placeholder="PIN attuale" maxlength="20">
-              <button type="button" class="btn-primary" id="btnSbloccaVault">Sblocca</button>
+              <button type="button" class="btn-primary" id="btnSbloccaVault">Sblocca con PIN</button>
             </div>
+            <div class="bio-row">
+              <button type="button" class="btn-bio" id="btnSbloccaBio">🪪 Sblocca con Volto / Biometria</button>
+            </div>
+            <div class="item-meta" id="statoBioBloccata" style="margin-top: 8px; font-size: 0.73rem;"></div>
           </div>
 
           <div id="vaultSbloccata" style="display: none;">
@@ -945,14 +977,27 @@
             <div class="list-stack" id="listaPassword"></div>
 
             <div class="pin-change-box">
-              <div>
-                <div class="item-title" style="font-size: 0.82rem;">Cambia PIN Cassaforte</div>
-                <div class="item-meta" id="infoPinAttuale">PIN personalizzato attivo</div>
+              <div class="pin-change-line">
+                <div>
+                  <div class="item-title" style="font-size: 0.82rem;">Cambia PIN Cassaforte</div>
+                  <div class="item-meta" id="infoPinAttuale">PIN personalizzato attivo</div>
+                </div>
+                <div class="item-actions">
+                  <input type="text" id="inputNuovoPinVault" placeholder="Nuovo PIN..." maxlength="20">
+                  <button type="button" class="btn-primary" id="btnSalvaNuovoPin">Aggiorna PIN</button>
+                </div>
               </div>
-              <div class="item-actions">
-                <input type="text" id="inputNuovoPinVault" placeholder="Nuovo PIN..." maxlength="20">
-                <button type="button" class="btn-primary" id="btnSalvaNuovoPin">Aggiorna PIN</button>
-                <button type="button" id="btnBloccaVault">Blocca</button>
+
+              <div class="pin-change-line" style="border-top: 1px solid var(--border-soft); padding-top: 8px;">
+                <div>
+                  <div class="item-title" style="font-size: 0.82rem;">Sblocco con Volto / Biometria</div>
+                  <div class="item-meta" id="infoStatoBio">Non ancora configurato su questo dispositivo</div>
+                </div>
+                <div class="item-actions">
+                  <button type="button" class="btn-bio" id="btnRegistraBio">🪪 Attiva Volto / Biometria</button>
+                  <button type="button" class="btn-danger" id="btnRimuoviBio" style="display: none;">Rimuovi</button>
+                  <button type="button" id="btnBloccaVault">Blocca</button>
+                </div>
               </div>
             </div>
           </div>
@@ -1096,6 +1141,7 @@
   <script>
     const STORAGE_KEY = 'omnidesk_stato_v1';
     const CLOUD_CFG_KEY = 'omnidesk_cloud_cfg_v2';
+    const BIO_CRED_KEY = 'omnidesk_vault_bio_cred_v1';
     const IDB_NAME = 'OmniDeskPersistDB';
     const IDB_STORE = 'snapshots';
 
@@ -1192,6 +1238,11 @@
     const inputPinVault = document.getElementById('inputPinVault');
     const inputNuovoPinVault = document.getElementById('inputNuovoPinVault');
     const infoPinAttuale = document.getElementById('infoPinAttuale');
+    const btnSbloccaBio = document.getElementById('btnSbloccaBio');
+    const btnRegistraBio = document.getElementById('btnRegistraBio');
+    const btnRimuoviBio = document.getElementById('btnRimuoviBio');
+    const statoBioBloccata = document.getElementById('statoBioBloccata');
+    const infoStatoBio = document.getElementById('infoStatoBio');
     const formPassword = document.getElementById('formPassword');
     const listaPassword = document.getElementById('listaPassword');
 
@@ -1278,6 +1329,131 @@
       return bytes.buffer;
     }
 
+    // --- WEBAUTHN / VOLTO & BIOMETRIA LOCALE ---
+    function getSavedBioCredId() {
+      return localStorage.getItem(BIO_CRED_KEY) || '';
+    }
+
+    function isWebAuthnSupported() {
+      return Boolean(window.PublicKeyCredential && navigator.credentials && navigator.credentials.create && navigator.credentials.get);
+    }
+
+    function aggiornaStatoBiometriaUI() {
+      const credId = getSavedBioCredId();
+      const supported = isWebAuthnSupported();
+      const isSecureOrigin = window.isSecureContext || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+
+      if (!supported) {
+        btnSbloccaBio.disabled = true;
+        btnRegistraBio.disabled = true;
+        btnRimuoviBio.style.display = credId ? 'inline-block' : 'none';
+        statoBioBloccata.textContent = 'Biometria WebAuthn non supportata in questo browser: usa il PIN.';
+        infoStatoBio.textContent = 'Non supportato su questo browser';
+        return;
+      }
+
+      if (!isSecureOrigin) {
+        btnSbloccaBio.disabled = true;
+        btnRegistraBio.disabled = true;
+        btnRimuoviBio.style.display = credId ? 'inline-block' : 'none';
+        statoBioBloccata.textContent = 'Per usare Volto/Biometria apri la pagina su HTTPS o localhost (usa il PIN in locale).';
+        infoStatoBio.textContent = 'Richiede contesto sicuro HTTPS / localhost';
+        return;
+      }
+
+      btnRegistraBio.disabled = false;
+      if (credId) {
+        btnSbloccaBio.disabled = false;
+        btnRimuoviBio.style.display = 'inline-block';
+        statoBioBloccata.textContent = 'Volto / Biometria attivo su questo dispositivo (oppure usa il PIN).';
+        infoStatoBio.textContent = 'Attivo su questo dispositivo';
+      } else {
+        btnSbloccaBio.disabled = true;
+        btnRimuoviBio.style.display = 'none';
+        statoBioBloccata.textContent = 'Sblocca con PIN per attivare anche Volto / Biometria.';
+        infoStatoBio.textContent = 'Non ancora attivato su questo dispositivo';
+      }
+    }
+
+    async function registraBiometriaVault() {
+      if (!isWebAuthnSupported()) {
+        mostraToast('Biometria non supportata in questo browser.');
+        return;
+      }
+      try {
+        const challenge = crypto.getRandomValues(new Uint8Array(32));
+        const userId = crypto.getRandomValues(new Uint8Array(16));
+        const rpId = location.hostname || 'localhost';
+
+        const cred = await navigator.credentials.create({
+          publicKey: {
+            challenge,
+            rp: { name: 'OmniDesk E2EE', id: rpId },
+            user: {
+              id: userId,
+              name: 'omnidesk-vault-user',
+              displayName: 'Utente Cassaforte OmniDesk'
+            },
+            pubKeyCredParams: [
+              { type: 'public-key', alg: -7 },
+              { type: 'public-key', alg: -257 }
+            ],
+            authenticatorSelection: {
+              authenticatorAttachment: 'platform',
+              userVerification: 'required',
+              residentKey: 'preferred'
+            },
+            timeout: 60000
+          }
+        });
+
+        if (cred && cred.rawId) {
+          localStorage.setItem(BIO_CRED_KEY, bufToB64(cred.rawId));
+          aggiornaStatoBiometriaUI();
+          mostraToast('Sblocco con Volto / Biometria attivato (PIN sempre valido).');
+        }
+      } catch (err) {
+        mostraToast('Registrazione biometrica annullata o non disponibile sul dispositivo.');
+      }
+    }
+
+    async function sbloccaConBiometriaVault() {
+      const credB64 = getSavedBioCredId();
+      if (!credB64 || !isWebAuthnSupported()) {
+        mostraToast('Attiva prima Volto / Biometria oppure usa il PIN.');
+        return;
+      }
+      try {
+        const challenge = crypto.getRandomValues(new Uint8Array(32));
+        const allowId = b64ToBuf(credB64);
+
+        const assertion = await navigator.credentials.get({
+          publicKey: {
+            challenge,
+            allowCredentials: [{ type: 'public-key', id: allowId }],
+            userVerification: 'required',
+            timeout: 60000
+          }
+        });
+
+        if (assertion) {
+          vaultSbloccato = true;
+          inputPinVault.value = '';
+          renderVault();
+          mostraToast('Cassaforte sbloccata tramite Volto / Biometria.');
+        }
+      } catch (err) {
+        mostraToast('Verifica biometrica non riuscita: puoi usare il PIN.');
+      }
+    }
+
+    function rimuoviBiometriaVault() {
+      localStorage.removeItem(BIO_CRED_KEY);
+      aggiornaStatoBiometriaUI();
+      mostraToast('Sblocco biometrico rimosso (resta attivo il PIN).');
+    }
+
+    // --- CRITTOGRAFIA AES-GCM 256 ---
     async function deriveAesKey(password, saltBuf) {
       const enc = new TextEncoder();
       const baseKey = await crypto.subtle.importKey(
@@ -1325,7 +1501,7 @@
     async function decryptStateEnvelope(rawObj, password) {
       if (!rawObj || typeof rawObj !== 'object') return null;
       if (!rawObj.__e2ee) {
-        return rawObj; // Compatibilità con dati precedenti non ancora cifrati
+        return rawObj;
       }
       const pwd = (password || '').trim();
       if (!pwd) {
@@ -1520,7 +1696,7 @@
         }
       } catch (err) {
         aggiornaStatoCloudUI(false, 'Errore Cloud');
-        if (showFeedback) mostraToast('Errore invio Cloud: controlla URL e regole Firebase.');
+        if (showFeedback) mostraToast('Errore invio Cloud: controlla URL, regole o limiti Firebase.');
       }
     }
 
@@ -1591,7 +1767,7 @@
       clearInterval(pollTimer);
       if (isCloudConfigured()) {
         pullFromFirebase(false);
-        pollTimer = setInterval(() => pullFromFirebase(false), 3000);
+        pollTimer = setInterval(() => pullFromFirebase(false), 6000);
       } else {
         aggiornaStatoCloudUI(false, 'Cloud Locale');
       }
@@ -2100,10 +2276,12 @@
       if (infoPinAttuale) {
         infoPinAttuale.textContent = 'PIN personalizzato attivo';
       }
+      aggiornaStatoBiometriaUI();
+
       if (!vaultSbloccato) {
         vaultBloccata.style.display = 'block';
         vaultSbloccata.style.display = 'none';
-        pill.textContent = 'PIN';
+        pill.textContent = 'PIN + VOLTO';
         return;
       }
       vaultBloccata.style.display = 'none';
@@ -2336,6 +2514,10 @@
         mostraToast('PIN errato.');
       }
     });
+
+    btnSbloccaBio.addEventListener('click', sbloccaConBiometriaVault);
+    btnRegistraBio.addEventListener('click', registraBiometriaVault);
+    btnRimuoviBio.addEventListener('click', rimuoviBiometriaVault);
 
     document.getElementById('btnSalvaNuovoPin').addEventListener('click', async () => {
       const nuovoPin = inputNuovoPinVault.value.trim();
