@@ -424,6 +424,81 @@
 
     .inline-form.hidden { display: none; }
 
+    .drawer-collapse {
+      margin-top: 8px;
+      border: 1px solid var(--border-soft);
+      background: var(--bg-input);
+      border-radius: 11px;
+      overflow: hidden;
+    }
+
+    .drawer-summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-main);
+      background: rgba(19, 30, 51, 0.55);
+      user-select: none;
+    }
+
+    .drawer-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .drawer-summary:hover {
+      background: rgba(26, 40, 68, 0.85);
+    }
+
+    .drawer-chevron {
+      transition: transform 0.18s ease;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    details[open] > .drawer-summary .drawer-chevron {
+      transform: rotate(90deg);
+      color: var(--text-main);
+    }
+
+    .drawer-body {
+      padding: 10px;
+      border-top: 1px solid var(--border-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .section-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .section-filter-group select,
+    .section-filter-group input[type="search"] {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-radius: 7px;
+      padding: 6px 9px;
+      font-size: 0.78rem;
+    }
+
     .inline-form input,
     .inline-form select,
     .inline-form textarea {
@@ -861,6 +936,8 @@
         <button type="button" class="icon-btn" id="btnImportJson" title="Importa Backup JSON">⬆</button>
         <input type="file" id="inputFileJson" accept="application/json,.json" class="hidden-file">
         <input type="file" id="inputAllegaVoceItem" accept="image/*,application/pdf" class="hidden-file">
+        <input type="file" id="inputAllegaEventoItem" accept="image/*,application/pdf" class="hidden-file">
+        <input type="file" id="inputAllegaAppuntoItem" accept="image/*,application/pdf" class="hidden-file">
         <input type="file" id="inputAllegaScadenzaItem" accept="image/*,application/pdf" class="hidden-file">
       </div>
     </header>
@@ -943,12 +1020,47 @@
             <input type="text" id="impegnoTitolo" placeholder="Es. Visita medica, Riunione, Chiamata..." required>
             <input type="date" id="impegnoData" required>
             <input type="time" id="impegnoOra">
+            <select id="impegnoCategoria">
+              <option value="Appuntamento">Appuntamento</option>
+              <option value="Lavoro">Lavoro</option>
+              <option value="Salute">Salute</option>
+              <option value="Personale">Personale</option>
+              <option value="Fiscale / Banca">Fiscale / Banca</option>
+            </select>
             <input type="text" id="impegnoLuogo" placeholder="Luogo (es. Studio, Ufficio)">
             <input type="file" id="impegnoAllegato" accept="image/*,application/pdf">
             <button type="submit" class="btn-primary">Salva Appuntamento</button>
           </form>
 
-          <div class="list-stack" id="listaImpegni"></div>
+          <details class="drawer-collapse" id="tendinaImpegni">
+            <summary class="drawer-summary">
+              <span>▾ Apri elenco Impegni &amp; Appuntamenti (ordinati per data)</span>
+              <span class="drawer-chevron">▶</span>
+            </summary>
+            <div class="drawer-body">
+              <div class="section-toolbar">
+                <div class="section-filter-group">
+                  <select id="filtroCategoriaImpegno" aria-label="Filtra impegni per categoria">
+                    <option value="Tutte">Tutte le categorie</option>
+                    <option value="Appuntamento">Appuntamento</option>
+                    <option value="Lavoro">Lavoro</option>
+                    <option value="Salute">Salute</option>
+                    <option value="Personale">Personale</option>
+                    <option value="Fiscale / Banca">Fiscale / Banca</option>
+                  </select>
+                  <select id="ordineDataImpegno" aria-label="Ordina impegni per data">
+                    <option value="asc">Data: più vicini prima</option>
+                    <option value="desc">Data: più lontani prima</option>
+                  </select>
+                </div>
+                <div class="section-filter-group">
+                  <input type="search" id="parolaChiaveImpegni" placeholder="Parola chiave (es. visita)..." aria-label="Parola chiave impegni">
+                  <button type="button" id="btnResetFiltriImpegni" style="padding: 5px 8px; font-size: 0.74rem;">Reset</button>
+                </div>
+              </div>
+              <div class="list-stack" id="listaImpegni"></div>
+            </div>
+          </details>
         </section>
 
         <!-- 2. DIARIO & EVENTI ACCADUTI -->
@@ -976,12 +1088,43 @@
               </select>
             </div>
             <textarea id="eventoDescrizione" placeholder="Dettagli dell'evento accaduto da ricordare in futuro..."></textarea>
-            <div style="display: flex; justify-content: flex-end;">
-              <button type="submit" class="btn-primary">Salva nel Diario</button>
+            <div class="inline-form-row" style="align-items: center;">
+              <input type="file" id="eventoAllegato" accept="image/*,application/pdf">
+              <div style="display: flex; justify-content: flex-end;">
+                <button type="submit" class="btn-primary">Salva nel Diario</button>
+              </div>
             </div>
           </form>
 
-          <div class="list-stack" id="listaEventiAccaduti"></div>
+          <details class="drawer-collapse" id="tendinaDiario">
+            <summary class="drawer-summary">
+              <span>▾ Apri Diario &amp; Eventi Accaduti (ordinati per data)</span>
+              <span class="drawer-chevron">▶</span>
+            </summary>
+            <div class="drawer-body">
+              <div class="section-toolbar">
+                <div class="section-filter-group">
+                  <select id="filtroAmbitoEvento" aria-label="Filtra eventi per ambito">
+                    <option value="Tutti">Tutti gli ambiti</option>
+                    <option value="Personale">Personale</option>
+                    <option value="Lavoro">Lavoro</option>
+                    <option value="Salute">Salute</option>
+                    <option value="Casa / Auto">Casa / Auto</option>
+                    <option value="Pagamenti">Pagamenti</option>
+                  </select>
+                  <select id="ordineDataEvento" aria-label="Ordina eventi per data">
+                    <option value="desc">Data: più recenti prima</option>
+                    <option value="asc">Data: più vecchi prima</option>
+                  </select>
+                </div>
+                <div class="section-filter-group">
+                  <input type="search" id="parolaChiaveEventi" placeholder="Parola chiave (es. acconto)..." aria-label="Parola chiave eventi">
+                  <button type="button" id="btnResetFiltriEventi" style="padding: 5px 8px; font-size: 0.74rem;">Reset</button>
+                </div>
+              </div>
+              <div class="list-stack" id="listaEventiAccaduti"></div>
+            </div>
+          </details>
         </section>
 
         <!-- 3. APPUNTI & NOTE LIBERE -->
@@ -1007,12 +1150,43 @@
               </select>
             </div>
             <textarea id="appuntoTesto" placeholder="Scrivi qui il contenuto dell'appunto..." required></textarea>
-            <div style="display: flex; justify-content: flex-end;">
-              <button type="submit" class="btn-primary">Salva Appunto</button>
+            <div class="inline-form-row" style="align-items: center;">
+              <input type="file" id="appuntoAllegato" accept="image/*,application/pdf">
+              <div style="display: flex; justify-content: flex-end;">
+                <button type="submit" class="btn-primary">Salva Appunto</button>
+              </div>
             </div>
           </form>
 
-          <div class="list-stack" id="listaAppunti"></div>
+          <details class="drawer-collapse" id="tendinaAppunti">
+            <summary class="drawer-summary">
+              <span>▾ Apri Appunti &amp; Note (ordinati per data)</span>
+              <span class="drawer-chevron">▶</span>
+            </summary>
+            <div class="drawer-body">
+              <div class="section-toolbar">
+                <div class="section-filter-group">
+                  <select id="filtroCategoriaAppunto" aria-label="Filtra appunti per categoria">
+                    <option value="Tutte">Tutte le categorie</option>
+                    <option value="Generale">Generale</option>
+                    <option value="Lavoro">Lavoro</option>
+                    <option value="Idee">Idee</option>
+                    <option value="Lista / Spesa">Lista / Spesa</option>
+                    <option value="Riferimenti">Riferimenti</option>
+                  </select>
+                  <select id="ordineDataAppunto" aria-label="Ordina appunti per data">
+                    <option value="desc">Data: più recenti prima</option>
+                    <option value="asc">Data: più vecchi prima</option>
+                  </select>
+                </div>
+                <div class="section-filter-group">
+                  <input type="search" id="parolaChiaveAppunti" placeholder="Parola chiave (es. spesa)..." aria-label="Parola chiave appunti">
+                  <button type="button" id="btnResetFiltriAppunti" style="padding: 5px 8px; font-size: 0.74rem;">Reset</button>
+                </div>
+              </div>
+              <div class="list-stack" id="listaAppunti"></div>
+            </div>
+          </details>
         </section>
 
         <!-- 4. SCADENZE PROTETTE DA PIN -->
@@ -1064,7 +1238,27 @@
               <button type="submit" class="btn-primary">Salva Scadenza</button>
             </form>
 
-            <div class="list-stack" id="listaScadenze"></div>
+            <details class="drawer-collapse" id="tendinaScadenze">
+              <summary class="drawer-summary">
+                <span>▾ Apri elenco Scadenze (ordinate per data)</span>
+                <span class="drawer-chevron">▶</span>
+              </summary>
+              <div class="drawer-body">
+                <div class="section-toolbar">
+                  <div class="section-filter-group">
+                    <select id="ordineDataScadenza" aria-label="Ordina scadenze per data">
+                      <option value="asc">Data: più vicine prima</option>
+                      <option value="desc">Data: più lontane prima</option>
+                    </select>
+                  </div>
+                  <div class="section-filter-group">
+                    <input type="search" id="parolaChiaveScadenze" placeholder="Parola chiave (es. auto)..." aria-label="Parola chiave scadenze">
+                    <button type="button" id="btnResetFiltriScadenze" style="padding: 5px 8px; font-size: 0.74rem;">Reset</button>
+                  </div>
+                </div>
+                <div class="list-stack" id="listaScadenze"></div>
+              </div>
+            </details>
 
             <!-- GESTIONE PIN SCADENZE (MODIFICA / RESET / BLOCCA) -->
             <div class="pin-change-box">
@@ -1155,9 +1349,24 @@
             <span>●</span>
             <span id="testoBtnVocale">Avvia Registrazione Vocale</span>
           </button>
-          <div class="list-stack" id="listaVocali" style="margin-top: 10px;">
-            <div class="empty-hint">Nessuna registrazione salvata.</div>
-          </div>
+          <details class="drawer-collapse" id="tendinaVocali">
+            <summary class="drawer-summary">
+              <span>▾ Apri Registrazioni Vocali (<span id="conteggioVocali">0</span>)</span>
+              <span class="drawer-chevron">▶</span>
+            </summary>
+            <div class="drawer-body">
+              <div class="section-toolbar">
+                <select id="ordineDataVocale" aria-label="Ordina registrazioni per data">
+                  <option value="desc">Data: più recenti prima</option>
+                  <option value="asc">Data: più vecchie prima</option>
+                </select>
+                <input type="search" id="parolaChiaveVocali" placeholder="Parola chiave..." aria-label="Parola chiave vocali">
+              </div>
+              <div class="list-stack" id="listaVocali">
+                <div class="empty-hint">Nessuna registrazione salvata.</div>
+              </div>
+            </div>
+          </details>
         </section>
 
         <!-- CARTELLE PDF E FOTO -->
@@ -1192,7 +1401,36 @@
             <button type="button" id="btnApriUrlFile">Salva URL</button>
           </div>
 
-          <div class="list-stack" id="listaDocumenti"></div>
+          <details class="drawer-collapse" id="tendinaDocumenti">
+            <summary class="drawer-summary">
+              <span>▾ Apri Cartella File Selezionata (ordinati per data)</span>
+              <span class="drawer-chevron">▶</span>
+            </summary>
+            <div class="drawer-body">
+              <div class="section-toolbar">
+                <div class="section-filter-group">
+                  <select id="filtroOrigineDoc" aria-label="Filtra file per origine o categoria">
+                    <option value="Tutte">Tutte le origini</option>
+                    <option value="Appuntamento">Da Appuntamenti</option>
+                    <option value="Evento">Da Diario / Eventi</option>
+                    <option value="Appunto">Da Appunti</option>
+                    <option value="Scadenza">Da Scadenze</option>
+                    <option value="Caricamento diretto">Caricamento diretto</option>
+                    <option value="Link URL">Link URL</option>
+                  </select>
+                  <select id="ordineDataDoc" aria-label="Ordina file per data">
+                    <option value="desc">Data: più recenti prima</option>
+                    <option value="asc">Data: più vecchi prima</option>
+                  </select>
+                </div>
+                <div class="section-filter-group">
+                  <input type="search" id="parolaChiaveDocumenti" placeholder="Parola chiave (es. bolletta)..." aria-label="Parola chiave documenti">
+                  <button type="button" id="btnResetFiltriDoc" style="padding: 5px 8px; font-size: 0.74rem;">Reset</button>
+                </div>
+              </div>
+              <div class="list-stack" id="listaDocumenti"></div>
+            </div>
+          </details>
 
           <div class="preview-panel hidden" id="previewPanel">
             <div class="card-header" style="margin-bottom: 6px;">
@@ -1275,6 +1513,23 @@
           <button type="button" id="btnForzaPushCloud">Cifra e Invia</button>
         </div>
         <button type="button" class="btn-danger" id="btnResetDati">Reset Dati</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE CONFERMA RESET PIN SCADENZE (NO browser confirm()) -->
+  <div class="modal-backdrop" id="modalConfermaResetPin" role="dialog" aria-modal="true" aria-labelledby="titoloModalResetPin">
+    <div class="modal-card" style="max-width: 420px;">
+      <div class="card-header">
+        <h2 class="card-title" id="titoloModalResetPin">↻ Conferma Reset PIN Scadenze</h2>
+        <button type="button" id="btnChiudiModalResetPin">✕</button>
+      </div>
+      <div class="item-body-text" style="margin-top: 0; margin-bottom: 14px;">
+        Vuoi reimpostare il PIN della sezione <strong>Scadenze Carte, Polizze &amp; Doc</strong> al valore predefinito <strong>1234</strong>?
+      </div>
+      <div class="item-actions" style="justify-content: flex-end;">
+        <button type="button" id="btnAnnullaResetPin">Annulla</button>
+        <button type="button" class="btn-warn" id="btnConfermaResetPin">Conferma Reset (1234)</button>
       </div>
     </div>
   </div>
@@ -1395,6 +1650,7 @@
     const formScadenza = document.getElementById('formScadenza');
     const listaScadenze = document.getElementById('listaScadenze');
     const conteggioScadenze = document.getElementById('conteggioScadenze');
+    const modalConfermaResetPin = document.getElementById('modalConfermaResetPin');
 
     // Cassaforte Password
     const vaultBloccata = document.getElementById('vaultBloccata');
@@ -1429,7 +1685,92 @@
     const modalCloud = document.getElementById('modalCloud');
     const cloudSyncPasswordInput = document.getElementById('cloudSyncPassword');
     const inputAllegaVoceItem = document.getElementById('inputAllegaVoceItem');
+    const inputAllegaEventoItem = document.getElementById('inputAllegaEventoItem');
+    const inputAllegaAppuntoItem = document.getElementById('inputAllegaAppuntoItem');
     const inputAllegaScadenzaItem = document.getElementById('inputAllegaScadenzaItem');
+
+    // Controlli tendine, ordinamento per data, categoria e ricerca singola parola
+    const tendinaImpegni = document.getElementById('tendinaImpegni');
+    const tendinaDiario = document.getElementById('tendinaDiario');
+    const tendinaAppunti = document.getElementById('tendinaAppunti');
+    const tendinaScadenze = document.getElementById('tendinaScadenze');
+    const tendinaVocali = document.getElementById('tendinaVocali');
+    const tendinaDocumenti = document.getElementById('tendinaDocumenti');
+
+    const filtroCategoriaImpegno = document.getElementById('filtroCategoriaImpegno');
+    const ordineDataImpegno = document.getElementById('ordineDataImpegno');
+    const parolaChiaveImpegni = document.getElementById('parolaChiaveImpegni');
+
+    const filtroAmbitoEvento = document.getElementById('filtroAmbitoEvento');
+    const ordineDataEvento = document.getElementById('ordineDataEvento');
+    const parolaChiaveEventi = document.getElementById('parolaChiaveEventi');
+
+    const filtroCategoriaAppunto = document.getElementById('filtroCategoriaAppunto');
+    const ordineDataAppunto = document.getElementById('ordineDataAppunto');
+    const parolaChiaveAppunti = document.getElementById('parolaChiaveAppunti');
+
+    const ordineDataScadenza = document.getElementById('ordineDataScadenza');
+    const parolaChiaveScadenze = document.getElementById('parolaChiaveScadenze');
+
+    const ordineDataVocale = document.getElementById('ordineDataVocale');
+    const parolaChiaveVocali = document.getElementById('parolaChiaveVocali');
+
+    const filtroOrigineDoc = document.getElementById('filtroOrigineDoc');
+    const ordineDataDoc = document.getElementById('ordineDataDoc');
+    const parolaChiaveDocumenti = document.getElementById('parolaChiaveDocumenti');
+
+    function apriTendina(detailsEl) {
+      if (detailsEl) detailsEl.open = true;
+    }
+
+    function estraiSingolaParola(rawInput) {
+      const cleaned = (rawInput || '').trim().toLowerCase();
+      if (!cleaned) return '';
+      const tokens = cleaned.match(/[a-z0-9àèéìòùç_-]+/gi);
+      return tokens && tokens.length > 0 ? tokens[0].toLowerCase() : cleaned;
+    }
+
+    function corrispondeSingolaParola(testo, parolaRaw) {
+      const parola = estraiSingolaParola(parolaRaw);
+      if (!parola) return true;
+      const target = (testo || '').toLowerCase();
+      // Match per singola parola (anche come inizio/contenuto di parola alfanumerica)
+      const wordBoundaryRegex = new RegExp(`(^|[^a-z0-9àèéìòùç_-])${parola.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i');
+      return wordBoundaryRegex.test(target) || target.includes(parola);
+    }
+
+    function parseDataOrdinamento(val) {
+      if (!val) return 0;
+      if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
+        const [y, m, d] = val.split('-').map(Number);
+        return new Date(y, m - 1, d).getTime();
+      }
+      const itMatch = val.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:,\s*(\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+      if (itMatch) {
+        const day = Number(itMatch[1]);
+        const month = Number(itMatch[2]) - 1;
+        const year = Number(itMatch[3]);
+        const hh = Number(itMatch[4] || 0);
+        const mm = Number(itMatch[5] || 0);
+        const ss = Number(itMatch[6] || 0);
+        return new Date(year, month, day, hh, mm, ss).getTime();
+      }
+      const parsed = Date.parse(val);
+      return Number.isNaN(parsed) ? 0 : parsed;
+    }
+
+    function ordinaPerData(items, direction = 'asc', getDateFn = (x) => x.data) {
+      const dir = direction === 'desc' ? -1 : 1;
+      return [...items].sort((a, b) => {
+        const ta = parseDataOrdinamento(getDateFn(a));
+        const tb = parseDataOrdinamento(getDateFn(b));
+        if (ta !== tb) return (ta - tb) * dir;
+        const oraA = a.ora || '';
+        const oraB = b.ora || '';
+        if (oraA !== oraB) return oraA.localeCompare(oraB) * dir;
+        return String(a.id || '').localeCompare(String(b.id || ''));
+      });
+    }
 
     function oggiISO() {
       const d = new Date();
@@ -1501,7 +1842,11 @@
 
     // --- WEBAUTHN / VOLTO & BIOMETRIA LOCALE ---
     function getSavedBioCredId() {
-      return localStorage.getItem(BIO_CRED_KEY) || '';
+      try {
+        return localStorage.getItem(BIO_CRED_KEY) || '';
+      } catch (e) {
+        return '';
+      }
     }
 
     function isWebAuthnSupported() {
@@ -1578,7 +1923,9 @@
         });
 
         if (cred && cred.rawId) {
-          localStorage.setItem(BIO_CRED_KEY, bufToB64(cred.rawId));
+          try {
+            localStorage.setItem(BIO_CRED_KEY, bufToB64(cred.rawId));
+          } catch (e) {}
           aggiornaStatoBiometriaUI();
           mostraToast('Sblocco con Volto / Biometria attivato (PIN sempre valido).');
         }
@@ -1618,7 +1965,9 @@
     }
 
     function rimuoviBiometriaVault() {
-      localStorage.removeItem(BIO_CRED_KEY);
+      try {
+        localStorage.removeItem(BIO_CRED_KEY);
+      } catch (e) {}
       aggiornaStatoBiometriaUI();
       mostraToast('Sblocco biometrico rimosso (resta attivo il PIN).');
     }
@@ -2139,12 +2488,26 @@
 
     // --- RENDER 1: IMPEGNI & APPUNTAMENTI ---
     function renderImpegni() {
-      const filtrati = filtraPerPeriodo(state.impegni || [], filtroTemporale, inputDataRiferimento.value);
+      const catSel = filtroCategoriaImpegno ? filtroCategoriaImpegno.value : 'Tutte';
+      const ordSel = ordineDataImpegno ? ordineDataImpegno.value : 'asc';
+      const parolaSel = parolaChiaveImpegni ? parolaChiaveImpegni.value : '';
+
+      const periodoFiltrati = filtraPerPeriodo(state.impegni || [], filtroTemporale, inputDataRiferimento.value);
+      const filtratiRaw = periodoFiltrati.filter((item) => {
+        const catOk = catSel === 'Tutte' || (item.categoria || 'Appuntamento') === catSel;
+        const parolaOk = corrispondeSingolaParola(
+          `${item.titolo || ''} ${item.categoria || 'Appuntamento'} ${item.luogo || ''} ${item.data || ''} ${item.ora || ''} ${item.allegato?.nome || ''}`,
+          parolaSel
+        );
+        return catOk && parolaOk;
+      });
+      const filtrati = ordinaPerData(filtratiRaw, ordSel, (x) => x.data);
+
       conteggioImpegni.textContent = String(filtrati.length);
       listaImpegni.innerHTML = '';
 
       if (filtrati.length === 0) {
-        listaImpegni.innerHTML = `<div class="empty-hint">Nessun appuntamento per il filtro "${filtroTemporale}".</div>`;
+        listaImpegni.innerHTML = `<div class="empty-hint">Nessun appuntamento trovato con i filtri/parola chiave selezionati.</div>`;
         return;
       }
 
@@ -2166,6 +2529,16 @@
         });
 
         const textWrap = document.createElement('div');
+        const tagsTop = document.createElement('div');
+        tagsTop.className = 'tag-row';
+        tagsTop.style.marginTop = '0';
+        tagsTop.style.marginBottom = '4px';
+
+        const catBadge = document.createElement('span');
+        catBadge.className = 'pill-tag file';
+        catBadge.textContent = item.categoria || 'Appuntamento';
+        tagsTop.appendChild(catBadge);
+
         const title = document.createElement('div');
         title.className = 'item-title';
         title.textContent = item.titolo;
@@ -2174,6 +2547,7 @@
         meta.className = 'item-meta';
         meta.textContent = `${item.data || ''}${item.ora ? ` • ${item.ora}` : ''}${item.luogo ? ` • Luogo: ${item.luogo}` : ''}`;
 
+        textWrap.appendChild(tagsTop);
         textWrap.appendChild(title);
         textWrap.appendChild(meta);
 
@@ -2209,8 +2583,22 @@
             stampaElemento(el);
           });
 
+          const btnRimuoviAll = document.createElement('button');
+          btnRimuoviAll.type = 'button';
+          btnRimuoviAll.textContent = 'Rimuovi All.';
+          btnRimuoviAll.addEventListener('click', async () => {
+            if (elementoAnteprima && elementoAnteprima.impegnoId === item.id) {
+              chiudiAnteprima();
+            }
+            item.allegato = null;
+            await saveState(true, true);
+            renderImpegni();
+            mostraToast('Allegato rimosso dall\'appuntamento.');
+          });
+
           actions.appendChild(btnAnt);
           actions.appendChild(btnStampa);
+          actions.appendChild(btnRimuoviAll);
         } else {
           const btnAllega = document.createElement('button');
           btnAllega.type = 'button';
@@ -2245,22 +2633,33 @@
     // --- RENDER 2: DIARIO & EVENTI ACCADUTI ---
     function renderEventiAccaduti() {
       const q = inputRicerca.value.trim().toLowerCase();
-      const lista = (state.eventiAccaduti || []).filter((ev) => {
-        if (!q) return true;
-        return `${ev.titolo || ''} ${ev.descrizione || ''} ${ev.ambito || ''} ${ev.data || ''}`.toLowerCase().includes(q);
+      const ambSel = filtroAmbitoEvento ? filtroAmbitoEvento.value : 'Tutti';
+      const ordSel = ordineDataEvento ? ordineDataEvento.value : 'desc';
+      const parolaSel = parolaChiaveEventi ? parolaChiaveEventi.value : '';
+
+      const listaRaw = (state.eventiAccaduti || []).filter((ev) => {
+        const globalOk = !q || `${ev.titolo || ''} ${ev.descrizione || ''} ${ev.ambito || ''} ${ev.data || ''}`.toLowerCase().includes(q);
+        const ambOk = ambSel === 'Tutti' || (ev.ambito || 'Personale') === ambSel;
+        const parolaOk = corrispondeSingolaParola(
+          `${ev.titolo || ''} ${ev.descrizione || ''} ${ev.ambito || ''} ${ev.data || ''} ${ev.allegato?.nome || ''}`,
+          parolaSel
+        );
+        return globalOk && ambOk && parolaOk;
       });
+      const lista = ordinaPerData(listaRaw, ordSel, (x) => x.data);
 
       conteggioEventiAccaduti.textContent = String(lista.length);
       listaEventiAccaduti.innerHTML = '';
 
       if (lista.length === 0) {
-        listaEventiAccaduti.innerHTML = '<div class="empty-hint">Nessun evento accaduto registrato nel diario.</div>';
+        listaEventiAccaduti.innerHTML = '<div class="empty-hint">Nessun evento accaduto trovato con questi criteri.</div>';
         return;
       }
 
       lista.forEach((ev) => {
         const row = document.createElement('div');
-        row.className = 'row-item';
+        const isSelected = elementoAnteprima && elementoAnteprima.eventoId === ev.id;
+        row.className = `row-item ${isSelected ? 'selected' : ''}`;
 
         const left = document.createElement('div');
         left.style.flex = '1';
@@ -2296,14 +2695,71 @@
           left.appendChild(body);
         }
 
+        if (ev.allegato) {
+          const allTags = document.createElement('div');
+          allTags.className = 'tag-row';
+          const badgeAll = document.createElement('span');
+          badgeAll.className = 'pill-tag file';
+          badgeAll.textContent = `${ev.allegato.tipo.toUpperCase()}: ${ev.allegato.nome}`;
+          allTags.appendChild(badgeAll);
+          left.appendChild(allTags);
+        }
+
         const actions = document.createElement('div');
         actions.className = 'item-actions';
+
+        if (ev.allegato) {
+          const el = { tipo: ev.allegato.tipo, src: ev.allegato.dataUrl, nome: ev.allegato.nome, eventoId: ev.id };
+          const btnAnt = document.createElement('button');
+          btnAnt.type = 'button';
+          btnAnt.textContent = 'Anteprima';
+          btnAnt.addEventListener('click', () => apriAnteprimaSuRichiesta(el, `Evento "${ev.titolo}" — ${ev.allegato.nome}`));
+
+          const btnStampa = document.createElement('button');
+          btnStampa.type = 'button';
+          btnStampa.className = 'btn-primary';
+          btnStampa.textContent = 'Stampa';
+          btnStampa.addEventListener('click', () => {
+            apriAnteprimaSuRichiesta(el, `Evento "${ev.titolo}" — ${ev.allegato.nome}`);
+            stampaElemento(el);
+          });
+
+          const btnRimuoviAll = document.createElement('button');
+          btnRimuoviAll.type = 'button';
+          btnRimuoviAll.textContent = 'Rimuovi All.';
+          btnRimuoviAll.addEventListener('click', async () => {
+            if (elementoAnteprima && elementoAnteprima.eventoId === ev.id) {
+              chiudiAnteprima();
+            }
+            ev.allegato = null;
+            await saveState(true, true);
+            renderEventiAccaduti();
+            mostraToast('Allegato rimosso dall\'evento.');
+          });
+
+          actions.appendChild(btnAnt);
+          actions.appendChild(btnStampa);
+          actions.appendChild(btnRimuoviAll);
+        } else {
+          const btnAllega = document.createElement('button');
+          btnAllega.type = 'button';
+          btnAllega.textContent = '+ Allega';
+          btnAllega.addEventListener('click', () => {
+            inputAllegaEventoItem.dataset.targetId = ev.id;
+            inputAllegaEventoItem.value = '';
+            inputAllegaEventoItem.click();
+          });
+          actions.appendChild(btnAllega);
+        }
 
         const btnDel = document.createElement('button');
         btnDel.type = 'button';
         btnDel.className = 'btn-danger';
         btnDel.textContent = 'Elimina';
         btnDel.addEventListener('click', async () => {
+          if (elementoAnteprima && elementoAnteprima.eventoId === ev.id) {
+            chiudiAnteprima();
+          }
           registerDeletedId(ev.id);
           state.eventiAccaduti = (state.eventiAccaduti || []).filter((x) => x.id !== ev.id);
           await saveState(true, true);
@@ -2321,22 +2777,33 @@
     // --- RENDER 3: APPUNTI & NOTE ---
     function renderAppunti() {
       const q = inputRicerca.value.trim().toLowerCase();
-      const lista = (state.appunti || []).filter((ap) => {
-        if (!q) return true;
-        return `${ap.titolo || ''} ${ap.testo || ''} ${ap.categoria || ''}`.toLowerCase().includes(q);
+      const catSel = filtroCategoriaAppunto ? filtroCategoriaAppunto.value : 'Tutte';
+      const ordSel = ordineDataAppunto ? ordineDataAppunto.value : 'desc';
+      const parolaSel = parolaChiaveAppunti ? parolaChiaveAppunti.value : '';
+
+      const listaRaw = (state.appunti || []).filter((ap) => {
+        const globalOk = !q || `${ap.titolo || ''} ${ap.testo || ''} ${ap.categoria || ''}`.toLowerCase().includes(q);
+        const catOk = catSel === 'Tutte' || (ap.categoria || 'Generale') === catSel;
+        const parolaOk = corrispondeSingolaParola(
+          `${ap.titolo || ''} ${ap.testo || ''} ${ap.categoria || ''} ${ap.dataCreazione || ''} ${ap.allegato?.nome || ''}`,
+          parolaSel
+        );
+        return globalOk && catOk && parolaOk;
       });
+      const lista = ordinaPerData(listaRaw, ordSel, (x) => x.dataCreazione || x.id);
 
       conteggioAppunti.textContent = String(lista.length);
       listaAppunti.innerHTML = '';
 
       if (lista.length === 0) {
-        listaAppunti.innerHTML = '<div class="empty-hint">Nessun appunto salvato in questa sezione.</div>';
+        listaAppunti.innerHTML = '<div class="empty-hint">Nessun appunto trovato con questi criteri.</div>';
         return;
       }
 
       lista.forEach((ap) => {
         const row = document.createElement('div');
-        row.className = 'row-item';
+        const isSelected = elementoAnteprima && elementoAnteprima.appuntoId === ap.id;
+        row.className = `row-item ${isSelected ? 'selected' : ''}`;
 
         const left = document.createElement('div');
         left.style.flex = '1';
@@ -2370,14 +2837,71 @@
         left.appendChild(title);
         left.appendChild(body);
 
+        if (ap.allegato) {
+          const allTags = document.createElement('div');
+          allTags.className = 'tag-row';
+          const badgeAll = document.createElement('span');
+          badgeAll.className = 'pill-tag file';
+          badgeAll.textContent = `${ap.allegato.tipo.toUpperCase()}: ${ap.allegato.nome}`;
+          allTags.appendChild(badgeAll);
+          left.appendChild(allTags);
+        }
+
         const actions = document.createElement('div');
         actions.className = 'item-actions';
+
+        if (ap.allegato) {
+          const el = { tipo: ap.allegato.tipo, src: ap.allegato.dataUrl, nome: ap.allegato.nome, appuntoId: ap.id };
+          const btnAnt = document.createElement('button');
+          btnAnt.type = 'button';
+          btnAnt.textContent = 'Anteprima';
+          btnAnt.addEventListener('click', () => apriAnteprimaSuRichiesta(el, `Appunto "${ap.titolo}" — ${ap.allegato.nome}`));
+
+          const btnStampa = document.createElement('button');
+          btnStampa.type = 'button';
+          btnStampa.className = 'btn-primary';
+          btnStampa.textContent = 'Stampa';
+          btnStampa.addEventListener('click', () => {
+            apriAnteprimaSuRichiesta(el, `Appunto "${ap.titolo}" — ${ap.allegato.nome}`);
+            stampaElemento(el);
+          });
+
+          const btnRimuoviAll = document.createElement('button');
+          btnRimuoviAll.type = 'button';
+          btnRimuoviAll.textContent = 'Rimuovi All.';
+          btnRimuoviAll.addEventListener('click', async () => {
+            if (elementoAnteprima && elementoAnteprima.appuntoId === ap.id) {
+              chiudiAnteprima();
+            }
+            ap.allegato = null;
+            await saveState(true, true);
+            renderAppunti();
+            mostraToast('Allegato rimosso dall\'appunto.');
+          });
+
+          actions.appendChild(btnAnt);
+          actions.appendChild(btnStampa);
+          actions.appendChild(btnRimuoviAll);
+        } else {
+          const btnAllega = document.createElement('button');
+          btnAllega.type = 'button';
+          btnAllega.textContent = '+ Allega';
+          btnAllega.addEventListener('click', () => {
+            inputAllegaAppuntoItem.dataset.targetId = ap.id;
+            inputAllegaAppuntoItem.value = '';
+            inputAllegaAppuntoItem.click();
+          });
+          actions.appendChild(btnAllega);
+        }
 
         const btnDel = document.createElement('button');
         btnDel.type = 'button';
         btnDel.className = 'btn-danger';
         btnDel.textContent = 'Elimina';
         btnDel.addEventListener('click', async () => {
+          if (elementoAnteprima && elementoAnteprima.appuntoId === ap.id) {
+            chiudiAnteprima();
+          }
           registerDeletedId(ap.id);
           state.appunti = (state.appunti || []).filter((x) => x.id !== ap.id);
           await saveState(true, true);
@@ -2414,17 +2938,25 @@
       pill.textContent = 'SBLOCCATE';
 
       const q = inputRicerca.value.trim().toLowerCase();
-      const filtered = (state.scadenze || []).filter((s) => {
+      const ordSel = ordineDataScadenza ? ordineDataScadenza.value : 'asc';
+      const parolaSel = parolaChiaveScadenze ? parolaChiaveScadenze.value : '';
+
+      const filteredRaw = (state.scadenze || []).filter((s) => {
         const catOk = categoriaScadenzaAttiva === 'Tutte' || s.categoria === categoriaScadenzaAttiva;
         const qOk = !q || `${s.titolo} ${s.categoria} ${s.dettaglio || ''}`.toLowerCase().includes(q);
-        return catOk && qOk;
+        const parolaOk = corrispondeSingolaParola(
+          `${s.titolo || ''} ${s.categoria || ''} ${s.dettaglio || ''} ${s.data || ''}`,
+          parolaSel
+        );
+        return catOk && qOk && parolaOk;
       });
+      const filtered = ordinaPerData(filteredRaw, ordSel, (x) => x.data);
 
       conteggioScadenze.textContent = String(filtered.length);
       listaScadenze.innerHTML = '';
 
       if (filtered.length === 0) {
-        listaScadenze.innerHTML = '<div class="empty-hint">Nessuna scadenza per questa categoria.</div>';
+        listaScadenze.innerHTML = '<div class="empty-hint">Nessuna scadenza trovata per questi criteri.</div>';
         return;
       }
 
@@ -2545,12 +3077,30 @@
     }
 
     function renderVocali() {
+      const ordSel = ordineDataVocale ? ordineDataVocale.value : 'desc';
+      const parolaSel = parolaChiaveVocali ? parolaChiaveVocali.value : '';
+      const allVocali = state.vocali || [];
+      const countEl = document.getElementById('conteggioVocali');
+      if (countEl) countEl.textContent = String(allVocali.length);
+
       listaVocali.innerHTML = '';
-      if (!state.vocali || state.vocali.length === 0) {
+      if (allVocali.length === 0) {
         listaVocali.innerHTML = '<div class="empty-hint">Nessuna registrazione salvata.</div>';
         return;
       }
-      state.vocali.forEach((v) => {
+
+      const vocaliFiltrate = ordinaPerData(
+        allVocali.filter((v) => corrispondeSingolaParola(`${v.titolo || ''} ${v.data || ''}`, parolaSel)),
+        ordSel,
+        (x) => x.data || x.id
+      );
+
+      if (vocaliFiltrate.length === 0) {
+        listaVocali.innerHTML = '<div class="empty-hint">Nessuna registrazione trovata con questa parola chiave.</div>';
+        return;
+      }
+
+      vocaliFiltrate.forEach((v) => {
         const row = document.createElement('div');
         row.className = 'row-item';
         const wrap = document.createElement('div');
@@ -2592,8 +3142,11 @@
 
       const qDoc = inputRicercaDocumenti.value.trim().toLowerCase();
       const qGlobal = inputRicerca.value.trim().toLowerCase();
+      const origSel = filtroOrigineDoc ? filtroOrigineDoc.value : 'Tutte';
+      const ordSel = ordineDataDoc ? ordineDataDoc.value : 'desc';
+      const parolaSel = parolaChiaveDocumenti ? parolaChiaveDocumenti.value : '';
 
-      const filtrati = allDocs.filter((doc) => {
+      const filtratiRaw = allDocs.filter((doc) => {
         const folderOk =
           cartellaDocumentiAttiva === 'tutti' ||
           (cartellaDocumentiAttiva === 'pdf' && doc.tipo === 'pdf') ||
@@ -2602,8 +3155,20 @@
         const origineLower = (doc.origine || '').toLowerCase();
         const searchDocOk = !qDoc || nomeLower.includes(qDoc) || origineLower.includes(qDoc);
         const searchGlobalOk = !qGlobal || nomeLower.includes(qGlobal) || origineLower.includes(qGlobal);
-        return folderOk && searchDocOk && searchGlobalOk;
+        const origOk =
+          origSel === 'Tutte' ||
+          origineLower.includes(origSel.toLowerCase()) ||
+          (origSel === 'Appuntamento' && origineLower.startsWith('appuntamento')) ||
+          (origSel === 'Evento' && origineLower.startsWith('evento')) ||
+          (origSel === 'Appunto' && origineLower.startsWith('appunto')) ||
+          (origSel === 'Scadenza' && origineLower.startsWith('scadenza'));
+        const parolaOk = corrispondeSingolaParola(
+          `${doc.nome || ''} ${doc.origine || ''} ${doc.tipo || ''} ${doc.dataCaricamento || ''}`,
+          parolaSel
+        );
+        return folderOk && searchDocOk && searchGlobalOk && origOk && parolaOk;
       });
+      const filtrati = ordinaPerData(filtratiRaw, ordSel, (x) => x.dataCaricamento || x.id);
 
       document.getElementById('conteggioDocumenti').textContent = String(filtrati.length);
       listaDocumenti.innerHTML = '';
@@ -2730,6 +3295,7 @@
       const titolo = document.getElementById('impegnoTitolo').value.trim();
       const data = document.getElementById('impegnoData').value;
       const ora = document.getElementById('impegnoOra').value;
+      const categoria = document.getElementById('impegnoCategoria').value;
       const luogo = document.getElementById('impegnoLuogo').value.trim();
       const file = document.getElementById('impegnoAllegato').files[0];
       if (!titolo || !data) return;
@@ -2750,6 +3316,7 @@
         titolo,
         data,
         ora,
+        categoria,
         luogo,
         completato: false,
         allegato
@@ -2759,6 +3326,7 @@
       await saveState(true, true);
       formImpegnoCompleto.reset();
       formImpegnoCompleto.classList.add('hidden');
+      apriTendina(tendinaImpegni);
       renderImpegni();
       mostraToast(allegato ? `Salvato e cifrato in cartella ${allegato.tipo.toUpperCase()}` : 'Appuntamento salvato e cifrato.');
     });
@@ -2807,7 +3375,19 @@
       const ora = document.getElementById('eventoOra').value;
       const ambito = document.getElementById('eventoAmbito').value;
       const descrizione = document.getElementById('eventoDescrizione').value.trim();
+      const file = document.getElementById('eventoAllegato').files[0];
       if (!titolo || !data) return;
+
+      let allegato = null;
+      if (file) {
+        allegato = await leggiFileComeDataUrl(file);
+        await aggiungiDocumentoInCartella({
+          nome: allegato.nome,
+          tipo: allegato.tipo,
+          dataUrl: allegato.dataUrl,
+          origine: `Evento: ${titolo}`
+        });
+      }
 
       state.eventiAccaduti = state.eventiAccaduti || [];
       state.eventiAccaduti.unshift({
@@ -2816,14 +3396,35 @@
         data,
         ora,
         ambito,
-        descrizione
+        descrizione,
+        allegato
       });
 
       formEventoAccaduto.reset();
       formEventoAccaduto.classList.add('hidden');
       await saveState(true, true);
+      apriTendina(tendinaDiario);
       renderEventiAccaduti();
-      mostraToast('Evento accaduto registrato nel Diario.');
+      mostraToast(allegato ? `Evento salvato e allegato archiviato in ${allegato.tipo.toUpperCase()}.` : 'Evento accaduto registrato nel Diario.');
+    });
+
+    inputAllegaEventoItem.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      const id = e.target.dataset.targetId;
+      if (!file || !id) return;
+      const target = (state.eventiAccaduti || []).find((x) => x.id === id);
+      if (!target) return;
+      const allegato = await leggiFileComeDataUrl(file);
+      target.allegato = allegato;
+      await aggiungiDocumentoInCartella({
+        nome: allegato.nome,
+        tipo: allegato.tipo,
+        dataUrl: allegato.dataUrl,
+        origine: `Evento: ${target.titolo}`
+      });
+      await saveState(true, true);
+      renderEventiAccaduti();
+      mostraToast(`Allegato salvato in cartella ${allegato.tipo.toUpperCase()}: ${allegato.nome}`);
     });
 
     // --- EVENTI APPUNTI & NOTE ---
@@ -2837,7 +3438,19 @@
       const titolo = document.getElementById('appuntoTitolo').value.trim();
       const categoria = document.getElementById('appuntoCategoria').value;
       const testo = document.getElementById('appuntoTesto').value.trim();
+      const file = document.getElementById('appuntoAllegato').files[0];
       if (!titolo || !testo) return;
+
+      let allegato = null;
+      if (file) {
+        allegato = await leggiFileComeDataUrl(file);
+        await aggiungiDocumentoInCartella({
+          nome: allegato.nome,
+          tipo: allegato.tipo,
+          dataUrl: allegato.dataUrl,
+          origine: `Appunto: ${titolo}`
+        });
+      }
 
       state.appunti = state.appunti || [];
       state.appunti.unshift({
@@ -2845,14 +3458,35 @@
         titolo,
         categoria,
         testo,
+        allegato,
         dataCreazione: new Date().toLocaleString('it-IT')
       });
 
       formAppunto.reset();
       formAppunto.classList.add('hidden');
       await saveState(true, true);
+      apriTendina(tendinaAppunti);
       renderAppunti();
-      mostraToast('Appunto salvato nella sezione Appunti.');
+      mostraToast(allegato ? `Appunto salvato e allegato archiviato in ${allegato.tipo.toUpperCase()}.` : 'Appunto salvato nella sezione Appunti.');
+    });
+
+    inputAllegaAppuntoItem.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      const id = e.target.dataset.targetId;
+      if (!file || !id) return;
+      const target = (state.appunti || []).find((x) => x.id === id);
+      if (!target) return;
+      const allegato = await leggiFileComeDataUrl(file);
+      target.allegato = allegato;
+      await aggiungiDocumentoInCartella({
+        nome: allegato.nome,
+        tipo: allegato.tipo,
+        dataUrl: allegato.dataUrl,
+        origine: `Appunto: ${target.titolo}`
+      });
+      await saveState(true, true);
+      renderAppunti();
+      mostraToast(`Allegato salvato in cartella ${allegato.tipo.toUpperCase()}: ${allegato.nome}`);
     });
 
     // --- EVENTI SCADENZE + PIN SCADENZE (SBLOCCA / MODIFICA / RESET / BLOCCA) ---
@@ -2888,9 +3522,16 @@
       mostraToast('PIN Scadenze modificato e cifrato.');
     });
 
-    async function eseguiResetPinScadenze() {
-      const ok = window.confirm('Vuoi resettare il PIN delle Scadenze al valore predefinito "1234"?');
-      if (!ok) return;
+    function apriModaleConfermaResetPin() {
+      modalConfermaResetPin.classList.add('open');
+    }
+
+    function chiudiModaleConfermaResetPin() {
+      modalConfermaResetPin.classList.remove('open');
+    }
+
+    async function eseguiResetPinScadenzeConfermato() {
+      chiudiModaleConfermaResetPin();
       state.pinScadenze = '1234';
       inputNuovoPinScadenze.value = '';
       inputPinScadenze.value = '';
@@ -2899,8 +3540,11 @@
       mostraToast('PIN Scadenze resettato a "1234".');
     }
 
-    document.getElementById('btnResetPinScadenze').addEventListener('click', eseguiResetPinScadenze);
-    document.getElementById('btnResetPinScadenzeBloccato').addEventListener('click', eseguiResetPinScadenze);
+    document.getElementById('btnResetPinScadenze').addEventListener('click', apriModaleConfermaResetPin);
+    document.getElementById('btnResetPinScadenzeBloccato').addEventListener('click', apriModaleConfermaResetPin);
+    document.getElementById('btnChiudiModalResetPin').addEventListener('click', chiudiModaleConfermaResetPin);
+    document.getElementById('btnAnnullaResetPin').addEventListener('click', chiudiModaleConfermaResetPin);
+    document.getElementById('btnConfermaResetPin').addEventListener('click', eseguiResetPinScadenzeConfermato);
 
     document.getElementById('btnBloccaScadenze').addEventListener('click', () => {
       scadenzeSbloccateFlag = false;
@@ -2931,6 +3575,7 @@
       formScadenza.reset();
       formScadenza.classList.add('hidden');
       await saveState(true, true);
+      apriTendina(tendinaScadenze);
       renderScadenze();
     });
 
@@ -2968,6 +3613,58 @@
       renderEventiAccaduti();
       renderAppunti();
       renderScadenze();
+      renderDocumenti();
+    });
+
+    // --- FILTRI, ORDINAMENTO DATA & RICERCA SINGOLA PAROLA PER SEZIONE ---
+    filtroCategoriaImpegno.addEventListener('change', renderImpegni);
+    ordineDataImpegno.addEventListener('change', renderImpegni);
+    parolaChiaveImpegni.addEventListener('input', renderImpegni);
+    document.getElementById('btnResetFiltriImpegni').addEventListener('click', () => {
+      filtroCategoriaImpegno.value = 'Tutte';
+      ordineDataImpegno.value = 'asc';
+      parolaChiaveImpegni.value = '';
+      renderImpegni();
+    });
+
+    filtroAmbitoEvento.addEventListener('change', renderEventiAccaduti);
+    ordineDataEvento.addEventListener('change', renderEventiAccaduti);
+    parolaChiaveEventi.addEventListener('input', renderEventiAccaduti);
+    document.getElementById('btnResetFiltriEventi').addEventListener('click', () => {
+      filtroAmbitoEvento.value = 'Tutti';
+      ordineDataEvento.value = 'desc';
+      parolaChiaveEventi.value = '';
+      renderEventiAccaduti();
+    });
+
+    filtroCategoriaAppunto.addEventListener('change', renderAppunti);
+    ordineDataAppunto.addEventListener('change', renderAppunti);
+    parolaChiaveAppunti.addEventListener('input', renderAppunti);
+    document.getElementById('btnResetFiltriAppunti').addEventListener('click', () => {
+      filtroCategoriaAppunto.value = 'Tutte';
+      ordineDataAppunto.value = 'desc';
+      parolaChiaveAppunti.value = '';
+      renderAppunti();
+    });
+
+    ordineDataScadenza.addEventListener('change', renderScadenze);
+    parolaChiaveScadenze.addEventListener('input', renderScadenze);
+    document.getElementById('btnResetFiltriScadenze').addEventListener('click', () => {
+      ordineDataScadenza.value = 'asc';
+      parolaChiaveScadenze.value = '';
+      renderScadenze();
+    });
+
+    ordineDataVocale.addEventListener('change', renderVocali);
+    parolaChiaveVocali.addEventListener('input', renderVocali);
+
+    filtroOrigineDoc.addEventListener('change', renderDocumenti);
+    ordineDataDoc.addEventListener('change', renderDocumenti);
+    parolaChiaveDocumenti.addEventListener('input', renderDocumenti);
+    document.getElementById('btnResetFiltriDoc').addEventListener('click', () => {
+      filtroOrigineDoc.value = 'Tutte';
+      ordineDataDoc.value = 'desc';
+      parolaChiaveDocumenti.value = '';
       renderDocumenti();
     });
 
@@ -3172,6 +3869,7 @@
 
     document.getElementById('tileVocale').addEventListener('click', () => btnRegistrazioneVocale.click());
     document.getElementById('tileFotoPdf').addEventListener('click', () => {
+      apriTendina(tendinaDocumenti);
       inputFileStampa.value = '';
       inputFileStampa.click();
     });
@@ -3253,7 +3951,9 @@
         projectId: document.getElementById('fbProjectId').value.trim(),
         appId: document.getElementById('fbAppId').value.trim()
       };
-      localStorage.setItem(CLOUD_CFG_KEY, JSON.stringify(cloudCfg));
+      try {
+        localStorage.setItem(CLOUD_CFG_KEY, JSON.stringify(cloudCfg));
+      } catch (e) {}
       await persistLocalEncrypted(state);
       localLockUntil = Date.now() + 8000;
       avviaPollingCloud();
@@ -3288,7 +3988,9 @@
       const idbCfg = await readIDBBackup('cloudCfg');
       if (idbCfg && typeof idbCfg === 'object') {
         cloudCfg = { ...defaultCloudCfg, ...cloudCfg, ...idbCfg };
-        localStorage.setItem(CLOUD_CFG_KEY, JSON.stringify(cloudCfg));
+        try {
+          localStorage.setItem(CLOUD_CFG_KEY, JSON.stringify(cloudCfg));
+        } catch (e) {}
       }
 
       let rawLocal = null;
