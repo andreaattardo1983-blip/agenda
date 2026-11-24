@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OmniDesk E2EE — Agenda, Vault & Cloud Cifrato</title>
+  <title>OmniDesk E2EE — Agenda, Diario, Appunti &amp; Vault Cifrato</title>
   <style>
     :root {
       --bg-main: #070b14;
@@ -24,6 +24,7 @@
       --danger: #ef4444;
       --danger-soft: rgba(239, 68, 68, 0.16);
       --pink: #e11d48;
+      --cyan: #06b6d4;
       --radius: 14px;
       --radius-sm: 9px;
     }
@@ -42,7 +43,7 @@
     }
 
     .app-shell {
-      max-width: 1320px;
+      max-width: 1360px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
@@ -151,7 +152,7 @@
       padding: 8px 12px;
       border-radius: var(--radius-sm);
       font-size: 0.85rem;
-      width: 210px;
+      width: 220px;
     }
 
     button {
@@ -195,6 +196,16 @@
 
     button.btn-bio:hover:not(:disabled) {
       background: rgba(16, 185, 129, 0.28);
+    }
+
+    button.btn-warn {
+      background: var(--warn-soft);
+      border-color: rgba(245, 158, 11, 0.45);
+      color: #fcd34d;
+    }
+
+    button.btn-warn:hover:not(:disabled) {
+      background: rgba(245, 158, 11, 0.28);
     }
 
     button.btn-danger {
@@ -266,12 +277,22 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     .card-title {
       margin: 0;
       font-size: 0.96rem;
       font-weight: 700;
+    }
+
+    .card-subtitle-badge {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      background: var(--bg-input);
+      border: 1px solid var(--border-soft);
+      padding: 2px 8px;
+      border-radius: 6px;
     }
 
     .count-badge {
@@ -286,16 +307,15 @@
 
     .quick-grid {
       display: grid;
-      grid-template-columns: repeat(6, minmax(110px, 1fr));
+      grid-template-columns: repeat(7, minmax(105px, 1fr));
       gap: 10px;
-      margin-bottom: 12px;
     }
 
-    @media (max-width: 980px) {
-      .quick-grid { grid-template-columns: repeat(3, 1fr); }
+    @media (max-width: 1120px) {
+      .quick-grid { grid-template-columns: repeat(4, 1fr); }
     }
 
-    @media (max-width: 520px) {
+    @media (max-width: 560px) {
       .quick-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
@@ -315,35 +335,16 @@
     }
 
     .tile-impegno { background: linear-gradient(160deg, #1b2350, #121735); }
+    .tile-diario { background: linear-gradient(160deg, #123647, #0b212c); }
+    .tile-appunti { background: linear-gradient(160deg, #2d2b14, #1b1a0e); }
     .tile-scadenza { background: linear-gradient(160deg, #3a2716, #241910); }
-    .tile-nota { background: linear-gradient(160deg, #2d2b14, #1b1a0e); }
     .tile-vocale { background: linear-gradient(160deg, #3b172a, #240e1a); }
     .tile-file { background: linear-gradient(160deg, #132944, #0d1a2c); }
     .tile-password { background: linear-gradient(160deg, #11322c, #0b1f1c); }
 
-    .quick-bar {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    @media (max-width: 640px) {
-      .quick-bar { flex-direction: column; align-items: stretch; }
-    }
-
-    .quick-bar input {
-      flex: 1;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      padding: 10px 12px;
-      border-radius: var(--radius-sm);
-      font-size: 0.88rem;
-    }
-
     .main-bento {
       display: grid;
-      grid-template-columns: 1.55fr 1fr;
+      grid-template-columns: 1.5fr 1fr;
       gap: 16px;
       align-items: start;
     }
@@ -402,7 +403,7 @@
 
     .inline-form {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 8px;
       margin-bottom: 12px;
       padding: 12px;
@@ -411,10 +412,21 @@
       border-radius: var(--radius-sm);
     }
 
+    .inline-form.stack-form {
+      grid-template-columns: 1fr;
+    }
+
+    .inline-form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 8px;
+    }
+
     .inline-form.hidden { display: none; }
 
     .inline-form input,
-    .inline-form select {
+    .inline-form select,
+    .inline-form textarea {
       width: 100%;
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -422,6 +434,12 @@
       border-radius: 7px;
       padding: 8px 10px;
       font-size: 0.83rem;
+    }
+
+    .inline-form textarea {
+      min-height: 76px;
+      resize: vertical;
+      line-height: 1.4;
     }
 
     .list-stack {
@@ -472,6 +490,15 @@
       word-break: break-word;
     }
 
+    .item-body-text {
+      font-size: 0.83rem;
+      color: #d4dff7;
+      margin-top: 6px;
+      white-space: pre-wrap;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
     .tag-row {
       display: flex;
       flex-wrap: wrap;
@@ -493,6 +520,18 @@
       background: var(--ok-soft);
       border-color: rgba(16, 185, 129, 0.35);
       color: #34d399;
+    }
+
+    .pill-tag.cyan {
+      background: rgba(6, 182, 212, 0.14);
+      border-color: rgba(6, 182, 212, 0.35);
+      color: #67e8f9;
+    }
+
+    .pill-tag.amber {
+      background: var(--warn-soft);
+      border-color: rgba(245, 158, 11, 0.35);
+      color: #fcd34d;
     }
 
     .pill-tag.file {
@@ -563,7 +602,7 @@
     }
 
     .pin-row input {
-      width: 135px;
+      width: 145px;
       text-align: center;
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -811,7 +850,7 @@
               <span id="testoBadgeCloud">Cloud Locale</span>
             </button>
           </div>
-          <div class="brand-subtitle" id="dataOraHeader">Lunedì 23 novembre 2026 • Cifratura End-to-End AES-256</div>
+          <div class="brand-subtitle" id="dataOraHeader">Martedì 24 novembre 2026 • Cifratura End-to-End AES-256</div>
         </div>
       </div>
 
@@ -832,10 +871,10 @@
     </div>
 
     <section class="bento-card">
-      <div class="card-header">
+      <div class="card-header" style="margin-bottom: 10px;">
         <div class="card-title-group">
           <span class="cloud-dot" style="background: var(--ok);"></span>
-          <h2 class="card-title">Azioni Rapide (1-Tap)</h2>
+          <h2 class="card-title">Azioni Rapide (Sezioni Separate)</h2>
         </div>
         <button type="button" id="btnSincronizzaOra" style="padding: 5px 10px; font-size: 0.78rem;">↻ Sync Cifrato Ora</button>
       </div>
@@ -843,15 +882,19 @@
       <div class="quick-grid">
         <button type="button" class="quick-tile tile-impegno" id="tileNuovoImpegno">
           <span>🗓️</span>
-          <span>+ Impegno</span>
+          <span>+ Impegno / Appunt.</span>
+        </button>
+        <button type="button" class="quick-tile tile-diario" id="tileNuovoEventoAccaduto">
+          <span>📖</span>
+          <span>+ Evento Accaduto</span>
+        </button>
+        <button type="button" class="quick-tile tile-appunti" id="tileNuovoAppunto">
+          <span>📝</span>
+          <span>+ Appunto / Nota</span>
         </button>
         <button type="button" class="quick-tile tile-scadenza" id="tileNuovaScadenza">
           <span>💳</span>
           <span>+ Scadenza</span>
-        </button>
-        <button type="button" class="quick-tile tile-nota" id="tileNuovaNota">
-          <span>📝</span>
-          <span>+ Nota</span>
         </button>
         <button type="button" class="quick-tile tile-vocale" id="tileVocale">
           <span>🎙️</span>
@@ -866,28 +909,25 @@
           <span>+ Password</span>
         </button>
       </div>
-
-      <form class="quick-bar" id="formRapido">
-        <input type="text" id="inputRapido" placeholder="Scrivi un promemoria veloce o premi Invio..." required>
-        <button type="submit" class="btn-primary">Aggiungi</button>
-      </form>
     </section>
 
     <div class="main-bento">
       <div class="left-stack">
+        <!-- 1. IMPEGNI E APPUNTAMENTI FUTURI -->
         <section class="bento-card" id="sezioneImpegni">
           <div class="card-header">
             <div class="card-title-group">
-              <h2 class="card-title">📅 Impegni &amp; Promemoria</h2>
+              <h2 class="card-title">📅 Impegni &amp; Appuntamenti</h2>
+              <span class="card-subtitle-badge">Cosa devo fare</span>
               <span class="count-badge" id="conteggioImpegni">0</span>
             </div>
             <div class="item-actions">
-              <button type="button" id="btnToggleFormImpegno">+ Nuovo</button>
+              <button type="button" class="btn-primary" id="btnToggleFormImpegno">+ Appuntamento</button>
             </div>
           </div>
 
           <div class="filter-row">
-            <div class="filter-buttons" role="group" aria-label="Filtro temporale promemoria">
+            <div class="filter-buttons" role="group" aria-label="Filtro temporale appuntamenti">
               <button type="button" class="active-time-filter" data-time-filter="giornaliero">Giornaliero</button>
               <button type="button" data-time-filter="settimanale">Settimanale</button>
               <button type="button" data-time-filter="mensile">Mensile</button>
@@ -900,52 +940,153 @@
           </div>
 
           <form class="inline-form hidden" id="formImpegnoCompleto">
-            <input type="text" id="impegnoTitolo" placeholder="Titolo impegno o promemoria..." required>
+            <input type="text" id="impegnoTitolo" placeholder="Es. Visita medica, Riunione, Chiamata..." required>
             <input type="date" id="impegnoData" required>
             <input type="time" id="impegnoOra">
-            <input type="text" id="impegnoLuogo" placeholder="Luogo (es. Studio, Casa)">
+            <input type="text" id="impegnoLuogo" placeholder="Luogo (es. Studio, Ufficio)">
             <input type="file" id="impegnoAllegato" accept="image/*,application/pdf">
-            <button type="submit" class="btn-primary">Salva Impegno</button>
+            <button type="submit" class="btn-primary">Salva Appuntamento</button>
           </form>
 
           <div class="list-stack" id="listaImpegni"></div>
         </section>
 
-        <section class="bento-card">
+        <!-- 2. DIARIO & EVENTI ACCADUTI -->
+        <section class="bento-card" id="sezioneDiario">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2 class="card-title">📖 Diario &amp; Eventi Accaduti</h2>
+              <span class="card-subtitle-badge">Cosa è già successo</span>
+              <span class="count-badge" id="conteggioEventiAccaduti">0</span>
+            </div>
+            <button type="button" class="btn-primary" id="btnToggleFormEvento">+ Registra Evento</button>
+          </div>
+
+          <form class="inline-form stack-form hidden" id="formEventoAccaduto">
+            <div class="inline-form-row">
+              <input type="text" id="eventoTitolo" placeholder="Titolo evento accaduto (es. Pagato acconto, Consegna pacco...)" required>
+              <input type="date" id="eventoData" required>
+              <input type="time" id="eventoOra">
+              <select id="eventoAmbito">
+                <option value="Personale">Personale</option>
+                <option value="Lavoro">Lavoro</option>
+                <option value="Salute">Salute</option>
+                <option value="Casa / Auto">Casa / Auto</option>
+                <option value="Pagamenti">Pagamenti</option>
+              </select>
+            </div>
+            <textarea id="eventoDescrizione" placeholder="Dettagli dell'evento accaduto da ricordare in futuro..."></textarea>
+            <div style="display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn-primary">Salva nel Diario</button>
+            </div>
+          </form>
+
+          <div class="list-stack" id="listaEventiAccaduti"></div>
+        </section>
+
+        <!-- 3. APPUNTI & NOTE LIBERE -->
+        <section class="bento-card" id="sezioneAppunti">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2 class="card-title">📝 Appunti &amp; Note</h2>
+              <span class="card-subtitle-badge">Idee, promemoria testuali, elenchi</span>
+              <span class="count-badge" id="conteggioAppunti">0</span>
+            </div>
+            <button type="button" class="btn-primary" id="btnToggleFormAppunto">+ Nuovo Appunto</button>
+          </div>
+
+          <form class="inline-form stack-form hidden" id="formAppunto">
+            <div class="inline-form-row">
+              <input type="text" id="appuntoTitolo" placeholder="Titolo appunto..." required>
+              <select id="appuntoCategoria">
+                <option value="Generale">Generale</option>
+                <option value="Lavoro">Lavoro</option>
+                <option value="Idee">Idee</option>
+                <option value="Lista / Spesa">Lista / Spesa</option>
+                <option value="Riferimenti">Riferimenti</option>
+              </select>
+            </div>
+            <textarea id="appuntoTesto" placeholder="Scrivi qui il contenuto dell'appunto..." required></textarea>
+            <div style="display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn-primary">Salva Appunto</button>
+            </div>
+          </form>
+
+          <div class="list-stack" id="listaAppunti"></div>
+        </section>
+
+        <!-- 4. SCADENZE PROTETTE DA PIN -->
+        <section class="bento-card" id="sezioneScadenze">
           <div class="card-header">
             <div class="card-title-group">
               <h2 class="card-title">⚠️ Scadenze Carte, Polizze &amp; Doc</h2>
               <span class="count-badge" id="conteggioScadenze">0</span>
             </div>
-            <button type="button" id="btnToggleFormScadenza">+ Scadenza</button>
+            <div class="item-actions">
+              <span class="pill-tag" id="statoScadenzePill">PIN</span>
+              <button type="button" class="btn-primary" id="btnToggleFormScadenza" style="display: none;">+ Scadenza</button>
+            </div>
           </div>
 
-          <div class="filter-buttons" style="margin-bottom: 12px;" id="filtriCategoriaScadenze">
-            <button type="button" class="active-filter" data-cat-scadenza="Tutte">Tutte</button>
-            <button type="button" data-cat-scadenza="Carte">Carte</button>
-            <button type="button" data-cat-scadenza="Assicurazioni">Assicurazioni</button>
-            <button type="button" data-cat-scadenza="Documenti">Documenti</button>
-            <button type="button" data-cat-scadenza="Abbonamenti">Abbonamenti</button>
+          <!-- SCHERMATA BLOCCATA SCADENZE -->
+          <div id="scadenzeBloccate" class="vault-box">
+            <div style="font-size: 1.45rem; margin-bottom: 6px;">🔐</div>
+            <div class="item-meta">Inserisci il <strong>PIN Scadenze</strong> per visualizzare o modificare carte, polizze e documenti</div>
+            <div class="pin-row">
+              <input type="password" id="inputPinScadenze" placeholder="PIN Scadenze" maxlength="20">
+              <button type="button" class="btn-primary" id="btnSbloccaScadenze">Sblocca Scadenze</button>
+            </div>
+            <div class="bio-row">
+              <button type="button" class="btn-warn" id="btnResetPinScadenzeBloccato" style="font-size: 0.76rem; padding: 5px 10px;">↻ Reset PIN Scadenze (1234)</button>
+            </div>
           </div>
 
-          <form class="inline-form hidden" id="formScadenza">
-            <input type="text" id="scadenzaTitolo" placeholder="Es. Assicurazione Auto RC" required>
-            <select id="scadenzaCategoria">
-              <option value="Assicurazioni">Assicurazioni</option>
-              <option value="Carte">Carte</option>
-              <option value="Documenti">Documenti</option>
-              <option value="Abbonamenti">Abbonamenti</option>
-            </select>
-            <input type="date" id="scadenzaData" required>
-            <input type="text" id="scadenzaDettaglio" placeholder="Dettaglio / Polizza / IBAN">
-            <button type="submit" class="btn-primary">Salva Scadenza</button>
-          </form>
+          <!-- CONTENUTO SBLOCCATO SCADENZE -->
+          <div id="scadenzeSbloccate" style="display: none;">
+            <div class="filter-buttons" style="margin-bottom: 12px;" id="filtriCategoriaScadenze">
+              <button type="button" class="active-filter" data-cat-scadenza="Tutte">Tutte</button>
+              <button type="button" data-cat-scadenza="Carte">Carte</button>
+              <button type="button" data-cat-scadenza="Assicurazioni">Assicurazioni</button>
+              <button type="button" data-cat-scadenza="Documenti">Documenti</button>
+              <button type="button" data-cat-scadenza="Abbonamenti">Abbonamenti</button>
+            </div>
 
-          <div class="list-stack" id="listaScadenze"></div>
+            <form class="inline-form hidden" id="formScadenza">
+              <input type="text" id="scadenzaTitolo" placeholder="Es. Assicurazione Auto RC" required>
+              <select id="scadenzaCategoria">
+                <option value="Assicurazioni">Assicurazioni</option>
+                <option value="Carte">Carte</option>
+                <option value="Documenti">Documenti</option>
+                <option value="Abbonamenti">Abbonamenti</option>
+              </select>
+              <input type="date" id="scadenzaData" required>
+              <input type="text" id="scadenzaDettaglio" placeholder="Dettaglio / Polizza / IBAN">
+              <button type="submit" class="btn-primary">Salva Scadenza</button>
+            </form>
+
+            <div class="list-stack" id="listaScadenze"></div>
+
+            <!-- GESTIONE PIN SCADENZE (MODIFICA / RESET / BLOCCA) -->
+            <div class="pin-change-box">
+              <div class="pin-change-line">
+                <div>
+                  <div class="item-title" style="font-size: 0.82rem;">Gestione PIN Scadenze</div>
+                  <div class="item-meta" id="infoPinScadenzeAttuale">PIN personalizzato attivo</div>
+                </div>
+                <div class="item-actions">
+                  <input type="text" id="inputNuovoPinScadenze" placeholder="Nuovo PIN..." maxlength="20">
+                  <button type="button" class="btn-primary" id="btnSalvaNuovoPinScadenze">Modifica PIN</button>
+                  <button type="button" class="btn-warn" id="btnResetPinScadenze">Reset (1234)</button>
+                  <button type="button" id="btnBloccaScadenze">Blocca</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
       </div>
 
       <div class="right-stack">
+        <!-- CASSAFORTE PASSWORD (PIN + VOLTO) -->
         <section class="bento-card">
           <div class="card-header">
             <div class="card-title-group">
@@ -958,7 +1099,7 @@
             <div style="font-size: 1.5rem; margin-bottom: 6px;">🛡️</div>
             <div class="item-meta">Sblocca con il PIN oppure con il riconoscimento del volto / biometria</div>
             <div class="pin-row">
-              <input type="password" id="inputPinVault" placeholder="PIN attuale" maxlength="20">
+              <input type="password" id="inputPinVault" placeholder="PIN Cassaforte" maxlength="20">
               <button type="button" class="btn-primary" id="btnSbloccaVault">Sblocca con PIN</button>
             </div>
             <div class="bio-row">
@@ -1003,6 +1144,7 @@
           </div>
         </section>
 
+        <!-- REGISTRAZIONI VOCALI -->
         <section class="bento-card">
           <div class="card-header">
             <div class="card-title-group">
@@ -1018,6 +1160,7 @@
           </div>
         </section>
 
+        <!-- CARTELLE PDF E FOTO -->
         <section class="bento-card print-target-card" id="sezioneCartelleFile">
           <div class="card-header">
             <div class="card-title-group">
@@ -1150,13 +1293,15 @@
         {
           id: 'imp-1',
           titolo: 'Chiamare commercialista',
-          data: '2026-11-23',
+          data: '2026-11-24',
           ora: '16:30',
           luogo: 'Studio / Telefono',
           completato: false,
           allegato: null
         }
       ],
+      eventiAccaduti: [],
+      appunti: [],
       scadenze: [
         {
           id: 'sc-1',
@@ -1187,6 +1332,7 @@
       documenti: [],
       deletedIds: {},
       pinVault: '1234',
+      pinScadenze: '1234',
       updatedAt: Date.now()
     };
 
@@ -1206,6 +1352,7 @@
     let categoriaScadenzaAttiva = 'Tutte';
     let cartellaDocumentiAttiva = 'pdf';
     let vaultSbloccato = false;
+    let scadenzeSbloccateFlag = false;
     let elementoAnteprima = null;
     let mediaRecorder = null;
     let chunkVocali = [];
@@ -1222,17 +1369,34 @@
     const securityBanner = document.getElementById('securityBanner');
     const securityBannerText = document.getElementById('securityBannerText');
 
-    const formRapido = document.getElementById('formRapido');
-    const inputRapido = document.getElementById('inputRapido');
+    // Impegni
     const formImpegnoCompleto = document.getElementById('formImpegnoCompleto');
     const listaImpegni = document.getElementById('listaImpegni');
     const conteggioImpegni = document.getElementById('conteggioImpegni');
     const inputDataRiferimento = document.getElementById('inputDataRiferimento');
 
+    // Diario Eventi Accaduti
+    const formEventoAccaduto = document.getElementById('formEventoAccaduto');
+    const listaEventiAccaduti = document.getElementById('listaEventiAccaduti');
+    const conteggioEventiAccaduti = document.getElementById('conteggioEventiAccaduti');
+
+    // Appunti & Note
+    const formAppunto = document.getElementById('formAppunto');
+    const listaAppunti = document.getElementById('listaAppunti');
+    const conteggioAppunti = document.getElementById('conteggioAppunti');
+
+    // Scadenze + PIN Scadenze
+    const scadenzeBloccate = document.getElementById('scadenzeBloccate');
+    const scadenzeSbloccate = document.getElementById('scadenzeSbloccate');
+    const inputPinScadenze = document.getElementById('inputPinScadenze');
+    const inputNuovoPinScadenze = document.getElementById('inputNuovoPinScadenze');
+    const infoPinScadenzeAttuale = document.getElementById('infoPinScadenzeAttuale');
+    const btnToggleFormScadenza = document.getElementById('btnToggleFormScadenza');
     const formScadenza = document.getElementById('formScadenza');
     const listaScadenze = document.getElementById('listaScadenze');
     const conteggioScadenze = document.getElementById('conteggioScadenze');
 
+    // Cassaforte Password
     const vaultBloccata = document.getElementById('vaultBloccata');
     const vaultSbloccata = document.getElementById('vaultSbloccata');
     const inputPinVault = document.getElementById('inputPinVault');
@@ -1246,6 +1410,7 @@
     const formPassword = document.getElementById('formPassword');
     const listaPassword = document.getElementById('listaPassword');
 
+    // Vocali & File
     const btnRegistrazioneVocale = document.getElementById('btnRegistrazioneVocale');
     const testoBtnVocale = document.getElementById('testoBtnVocale');
     const listaVocali = document.getElementById('listaVocali');
@@ -1271,11 +1436,16 @@
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     }
 
+    function oraAttualeHHMM() {
+      const d = new Date();
+      return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    }
+
     function aggiornaBannerSicurezza() {
       const pwd = (cloudCfg.syncPassword || '').trim();
       if (pwd.length >= 10) {
         securityBanner.classList.remove('warn');
-        securityBannerText.innerHTML = '🛡️ <strong>Cifratura End-to-End AES-256 Attiva:</strong> i tuoi dati vengono cifrati localmente prima di essere salvati o sincronizzati sul Cloud.';
+        securityBannerText.innerHTML = '🛡️ <strong>Cifratura End-to-End AES-256 Attiva:</strong> Appuntamenti, Diario, Appunti, Scadenze e Cassaforte vengono cifrati localmente.';
       } else if (pwd.length > 0) {
         securityBanner.classList.add('warn');
         securityBannerText.innerHTML = '⚠️ <strong>Chiave corta:</strong> usa almeno 10 caratteri con lettere, numeri e simboli per una protezione AES-256 robusta.';
@@ -1588,6 +1758,8 @@
       merged.deletedIds = deletedMap;
 
       merged.impegni = mergeListById(base.impegni, normalizeArrayField(incoming.impegni, []), deletedMap);
+      merged.eventiAccaduti = mergeListById(base.eventiAccaduti, normalizeArrayField(incoming.eventiAccaduti, []), deletedMap);
+      merged.appunti = mergeListById(base.appunti, normalizeArrayField(incoming.appunti, []), deletedMap);
       merged.scadenze = mergeListById(base.scadenze, normalizeArrayField(incoming.scadenze, []), deletedMap);
       merged.password = mergeListById(base.password, normalizeArrayField(incoming.password, []), deletedMap);
       merged.vocali = mergeListById(base.vocali, normalizeArrayField(incoming.vocali, []), deletedMap);
@@ -1597,6 +1769,12 @@
         merged.pinVault = incoming.pinVault.trim();
       } else if (typeof base.pinVault === 'string' && base.pinVault.trim()) {
         merged.pinVault = base.pinVault.trim();
+      }
+
+      if (typeof incoming.pinScadenze === 'string' && incoming.pinScadenze.trim()) {
+        merged.pinScadenze = incoming.pinScadenze.trim();
+      } else if (typeof base.pinScadenze === 'string' && base.pinScadenze.trim()) {
+        merged.pinScadenze = base.pinScadenze.trim();
       }
 
       merged.updatedAt = Math.max(Number(base.updatedAt || 0), Number(incoming.updatedAt || 0), Date.now());
@@ -1674,12 +1852,15 @@
         const plainPayload = {
           ...state,
           impegni: state.impegni || [],
+          eventiAccaduti: state.eventiAccaduti || [],
+          appunti: state.appunti || [],
           scadenze: state.scadenze || [],
           password: state.password || [],
           vocali: state.vocali || [],
           documenti: state.documenti || [],
           deletedIds: state.deletedIds || {},
           pinVault: state.pinVault || '1234',
+          pinScadenze: state.pinScadenze || '1234',
           updatedAt: Number(state.updatedAt || Date.now())
         };
         const envelope = prebuiltEnvelope || (await encryptStateEnvelope(plainPayload, cloudCfg.syncPassword));
@@ -1726,11 +1907,14 @@
 
           const prevJson = JSON.stringify({
             impegni: state.impegni,
+            eventiAccaduti: state.eventiAccaduti,
+            appunti: state.appunti,
             scadenze: state.scadenze,
             password: state.password,
             vocali: state.vocali,
             documenti: state.documenti,
-            pinVault: state.pinVault
+            pinVault: state.pinVault,
+            pinScadenze: state.pinScadenze
           });
 
           isSyncingFromRemote = true;
@@ -1740,11 +1924,14 @@
 
           const nextJson = JSON.stringify({
             impegni: state.impegni,
+            eventiAccaduti: state.eventiAccaduti,
+            appunti: state.appunti,
             scadenze: state.scadenze,
             password: state.password,
             vocali: state.vocali,
             documenti: state.documenti,
-            pinVault: state.pinVault
+            pinVault: state.pinVault,
+            pinScadenze: state.pinScadenze
           });
 
           if (showFeedback || prevJson !== nextJson) {
@@ -1950,6 +2137,450 @@
       }
     }
 
+    // --- RENDER 1: IMPEGNI & APPUNTAMENTI ---
+    function renderImpegni() {
+      const filtrati = filtraPerPeriodo(state.impegni || [], filtroTemporale, inputDataRiferimento.value);
+      conteggioImpegni.textContent = String(filtrati.length);
+      listaImpegni.innerHTML = '';
+
+      if (filtrati.length === 0) {
+        listaImpegni.innerHTML = `<div class="empty-hint">Nessun appuntamento per il filtro "${filtroTemporale}".</div>`;
+        return;
+      }
+
+      filtrati.forEach((item) => {
+        const row = document.createElement('div');
+        const isSelected = elementoAnteprima && elementoAnteprima.impegnoId === item.id;
+        row.className = `row-item ${item.completato ? 'done' : ''} ${isSelected ? 'selected' : ''}`;
+
+        const main = document.createElement('div');
+        main.className = 'item-main';
+
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = Boolean(item.completato);
+        cb.addEventListener('change', async () => {
+          item.completato = cb.checked;
+          await saveState(true, true);
+          renderImpegni();
+        });
+
+        const textWrap = document.createElement('div');
+        const title = document.createElement('div');
+        title.className = 'item-title';
+        title.textContent = item.titolo;
+
+        const meta = document.createElement('div');
+        meta.className = 'item-meta';
+        meta.textContent = `${item.data || ''}${item.ora ? ` • ${item.ora}` : ''}${item.luogo ? ` • Luogo: ${item.luogo}` : ''}`;
+
+        textWrap.appendChild(title);
+        textWrap.appendChild(meta);
+
+        if (item.allegato) {
+          const tags = document.createElement('div');
+          tags.className = 'tag-row';
+          const badge = document.createElement('span');
+          badge.className = 'pill-tag file';
+          badge.textContent = `${item.allegato.tipo.toUpperCase()}: ${item.allegato.nome}`;
+          tags.appendChild(badge);
+          textWrap.appendChild(tags);
+        }
+
+        main.appendChild(cb);
+        main.appendChild(textWrap);
+
+        const actions = document.createElement('div');
+        actions.className = 'item-actions';
+
+        if (item.allegato) {
+          const el = { tipo: item.allegato.tipo, src: item.allegato.dataUrl, nome: item.allegato.nome, impegnoId: item.id };
+          const btnAnt = document.createElement('button');
+          btnAnt.type = 'button';
+          btnAnt.textContent = 'Anteprima';
+          btnAnt.addEventListener('click', () => apriAnteprimaSuRichiesta(el, `Appuntamento "${item.titolo}" — ${item.allegato.nome}`));
+
+          const btnStampa = document.createElement('button');
+          btnStampa.type = 'button';
+          btnStampa.className = 'btn-primary';
+          btnStampa.textContent = 'Stampa';
+          btnStampa.addEventListener('click', () => {
+            apriAnteprimaSuRichiesta(el, `Appuntamento "${item.titolo}" — ${item.allegato.nome}`);
+            stampaElemento(el);
+          });
+
+          actions.appendChild(btnAnt);
+          actions.appendChild(btnStampa);
+        } else {
+          const btnAllega = document.createElement('button');
+          btnAllega.type = 'button';
+          btnAllega.textContent = '+ Allega';
+          btnAllega.addEventListener('click', () => {
+            inputAllegaVoceItem.dataset.targetId = item.id;
+            inputAllegaVoceItem.value = '';
+            inputAllegaVoceItem.click();
+          });
+          actions.appendChild(btnAllega);
+        }
+
+        const btnDel = document.createElement('button');
+        btnDel.type = 'button';
+        btnDel.className = 'btn-danger';
+        btnDel.textContent = 'Elimina';
+        btnDel.addEventListener('click', async () => {
+          registerDeletedId(item.id);
+          state.impegni = state.impegni.filter((x) => x.id !== item.id);
+          await saveState(true, true);
+          renderImpegni();
+          mostraToast('Appuntamento eliminato.');
+        });
+        actions.appendChild(btnDel);
+
+        row.appendChild(main);
+        row.appendChild(actions);
+        listaImpegni.appendChild(row);
+      });
+    }
+
+    // --- RENDER 2: DIARIO & EVENTI ACCADUTI ---
+    function renderEventiAccaduti() {
+      const q = inputRicerca.value.trim().toLowerCase();
+      const lista = (state.eventiAccaduti || []).filter((ev) => {
+        if (!q) return true;
+        return `${ev.titolo || ''} ${ev.descrizione || ''} ${ev.ambito || ''} ${ev.data || ''}`.toLowerCase().includes(q);
+      });
+
+      conteggioEventiAccaduti.textContent = String(lista.length);
+      listaEventiAccaduti.innerHTML = '';
+
+      if (lista.length === 0) {
+        listaEventiAccaduti.innerHTML = '<div class="empty-hint">Nessun evento accaduto registrato nel diario.</div>';
+        return;
+      }
+
+      lista.forEach((ev) => {
+        const row = document.createElement('div');
+        row.className = 'row-item';
+
+        const left = document.createElement('div');
+        left.style.flex = '1';
+        left.style.minWidth = '0';
+
+        const tags = document.createElement('div');
+        tags.className = 'tag-row';
+        tags.style.marginTop = '0';
+        tags.style.marginBottom = '5px';
+
+        const badgeAmbito = document.createElement('span');
+        badgeAmbito.className = 'pill-tag cyan';
+        badgeAmbito.textContent = ev.ambito || 'Evento';
+
+        const badgeData = document.createElement('span');
+        badgeData.className = 'pill-tag';
+        badgeData.textContent = `Accaduto il ${ev.data || ''}${ev.ora ? ` alle ${ev.ora}` : ''}`;
+
+        tags.appendChild(badgeAmbito);
+        tags.appendChild(badgeData);
+
+        const title = document.createElement('div');
+        title.className = 'item-title';
+        title.textContent = ev.titolo;
+
+        left.appendChild(tags);
+        left.appendChild(title);
+
+        if (ev.descrizione) {
+          const body = document.createElement('div');
+          body.className = 'item-body-text';
+          body.textContent = ev.descrizione;
+          left.appendChild(body);
+        }
+
+        const actions = document.createElement('div');
+        actions.className = 'item-actions';
+
+        const btnDel = document.createElement('button');
+        btnDel.type = 'button';
+        btnDel.className = 'btn-danger';
+        btnDel.textContent = 'Elimina';
+        btnDel.addEventListener('click', async () => {
+          registerDeletedId(ev.id);
+          state.eventiAccaduti = (state.eventiAccaduti || []).filter((x) => x.id !== ev.id);
+          await saveState(true, true);
+          renderEventiAccaduti();
+          mostraToast('Evento rimosso dal diario.');
+        });
+        actions.appendChild(btnDel);
+
+        row.appendChild(left);
+        row.appendChild(actions);
+        listaEventiAccaduti.appendChild(row);
+      });
+    }
+
+    // --- RENDER 3: APPUNTI & NOTE ---
+    function renderAppunti() {
+      const q = inputRicerca.value.trim().toLowerCase();
+      const lista = (state.appunti || []).filter((ap) => {
+        if (!q) return true;
+        return `${ap.titolo || ''} ${ap.testo || ''} ${ap.categoria || ''}`.toLowerCase().includes(q);
+      });
+
+      conteggioAppunti.textContent = String(lista.length);
+      listaAppunti.innerHTML = '';
+
+      if (lista.length === 0) {
+        listaAppunti.innerHTML = '<div class="empty-hint">Nessun appunto salvato in questa sezione.</div>';
+        return;
+      }
+
+      lista.forEach((ap) => {
+        const row = document.createElement('div');
+        row.className = 'row-item';
+
+        const left = document.createElement('div');
+        left.style.flex = '1';
+        left.style.minWidth = '0';
+
+        const tags = document.createElement('div');
+        tags.className = 'tag-row';
+        tags.style.marginTop = '0';
+        tags.style.marginBottom = '5px';
+
+        const badgeCat = document.createElement('span');
+        badgeCat.className = 'pill-tag amber';
+        badgeCat.textContent = ap.categoria || 'Appunto';
+
+        const badgeData = document.createElement('span');
+        badgeData.className = 'pill-tag';
+        badgeData.textContent = ap.dataCreazione || '';
+
+        tags.appendChild(badgeCat);
+        tags.appendChild(badgeData);
+
+        const title = document.createElement('div');
+        title.className = 'item-title';
+        title.textContent = ap.titolo;
+
+        const body = document.createElement('div');
+        body.className = 'item-body-text';
+        body.textContent = ap.testo;
+
+        left.appendChild(tags);
+        left.appendChild(title);
+        left.appendChild(body);
+
+        const actions = document.createElement('div');
+        actions.className = 'item-actions';
+
+        const btnDel = document.createElement('button');
+        btnDel.type = 'button';
+        btnDel.className = 'btn-danger';
+        btnDel.textContent = 'Elimina';
+        btnDel.addEventListener('click', async () => {
+          registerDeletedId(ap.id);
+          state.appunti = (state.appunti || []).filter((x) => x.id !== ap.id);
+          await saveState(true, true);
+          renderAppunti();
+          mostraToast('Appunto eliminato.');
+        });
+        actions.appendChild(btnDel);
+
+        row.appendChild(left);
+        row.appendChild(actions);
+        listaAppunti.appendChild(row);
+      });
+    }
+
+    // --- RENDER 4: SCADENZE CON PIN DEDICATO ---
+    function renderScadenze() {
+      const pill = document.getElementById('statoScadenzePill');
+      if (infoPinScadenzeAttuale) {
+        infoPinScadenzeAttuale.textContent = `PIN Scadenze attivo (${state.pinScadenze === '1234' ? 'predefinito 1234' : 'personalizzato'})`;
+      }
+
+      if (!scadenzeSbloccateFlag) {
+        scadenzeBloccate.style.display = 'block';
+        scadenzeSbloccate.style.display = 'none';
+        btnToggleFormScadenza.style.display = 'none';
+        pill.textContent = 'PIN';
+        conteggioScadenze.textContent = '🔒';
+        return;
+      }
+
+      scadenzeBloccate.style.display = 'none';
+      scadenzeSbloccate.style.display = 'block';
+      btnToggleFormScadenza.style.display = 'inline-block';
+      pill.textContent = 'SBLOCCATE';
+
+      const q = inputRicerca.value.trim().toLowerCase();
+      const filtered = (state.scadenze || []).filter((s) => {
+        const catOk = categoriaScadenzaAttiva === 'Tutte' || s.categoria === categoriaScadenzaAttiva;
+        const qOk = !q || `${s.titolo} ${s.categoria} ${s.dettaglio || ''}`.toLowerCase().includes(q);
+        return catOk && qOk;
+      });
+
+      conteggioScadenze.textContent = String(filtered.length);
+      listaScadenze.innerHTML = '';
+
+      if (filtered.length === 0) {
+        listaScadenze.innerHTML = '<div class="empty-hint">Nessuna scadenza per questa categoria.</div>';
+        return;
+      }
+
+      filtered.forEach((sc) => {
+        const row = document.createElement('div');
+        row.className = 'row-item';
+
+        const left = document.createElement('div');
+        const tags = document.createElement('div');
+        tags.className = 'tag-row';
+        tags.style.marginTop = '0';
+        tags.style.marginBottom = '4px';
+
+        const catBadge = document.createElement('span');
+        catBadge.className = 'pill-tag';
+        catBadge.textContent = sc.categoria;
+
+        const okBadge = document.createElement('span');
+        okBadge.className = 'pill-tag ok';
+        okBadge.textContent = 'Monitorata';
+
+        tags.appendChild(catBadge);
+        tags.appendChild(okBadge);
+
+        const title = document.createElement('div');
+        title.className = 'item-title';
+        title.textContent = sc.titolo;
+
+        const meta = document.createElement('div');
+        meta.className = 'item-meta';
+        meta.textContent = `Scadenza: ${sc.data}${sc.dettaglio ? ` • ${sc.dettaglio}` : ''}`;
+
+        left.appendChild(tags);
+        left.appendChild(title);
+        left.appendChild(meta);
+
+        const actions = document.createElement('div');
+        actions.className = 'item-actions';
+
+        if (sc.allegato) {
+          const btnDoc = document.createElement('button');
+          btnDoc.type = 'button';
+          btnDoc.textContent = 'Apri Doc';
+          btnDoc.addEventListener('click', () => {
+            apriAnteprimaSuRichiesta({ tipo: sc.allegato.tipo, src: sc.allegato.dataUrl, nome: sc.allegato.nome }, `Scadenza "${sc.titolo}" — ${sc.allegato.nome}`);
+          });
+          actions.appendChild(btnDoc);
+        } else {
+          const btnAddDoc = document.createElement('button');
+          btnAddDoc.type = 'button';
+          btnAddDoc.textContent = 'Doc';
+          btnAddDoc.addEventListener('click', () => {
+            inputAllegaScadenzaItem.dataset.targetId = sc.id;
+            inputAllegaScadenzaItem.value = '';
+            inputAllegaScadenzaItem.click();
+          });
+          actions.appendChild(btnAddDoc);
+        }
+
+        const btnDel = document.createElement('button');
+        btnDel.type = 'button';
+        btnDel.className = 'btn-danger';
+        btnDel.textContent = '✕';
+        btnDel.addEventListener('click', async () => {
+          registerDeletedId(sc.id);
+          state.scadenze = state.scadenze.filter((x) => x.id !== sc.id);
+          await saveState(true, true);
+          renderScadenze();
+          mostraToast('Scadenza eliminata.');
+        });
+        actions.appendChild(btnDel);
+
+        row.appendChild(left);
+        row.appendChild(actions);
+        listaScadenze.appendChild(row);
+      });
+    }
+
+    // --- RENDER 5: CASSAFORTE PASSWORD ---
+    function renderVault() {
+      const pill = document.getElementById('statoVaultPill');
+      if (infoPinAttuale) {
+        infoPinAttuale.textContent = 'PIN personalizzato attivo';
+      }
+      aggiornaStatoBiometriaUI();
+
+      if (!vaultSbloccato) {
+        vaultBloccata.style.display = 'block';
+        vaultSbloccata.style.display = 'none';
+        pill.textContent = 'PIN + VOLTO';
+        return;
+      }
+      vaultBloccata.style.display = 'none';
+      vaultSbloccata.style.display = 'block';
+      pill.textContent = 'SBLOCCATA';
+      listaPassword.innerHTML = '';
+
+      state.password.forEach((p) => {
+        const row = document.createElement('div');
+        row.className = 'row-item';
+        const info = document.createElement('div');
+        info.innerHTML = `<div class="item-title">${p.servizio}</div><div class="item-meta">${p.utente} • <strong>${p.valore}</strong></div>`;
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'btn-danger';
+        del.textContent = 'Elimina';
+        del.addEventListener('click', async () => {
+          registerDeletedId(p.id);
+          state.password = state.password.filter((x) => x.id !== p.id);
+          await saveState(true, true);
+          renderVault();
+          mostraToast('Password eliminata.');
+        });
+        row.appendChild(info);
+        row.appendChild(del);
+        listaPassword.appendChild(row);
+      });
+    }
+
+    function renderVocali() {
+      listaVocali.innerHTML = '';
+      if (!state.vocali || state.vocali.length === 0) {
+        listaVocali.innerHTML = '<div class="empty-hint">Nessuna registrazione salvata.</div>';
+        return;
+      }
+      state.vocali.forEach((v) => {
+        const row = document.createElement('div');
+        row.className = 'row-item';
+        const wrap = document.createElement('div');
+        wrap.style.flex = '1';
+        wrap.innerHTML = `<div class="item-title">${v.titolo}</div><div class="item-meta">${v.data}</div>`;
+        if (v.audioUrl) {
+          const audio = document.createElement('audio');
+          audio.controls = true;
+          audio.src = v.audioUrl;
+          audio.style.width = '100%';
+          audio.style.marginTop = '6px';
+          wrap.appendChild(audio);
+        }
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'btn-danger';
+        del.textContent = '✕';
+        del.addEventListener('click', async () => {
+          registerDeletedId(v.id);
+          state.vocali = state.vocali.filter((x) => x.id !== v.id);
+          await saveState(true, true);
+          renderVocali();
+          mostraToast('Registrazione eliminata.');
+        });
+        row.appendChild(wrap);
+        row.appendChild(del);
+        listaVocali.appendChild(row);
+      });
+    }
+
     function renderDocumenti() {
       const allDocs = state.documenti || [];
       const pdfCount = allDocs.filter((d) => d.tipo === 'pdf').length;
@@ -2076,280 +2707,10 @@
       });
     }
 
-    function renderImpegni() {
-      const filtrati = filtraPerPeriodo(state.impegni, filtroTemporale, inputDataRiferimento.value);
-      conteggioImpegni.textContent = String(filtrati.length);
-      listaImpegni.innerHTML = '';
-
-      if (filtrati.length === 0) {
-        listaImpegni.innerHTML = `<div class="empty-hint">Nessun impegno per il filtro "${filtroTemporale}".</div>`;
-        return;
-      }
-
-      filtrati.forEach((item) => {
-        const row = document.createElement('div');
-        const isSelected = elementoAnteprima && elementoAnteprima.impegnoId === item.id;
-        row.className = `row-item ${item.completato ? 'done' : ''} ${isSelected ? 'selected' : ''}`;
-
-        const main = document.createElement('div');
-        main.className = 'item-main';
-
-        const cb = document.createElement('input');
-        cb.type = 'checkbox';
-        cb.checked = Boolean(item.completato);
-        cb.addEventListener('change', async () => {
-          item.completato = cb.checked;
-          await saveState(true, true);
-          renderImpegni();
-        });
-
-        const textWrap = document.createElement('div');
-        const title = document.createElement('div');
-        title.className = 'item-title';
-        title.textContent = item.titolo;
-
-        const meta = document.createElement('div');
-        meta.className = 'item-meta';
-        meta.textContent = `${item.data || ''}${item.ora ? ` • ${item.ora}` : ''}${item.luogo ? ` • Luogo: ${item.luogo}` : ''}`;
-
-        textWrap.appendChild(title);
-        textWrap.appendChild(meta);
-
-        if (item.allegato) {
-          const tags = document.createElement('div');
-          tags.className = 'tag-row';
-          const badge = document.createElement('span');
-          badge.className = 'pill-tag file';
-          badge.textContent = `${item.allegato.tipo.toUpperCase()}: ${item.allegato.nome}`;
-          tags.appendChild(badge);
-          textWrap.appendChild(tags);
-        }
-
-        main.appendChild(cb);
-        main.appendChild(textWrap);
-
-        const actions = document.createElement('div');
-        actions.className = 'item-actions';
-
-        if (item.allegato) {
-          const el = { tipo: item.allegato.tipo, src: item.allegato.dataUrl, nome: item.allegato.nome, impegnoId: item.id };
-          const btnAnt = document.createElement('button');
-          btnAnt.type = 'button';
-          btnAnt.textContent = 'Anteprima';
-          btnAnt.addEventListener('click', () => apriAnteprimaSuRichiesta(el, `Impegno "${item.titolo}" — ${item.allegato.nome}`));
-
-          const btnStampa = document.createElement('button');
-          btnStampa.type = 'button';
-          btnStampa.className = 'btn-primary';
-          btnStampa.textContent = 'Stampa';
-          btnStampa.addEventListener('click', () => {
-            apriAnteprimaSuRichiesta(el, `Impegno "${item.titolo}" — ${item.allegato.nome}`);
-            stampaElemento(el);
-          });
-
-          actions.appendChild(btnAnt);
-          actions.appendChild(btnStampa);
-        } else {
-          const btnAllega = document.createElement('button');
-          btnAllega.type = 'button';
-          btnAllega.textContent = '+ Allega';
-          btnAllega.addEventListener('click', () => {
-            inputAllegaVoceItem.dataset.targetId = item.id;
-            inputAllegaVoceItem.value = '';
-            inputAllegaVoceItem.click();
-          });
-          actions.appendChild(btnAllega);
-        }
-
-        const btnDel = document.createElement('button');
-        btnDel.type = 'button';
-        btnDel.className = 'btn-danger';
-        btnDel.textContent = 'Elimina';
-        btnDel.addEventListener('click', async () => {
-          registerDeletedId(item.id);
-          state.impegni = state.impegni.filter((x) => x.id !== item.id);
-          await saveState(true, true);
-          renderImpegni();
-          mostraToast('Impegno eliminato.');
-        });
-        actions.appendChild(btnDel);
-
-        row.appendChild(main);
-        row.appendChild(actions);
-        listaImpegni.appendChild(row);
-      });
-    }
-
-    function renderScadenze() {
-      const q = inputRicerca.value.trim().toLowerCase();
-      const filtered = state.scadenze.filter((s) => {
-        const catOk = categoriaScadenzaAttiva === 'Tutte' || s.categoria === categoriaScadenzaAttiva;
-        const qOk = !q || `${s.titolo} ${s.categoria} ${s.dettaglio || ''}`.toLowerCase().includes(q);
-        return catOk && qOk;
-      });
-
-      conteggioScadenze.textContent = String(filtered.length);
-      listaScadenze.innerHTML = '';
-
-      if (filtered.length === 0) {
-        listaScadenze.innerHTML = '<div class="empty-hint">Nessuna scadenza per questa categoria.</div>';
-        return;
-      }
-
-      filtered.forEach((sc) => {
-        const row = document.createElement('div');
-        row.className = 'row-item';
-
-        const left = document.createElement('div');
-        const tags = document.createElement('div');
-        tags.className = 'tag-row';
-        tags.style.marginTop = '0';
-        tags.style.marginBottom = '4px';
-
-        const catBadge = document.createElement('span');
-        catBadge.className = 'pill-tag';
-        catBadge.textContent = sc.categoria;
-
-        const okBadge = document.createElement('span');
-        okBadge.className = 'pill-tag ok';
-        okBadge.textContent = 'Monitorata';
-
-        tags.appendChild(catBadge);
-        tags.appendChild(okBadge);
-
-        const title = document.createElement('div');
-        title.className = 'item-title';
-        title.textContent = sc.titolo;
-
-        const meta = document.createElement('div');
-        meta.className = 'item-meta';
-        meta.textContent = `Scadenza: ${sc.data}${sc.dettaglio ? ` • ${sc.dettaglio}` : ''}`;
-
-        left.appendChild(tags);
-        left.appendChild(title);
-        left.appendChild(meta);
-
-        const actions = document.createElement('div');
-        actions.className = 'item-actions';
-
-        if (sc.allegato) {
-          const btnDoc = document.createElement('button');
-          btnDoc.type = 'button';
-          btnDoc.textContent = 'Apri Doc';
-          btnDoc.addEventListener('click', () => {
-            apriAnteprimaSuRichiesta({ tipo: sc.allegato.tipo, src: sc.allegato.dataUrl, nome: sc.allegato.nome }, `Scadenza "${sc.titolo}" — ${sc.allegato.nome}`);
-          });
-          actions.appendChild(btnDoc);
-        } else {
-          const btnAddDoc = document.createElement('button');
-          btnAddDoc.type = 'button';
-          btnAddDoc.textContent = 'Doc';
-          btnAddDoc.addEventListener('click', () => {
-            inputAllegaScadenzaItem.dataset.targetId = sc.id;
-            inputAllegaScadenzaItem.value = '';
-            inputAllegaScadenzaItem.click();
-          });
-          actions.appendChild(btnAddDoc);
-        }
-
-        const btnDel = document.createElement('button');
-        btnDel.type = 'button';
-        btnDel.className = 'btn-danger';
-        btnDel.textContent = '✕';
-        btnDel.addEventListener('click', async () => {
-          registerDeletedId(sc.id);
-          state.scadenze = state.scadenze.filter((x) => x.id !== sc.id);
-          await saveState(true, true);
-          renderScadenze();
-          mostraToast('Scadenza eliminata.');
-        });
-        actions.appendChild(btnDel);
-
-        row.appendChild(left);
-        row.appendChild(actions);
-        listaScadenze.appendChild(row);
-      });
-    }
-
-    function renderVault() {
-      const pill = document.getElementById('statoVaultPill');
-      if (infoPinAttuale) {
-        infoPinAttuale.textContent = 'PIN personalizzato attivo';
-      }
-      aggiornaStatoBiometriaUI();
-
-      if (!vaultSbloccato) {
-        vaultBloccata.style.display = 'block';
-        vaultSbloccata.style.display = 'none';
-        pill.textContent = 'PIN + VOLTO';
-        return;
-      }
-      vaultBloccata.style.display = 'none';
-      vaultSbloccata.style.display = 'block';
-      pill.textContent = 'SBLOCCATA';
-      listaPassword.innerHTML = '';
-
-      state.password.forEach((p) => {
-        const row = document.createElement('div');
-        row.className = 'row-item';
-        const info = document.createElement('div');
-        info.innerHTML = `<div class="item-title">${p.servizio}</div><div class="item-meta">${p.utente} • <strong>${p.valore}</strong></div>`;
-        const del = document.createElement('button');
-        del.type = 'button';
-        del.className = 'btn-danger';
-        del.textContent = 'Elimina';
-        del.addEventListener('click', async () => {
-          registerDeletedId(p.id);
-          state.password = state.password.filter((x) => x.id !== p.id);
-          await saveState(true, true);
-          renderVault();
-          mostraToast('Password eliminata.');
-        });
-        row.appendChild(info);
-        row.appendChild(del);
-        listaPassword.appendChild(row);
-      });
-    }
-
-    function renderVocali() {
-      listaVocali.innerHTML = '';
-      if (!state.vocali || state.vocali.length === 0) {
-        listaVocali.innerHTML = '<div class="empty-hint">Nessuna registrazione salvata.</div>';
-        return;
-      }
-      state.vocali.forEach((v) => {
-        const row = document.createElement('div');
-        row.className = 'row-item';
-        const wrap = document.createElement('div');
-        wrap.style.flex = '1';
-        wrap.innerHTML = `<div class="item-title">${v.titolo}</div><div class="item-meta">${v.data}</div>`;
-        if (v.audioUrl) {
-          const audio = document.createElement('audio');
-          audio.controls = true;
-          audio.src = v.audioUrl;
-          audio.style.width = '100%';
-          audio.style.marginTop = '6px';
-          wrap.appendChild(audio);
-        }
-        const del = document.createElement('button');
-        del.type = 'button';
-        del.className = 'btn-danger';
-        del.textContent = '✕';
-        del.addEventListener('click', async () => {
-          registerDeletedId(v.id);
-          state.vocali = state.vocali.filter((x) => x.id !== v.id);
-          await saveState(true, true);
-          renderVocali();
-          mostraToast('Registrazione eliminata.');
-        });
-        row.appendChild(wrap);
-        row.appendChild(del);
-        listaVocali.appendChild(row);
-      });
-    }
-
     function renderAll() {
       renderImpegni();
+      renderEventiAccaduti();
+      renderAppunti();
       renderScadenze();
       renderVault();
       renderVocali();
@@ -2358,25 +2719,7 @@
       aggiornaDataOraHeader();
     }
 
-    formRapido.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const titolo = inputRapido.value.trim();
-      if (!titolo) return;
-      state.impegni.unshift({
-        id: 'imp-' + Date.now(),
-        titolo,
-        data: inputDataRiferimento.value || oggiISO(),
-        ora: '',
-        luogo: 'Nota rapida',
-        completato: false,
-        allegato: null
-      });
-      inputRapido.value = '';
-      await saveState(true, true);
-      renderImpegni();
-      mostraToast('Promemoria aggiunto e cifrato.');
-    });
-
+    // --- EVENTI FORM IMPEGNI ---
     document.getElementById('btnToggleFormImpegno').addEventListener('click', () => {
       formImpegnoCompleto.classList.toggle('hidden');
       document.getElementById('impegnoData').value = inputDataRiferimento.value || oggiISO();
@@ -2398,7 +2741,7 @@
           nome: allegato.nome,
           tipo: allegato.tipo,
           dataUrl: allegato.dataUrl,
-          origine: `Impegno: ${titolo}`
+          origine: `Appuntamento: ${titolo}`
         });
       }
 
@@ -2417,7 +2760,7 @@
       formImpegnoCompleto.reset();
       formImpegnoCompleto.classList.add('hidden');
       renderImpegni();
-      mostraToast(allegato ? `Salvato e cifrato in cartella ${allegato.tipo.toUpperCase()}` : 'Impegno salvato e cifrato.');
+      mostraToast(allegato ? `Salvato e cifrato in cartella ${allegato.tipo.toUpperCase()}` : 'Appuntamento salvato e cifrato.');
     });
 
     inputAllegaVoceItem.addEventListener('change', async (e) => {
@@ -2432,7 +2775,7 @@
         nome: allegato.nome,
         tipo: allegato.tipo,
         dataUrl: allegato.dataUrl,
-        origine: `Impegno: ${target.titolo}`
+        origine: `Appuntamento: ${target.titolo}`
       });
       await saveState(true, true);
       renderImpegni();
@@ -2449,13 +2792,128 @@
     });
 
     inputDataRiferimento.addEventListener('change', renderImpegni);
-    inputRicerca.addEventListener('input', () => {
-      renderImpegni();
-      renderScadenze();
-      renderDocumenti();
+
+    // --- EVENTI DIARIO & EVENTI ACCADUTI ---
+    document.getElementById('btnToggleFormEvento').addEventListener('click', () => {
+      formEventoAccaduto.classList.toggle('hidden');
+      document.getElementById('eventoData').value = oggiISO();
+      document.getElementById('eventoOra').value = oraAttualeHHMM();
     });
 
-    document.getElementById('btnToggleFormScadenza').addEventListener('click', () => {
+    formEventoAccaduto.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const titolo = document.getElementById('eventoTitolo').value.trim();
+      const data = document.getElementById('eventoData').value;
+      const ora = document.getElementById('eventoOra').value;
+      const ambito = document.getElementById('eventoAmbito').value;
+      const descrizione = document.getElementById('eventoDescrizione').value.trim();
+      if (!titolo || !data) return;
+
+      state.eventiAccaduti = state.eventiAccaduti || [];
+      state.eventiAccaduti.unshift({
+        id: 'ev-' + Date.now(),
+        titolo,
+        data,
+        ora,
+        ambito,
+        descrizione
+      });
+
+      formEventoAccaduto.reset();
+      formEventoAccaduto.classList.add('hidden');
+      await saveState(true, true);
+      renderEventiAccaduti();
+      mostraToast('Evento accaduto registrato nel Diario.');
+    });
+
+    // --- EVENTI APPUNTI & NOTE ---
+    document.getElementById('btnToggleFormAppunto').addEventListener('click', () => {
+      formAppunto.classList.toggle('hidden');
+      document.getElementById('appuntoTitolo').focus();
+    });
+
+    formAppunto.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const titolo = document.getElementById('appuntoTitolo').value.trim();
+      const categoria = document.getElementById('appuntoCategoria').value;
+      const testo = document.getElementById('appuntoTesto').value.trim();
+      if (!titolo || !testo) return;
+
+      state.appunti = state.appunti || [];
+      state.appunti.unshift({
+        id: 'app-' + Date.now(),
+        titolo,
+        categoria,
+        testo,
+        dataCreazione: new Date().toLocaleString('it-IT')
+      });
+
+      formAppunto.reset();
+      formAppunto.classList.add('hidden');
+      await saveState(true, true);
+      renderAppunti();
+      mostraToast('Appunto salvato nella sezione Appunti.');
+    });
+
+    // --- EVENTI SCADENZE + PIN SCADENZE (SBLOCCA / MODIFICA / RESET / BLOCCA) ---
+    document.getElementById('btnSbloccaScadenze').addEventListener('click', () => {
+      const pin = inputPinScadenze.value.trim();
+      if (pin === (state.pinScadenze || '1234')) {
+        scadenzeSbloccateFlag = true;
+        inputPinScadenze.value = '';
+        renderScadenze();
+        mostraToast('Sezione Scadenze sbloccata.');
+      } else {
+        mostraToast('PIN Scadenze errato.');
+      }
+    });
+
+    inputPinScadenze.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('btnSbloccaScadenze').click();
+      }
+    });
+
+    document.getElementById('btnSalvaNuovoPinScadenze').addEventListener('click', async () => {
+      const nuovoPin = inputNuovoPinScadenze.value.trim();
+      if (!nuovoPin) {
+        mostraToast('Inserisci prima il nuovo PIN Scadenze.');
+        return;
+      }
+      state.pinScadenze = nuovoPin;
+      inputNuovoPinScadenze.value = '';
+      await saveState(true, true);
+      renderScadenze();
+      mostraToast('PIN Scadenze modificato e cifrato.');
+    });
+
+    async function eseguiResetPinScadenze() {
+      const ok = window.confirm('Vuoi resettare il PIN delle Scadenze al valore predefinito "1234"?');
+      if (!ok) return;
+      state.pinScadenze = '1234';
+      inputNuovoPinScadenze.value = '';
+      inputPinScadenze.value = '';
+      await saveState(true, true);
+      renderScadenze();
+      mostraToast('PIN Scadenze resettato a "1234".');
+    }
+
+    document.getElementById('btnResetPinScadenze').addEventListener('click', eseguiResetPinScadenze);
+    document.getElementById('btnResetPinScadenzeBloccato').addEventListener('click', eseguiResetPinScadenze);
+
+    document.getElementById('btnBloccaScadenze').addEventListener('click', () => {
+      scadenzeSbloccateFlag = false;
+      formScadenza.classList.add('hidden');
+      renderScadenze();
+      mostraToast('Sezione Scadenze bloccata.');
+    });
+
+    btnToggleFormScadenza.addEventListener('click', () => {
+      if (!scadenzeSbloccateFlag) {
+        mostraToast('Sblocca prima le Scadenze con il PIN.');
+        return;
+      }
       formScadenza.classList.toggle('hidden');
       document.getElementById('scadenzaData').value = oggiISO();
     });
@@ -2504,6 +2962,16 @@
       });
     });
 
+    // --- RICERCA GLOBALE ---
+    inputRicerca.addEventListener('input', () => {
+      renderImpegni();
+      renderEventiAccaduti();
+      renderAppunti();
+      renderScadenze();
+      renderDocumenti();
+    });
+
+    // --- EVENTI CASSAFORTE PASSWORD ---
     document.getElementById('btnSbloccaVault').addEventListener('click', () => {
       const pin = inputPinVault.value.trim();
       if (pin === (state.pinVault || '1234')) {
@@ -2511,7 +2979,14 @@
         inputPinVault.value = '';
         renderVault();
       } else {
-        mostraToast('PIN errato.');
+        mostraToast('PIN Cassaforte errato.');
+      }
+    });
+
+    inputPinVault.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('btnSbloccaVault').click();
       }
     });
 
@@ -2550,6 +3025,7 @@
       renderVault();
     });
 
+    // --- VOCALI ---
     btnRegistrazioneVocale.addEventListener('click', async () => {
       if (mediaRecorder && mediaRecorder.state === 'recording') {
         mediaRecorder.stop();
@@ -2592,6 +3068,7 @@
       }
     });
 
+    // --- CARTELLE FILE ---
     document.getElementById('btnCaricaFotoPdf').addEventListener('click', () => {
       inputFileStampa.value = '';
       inputFileStampa.click();
@@ -2663,28 +3140,47 @@
     btnStampaAnteprima.addEventListener('click', () => stampaElemento(elementoAnteprima));
     document.getElementById('btnChiudiAnteprima').addEventListener('click', chiudiAnteprima);
 
+    // --- AZIONI RAPIDE (1-TAP) ---
     document.getElementById('tileNuovoImpegno').addEventListener('click', () => {
       formImpegnoCompleto.classList.remove('hidden');
       document.getElementById('impegnoData').value = inputDataRiferimento.value || oggiISO();
       document.getElementById('impegnoTitolo').focus();
     });
+
+    document.getElementById('tileNuovoEventoAccaduto').addEventListener('click', () => {
+      formEventoAccaduto.classList.remove('hidden');
+      document.getElementById('eventoData').value = oggiISO();
+      document.getElementById('eventoOra').value = oraAttualeHHMM();
+      document.getElementById('eventoTitolo').focus();
+    });
+
+    document.getElementById('tileNuovoAppunto').addEventListener('click', () => {
+      formAppunto.classList.remove('hidden');
+      document.getElementById('appuntoTitolo').focus();
+    });
+
     document.getElementById('tileNuovaScadenza').addEventListener('click', () => {
+      if (!scadenzeSbloccateFlag) {
+        inputPinScadenze.focus();
+        mostraToast('Inserisci il PIN Scadenze per sbloccare e aggiungere una scadenza.');
+        return;
+      }
       formScadenza.classList.remove('hidden');
       document.getElementById('scadenzaData').value = oggiISO();
       document.getElementById('scadenzaTitolo').focus();
     });
-    document.getElementById('tileNuovaNota').addEventListener('click', () => inputRapido.focus());
+
     document.getElementById('tileVocale').addEventListener('click', () => btnRegistrazioneVocale.click());
     document.getElementById('tileFotoPdf').addEventListener('click', () => {
       inputFileStampa.value = '';
       inputFileStampa.click();
     });
     document.getElementById('tilePassword').addEventListener('click', () => {
-      vaultSbloccato = true;
-      renderVault();
-      document.getElementById('pwdServizio').focus();
+      inputPinVault.focus();
+      mostraToast('Sblocca la Cassaforte con PIN o Volto / Biometria per aggiungere una password.');
     });
 
+    // --- BACKUP & CLOUD ---
     document.getElementById('btnExportJson').addEventListener('click', async () => {
       const envelope = await encryptStateEnvelope(state, cloudCfg.syncPassword);
       const blob = new Blob([JSON.stringify(envelope, null, 2)], { type: 'application/json' });
