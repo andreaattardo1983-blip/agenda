@@ -6,25 +6,25 @@
   <title>OmniDesk E2EE — Agenda, Diario, Appunti &amp; Vault Cifrato</title>
   <style>
     :root {
-      --bg-main: #070b14;
-      --bg-card: #0e1626;
-      --bg-card-soft: #131e33;
-      --bg-input: #0a101d;
-      --border: #1e2d4a;
-      --border-soft: #172238;
-      --text-main: #eef3ff;
-      --text-muted: #8a9bb8;
-      --accent: #5b5cff;
-      --accent-hover: #494af5;
-      --accent-soft: rgba(91, 92, 255, 0.16);
-      --blue-title: #60a5fa;
-      --blue-soft: rgba(96, 165, 250, 0.14);
+      --bg-main: #182235;
+      --bg-card: #212e46;
+      --bg-card-soft: #2a3a57;
+      --bg-input: #1a253a;
+      --border: #374b70;
+      --border-soft: #2d3e5e;
+      --text-main: #f4f7ff;
+      --text-muted: #b0c0dc;
+      --accent: #6366f1;
+      --accent-hover: #5254e6;
+      --accent-soft: rgba(99, 102, 241, 0.22);
+      --blue-title: #7bb6ff;
+      --blue-soft: rgba(123, 182, 255, 0.18);
       --ok: #10b981;
-      --ok-soft: rgba(16, 185, 129, 0.14);
+      --ok-soft: rgba(16, 185, 129, 0.18);
       --warn: #f59e0b;
-      --warn-soft: rgba(245, 158, 11, 0.16);
+      --warn-soft: rgba(245, 158, 11, 0.2);
       --danger: #ef4444;
-      --danger-soft: rgba(239, 68, 68, 0.16);
+      --danger-soft: rgba(239, 68, 68, 0.2);
       --pink: #e11d48;
       --cyan: #06b6d4;
       --radius: 14px;
@@ -39,7 +39,7 @@
     body {
       margin: 0;
       padding: 18px;
-      background: radial-gradient(circle at top left, #111b33 0%, var(--bg-main) 55%);
+      background: radial-gradient(circle at top left, #24334f 0%, var(--bg-main) 60%);
       color: var(--text-main);
       min-height: 100vh;
     }
@@ -62,6 +62,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
+      box-shadow: 0 4px 16px rgba(9, 14, 24, 0.22);
     }
 
     .brand-group {
@@ -75,7 +76,7 @@
       width: 36px;
       height: 36px;
       border-radius: 10px;
-      background: linear-gradient(135deg, #3b82f6, #5b5cff);
+      background: linear-gradient(135deg, #4b91f7, #6366f1);
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 3px;
@@ -84,7 +85,7 @@
     }
 
     .brand-logo span {
-      background: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.94);
       border-radius: 2px;
     }
 
@@ -110,20 +111,20 @@
       border-radius: 999px;
       font-size: 0.75rem;
       font-weight: 600;
-      border: 1px solid rgba(16, 185, 129, 0.35);
+      border: 1px solid rgba(16, 185, 129, 0.42);
       background: var(--ok-soft);
-      color: #34d399;
+      color: #6ee7b7;
       cursor: pointer;
     }
 
     .cloud-pill.offline {
-      border-color: rgba(245, 158, 11, 0.4);
+      border-color: rgba(245, 158, 11, 0.45);
       background: var(--warn-soft);
-      color: #fbbf24;
+      color: #fcd34d;
     }
 
     .cloud-pill.locked {
-      border-color: rgba(239, 68, 68, 0.45);
+      border-color: rgba(239, 68, 68, 0.5);
       background: var(--danger-soft);
       color: #fca5a5;
     }
@@ -158,6 +159,10 @@
       width: 240px;
     }
 
+    .search-input::placeholder {
+      color: #8fa3c4;
+    }
+
     .search-input:focus {
       outline: none;
       border-color: var(--blue-title);
@@ -177,8 +182,8 @@
     }
 
     button:hover:not(:disabled) {
-      background: #1a2844;
-      border-color: #2d426c;
+      background: #334669;
+      border-color: #4b6594;
     }
 
     button:disabled {
@@ -198,48 +203,48 @@
 
     button.btn-blue {
       background: var(--blue-soft);
-      border-color: rgba(96, 165, 250, 0.45);
-      color: #93c5fd;
+      border-color: rgba(123, 182, 255, 0.5);
+      color: #b5d6ff;
     }
 
     button.btn-blue:hover:not(:disabled) {
-      background: rgba(96, 165, 250, 0.25);
+      background: rgba(123, 182, 255, 0.28);
     }
 
     button.btn-bio {
-      background: rgba(16, 185, 129, 0.16);
-      border-color: rgba(16, 185, 129, 0.45);
+      background: rgba(16, 185, 129, 0.2);
+      border-color: rgba(16, 185, 129, 0.5);
       color: #6ee7b7;
     }
 
     button.btn-bio:hover:not(:disabled) {
-      background: rgba(16, 185, 129, 0.28);
+      background: rgba(16, 185, 129, 0.32);
     }
 
     button.btn-warn {
       background: var(--warn-soft);
-      border-color: rgba(245, 158, 11, 0.45);
-      color: #fcd34d;
+      border-color: rgba(245, 158, 11, 0.5);
+      color: #fde073;
     }
 
     button.btn-warn:hover:not(:disabled) {
-      background: rgba(245, 158, 11, 0.28);
+      background: rgba(245, 158, 11, 0.32);
     }
 
     button.btn-danger {
       background: var(--danger-soft);
-      border-color: rgba(239, 68, 68, 0.35);
+      border-color: rgba(239, 68, 68, 0.42);
       color: #fca5a5;
     }
 
     button.btn-danger:hover:not(:disabled) {
-      background: rgba(239, 68, 68, 0.28);
+      background: rgba(239, 68, 68, 0.32);
     }
 
     button.active-filter {
       background: var(--warn);
       border-color: var(--warn);
-      color: #090d16;
+      color: #111827;
     }
 
     button.active-time-filter,
@@ -252,9 +257,9 @@
     .collapse-btn {
       padding: 5px 10px;
       font-size: 0.76rem;
-      color: #93c5fd;
-      background: rgba(96, 165, 250, 0.1);
-      border-color: rgba(96, 165, 250, 0.3);
+      color: #b5d6ff;
+      background: rgba(123, 182, 255, 0.14);
+      border-color: rgba(123, 182, 255, 0.36);
     }
 
     .section-body.collapsed {
@@ -269,8 +274,8 @@
     }
 
     .security-banner {
-      background: linear-gradient(90deg, rgba(16, 185, 129, 0.14), rgba(91, 92, 255, 0.14));
-      border: 1px solid rgba(16, 185, 129, 0.35);
+      background: linear-gradient(90deg, rgba(16, 185, 129, 0.18), rgba(99, 102, 241, 0.18));
+      border: 1px solid rgba(16, 185, 129, 0.42);
       border-radius: var(--radius);
       padding: 10px 14px;
       display: flex;
@@ -283,8 +288,8 @@
 
     .security-banner.warn {
       background: var(--warn-soft);
-      border-color: rgba(245, 158, 11, 0.45);
-      color: #fde68a;
+      border-color: rgba(245, 158, 11, 0.5);
+      color: #fef08a;
     }
 
     .bento-card {
@@ -292,6 +297,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 16px;
+      box-shadow: 0 4px 16px rgba(9, 14, 24, 0.2);
     }
 
     .card-header {
@@ -332,8 +338,8 @@
 
     .count-badge {
       background: var(--danger-soft);
-      color: #fca5a5;
-      border: 1px solid rgba(239, 68, 68, 0.45);
+      color: #fecaca;
+      border: 1px solid rgba(239, 68, 68, 0.5);
       border-radius: 999px;
       padding: 2px 8px;
       font-size: 0.74rem;
@@ -365,17 +371,17 @@
       text-align: center;
       font-size: 0.8rem;
       font-weight: 600;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
       cursor: pointer;
     }
 
-    .tile-impegno { background: linear-gradient(160deg, #1b2350, #121735); }
-    .tile-diario { background: linear-gradient(160deg, #123647, #0b212c); }
-    .tile-appunti { background: linear-gradient(160deg, #2d2b14, #1b1a0e); }
-    .tile-scadenza { background: linear-gradient(160deg, #3a2716, #241910); }
-    .tile-vocale { background: linear-gradient(160deg, #3b172a, #240e1a); }
-    .tile-file { background: linear-gradient(160deg, #132944, #0d1a2c); }
-    .tile-password { background: linear-gradient(160deg, #11322c, #0b1f1c); }
+    .tile-impegno { background: linear-gradient(160deg, #2b3878, #1f2857); }
+    .tile-diario { background: linear-gradient(160deg, #1d4e66, #143647); }
+    .tile-appunti { background: linear-gradient(160deg, #474420, #302e16); }
+    .tile-scadenza { background: linear-gradient(160deg, #573b22, #3b2817); }
+    .tile-vocale { background: linear-gradient(160deg, #592440, #3b172a); }
+    .tile-file { background: linear-gradient(160deg, #20426b, #162e4d); }
+    .tile-password { background: linear-gradient(160deg, #1c4d44, #133630); }
 
     .main-bento {
       display: grid;
@@ -490,6 +496,11 @@
       font-size: 0.83rem;
     }
 
+    .inline-form input::placeholder,
+    .inline-form textarea::placeholder {
+      color: #8fa3c4;
+    }
+
     .inline-form textarea {
       min-height: 76px;
       resize: vertical;
@@ -515,7 +526,7 @@
 
     .row-item.selected {
       border-color: var(--blue-title);
-      background: rgba(96, 165, 250, 0.08);
+      background: rgba(123, 182, 255, 0.14);
     }
 
     .row-item.done .item-title {
@@ -547,7 +558,7 @@
 
     .item-body-text {
       font-size: 0.83rem;
-      color: #d4dff7;
+      color: #e4ecfc;
       margin-top: 6px;
       white-space: pre-wrap;
       line-height: 1.45;
@@ -573,37 +584,37 @@
 
     .pill-tag.ok {
       background: var(--ok-soft);
-      border-color: rgba(16, 185, 129, 0.35);
-      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.42);
+      color: #6ee7b7;
     }
 
     .pill-tag.cyan {
-      background: rgba(6, 182, 212, 0.14);
-      border-color: rgba(6, 182, 212, 0.35);
+      background: rgba(6, 182, 212, 0.18);
+      border-color: rgba(6, 182, 212, 0.42);
       color: #67e8f9;
     }
 
     .pill-tag.amber {
       background: var(--warn-soft);
-      border-color: rgba(245, 158, 11, 0.35);
-      color: #fcd34d;
+      border-color: rgba(245, 158, 11, 0.42);
+      color: #fde073;
     }
 
     .pill-tag.file {
       background: var(--blue-soft);
-      border-color: rgba(96, 165, 250, 0.4);
-      color: #93c5fd;
+      border-color: rgba(123, 182, 255, 0.45);
+      color: #b5d6ff;
     }
 
     .pill-tag.pdf {
-      background: rgba(239, 68, 68, 0.14);
-      border-color: rgba(239, 68, 68, 0.35);
-      color: #fca5a5;
+      background: rgba(239, 68, 68, 0.18);
+      border-color: rgba(239, 68, 68, 0.42);
+      color: #fecaca;
     }
 
     .pill-tag.foto {
-      background: rgba(16, 185, 129, 0.14);
-      border-color: rgba(16, 185, 129, 0.35);
+      background: rgba(16, 185, 129, 0.18);
+      border-color: rgba(16, 185, 129, 0.42);
       color: #6ee7b7;
     }
 
@@ -786,7 +797,7 @@
       padding: 11px 14px;
       border-radius: 10px;
       font-size: 0.82rem;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
       z-index: 60;
       max-width: 340px;
       display: none;
@@ -795,7 +806,7 @@
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(3, 6, 12, 0.76);
+      background: rgba(10, 15, 26, 0.72);
       display: none;
       align-items: center;
       justify-content: center;
@@ -953,7 +964,7 @@
     .progress-fill {
       height: 100%;
       width: 12%;
-      background: linear-gradient(90deg, #3b82f6, #6366f1);
+      background: linear-gradient(90deg, #4b91f7, #6366f1);
       transition: width 0.25s ease;
     }
 
@@ -1369,8 +1380,8 @@
 
             <div class="filter-buttons" style="margin-bottom: 10px;" id="filtriCartellaDocumenti">
               <button type="button" class="active-folder" data-doc-folder="pdf">📕 Cartella PDF (<span id="countFolderPdf">0</span>)</button>
-              <button type="button" data-doc-folder="foto">🖼️ Cartella Foto (<span id="countFolderFoto">0</span>)</button>
-              <button type="button" data-doc-folder="tutti">📂 Tutti (<span id="countFolderTutti">0</span>)</button>
+              <button type="button" class="data-folder-btn" data-doc-folder="foto">🖼️ Cartella Foto (<span id="countFolderFoto">0</span>)</button>
+              <button type="button" class="data-folder-btn" data-doc-folder="tutti">📂 Tutti (<span id="countFolderTutti">0</span>)</button>
             </div>
 
             <div class="doc-search-box">
