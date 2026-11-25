@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OmniDesk E2EE — Agenda, Diario, Appunti &amp; Vault Cifrato</title>
+  <title>OmniDesk E2EE — Agenda, Diario, Appunti, Video &amp; Vault Cifrato</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%2323324d'/%3E%3Cstop offset='100%25' stop-color='%23121926'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M32 10L48 16.5V30.5C48 41.8 41.1 50.8 32 54.5C22.9 50.8 16 41.8 16 30.5V16.5L32 10Z' fill='none' stroke='%23e2b866' stroke-width='3'/%3E%3Crect x='23' y='21' width='8' height='8' rx='2' fill='%2334d399'/%3E%3Crect x='33' y='21' width='8' height='8' rx='2' fill='%23e2b866'/%3E%3Crect x='23' y='31' width='8' height='9' rx='2' fill='%23f59e0b'/%3E%3Ccircle cx='37' cy='35.5' r='3.5' fill='%2334d399'/%3E%3C/svg%3E">
   <style>
     :root {
@@ -74,11 +74,11 @@
     }
 
     .brand-logo {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border-radius: 12px;
       background: linear-gradient(145deg, #24344f, #121927);
-      border: 1px solid rgba(243, 198, 105, 0.45);
+      border: 1px solid rgba(243, 198, 105, 0.5);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -348,14 +348,14 @@
       font-weight: 700;
     }
 
-    /* AZIONI RAPIDE: RIEMPIMENTO PIENO UNIFORME DEL RETTANGOLO */
+    /* AZIONI RAPIDE: 8 RIQUADRI A RIEMPIMENTO PIENO */
     .quick-grid {
       display: grid;
-      grid-template-columns: repeat(7, minmax(105px, 1fr));
+      grid-template-columns: repeat(8, minmax(95px, 1fr));
       gap: 10px;
     }
 
-    @media (max-width: 1120px) {
+    @media (max-width: 1200px) {
       .quick-grid { grid-template-columns: repeat(4, 1fr); }
     }
 
@@ -365,14 +365,14 @@
 
     .quick-tile {
       border-radius: 11px;
-      padding: 15px 10px;
+      padding: 15px 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 7px;
       text-align: center;
-      font-size: 0.81rem;
+      font-size: 0.8rem;
       font-weight: 700;
       color: #ffffff;
       border: 1px solid rgba(255, 255, 255, 0.2);
@@ -389,6 +389,7 @@
     .tile-appunti { background-color: #856404; }
     .tile-scadenza { background-color: #9a3412; }
     .tile-vocale { background-color: #9d174d; }
+    .tile-video { background-color: #1d4ed8; }
     .tile-file { background-color: #5b21b6; }
     .tile-password { background-color: #047857; }
 
@@ -628,6 +629,12 @@
       color: #6ee7b7;
     }
 
+    .pill-tag.video {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: rgba(147, 197, 253, 0.42);
+      color: #93c5fd;
+    }
+
     .item-actions {
       display: flex;
       gap: 6px;
@@ -797,6 +804,60 @@
     .voice-btn.recording {
       background: #e11d48;
       animation: pulse 1.2s infinite;
+    }
+
+    .video-rec-btn {
+      width: 100%;
+      background: #1d4ed8;
+      border-color: #60a5fa;
+      color: #fff;
+      padding: 10px 14px;
+      font-size: 0.86rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .video-rec-btn:hover:not(:disabled) {
+      background: #1e40af;
+    }
+
+    .video-rec-btn.recording {
+      background: #dc2626;
+      border-color: #fca5a5;
+      animation: pulse 1.2s infinite;
+    }
+
+    .video-recorder-panel {
+      margin-top: 10px;
+      padding: 10px;
+      background: #0d131d;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .video-recorder-panel.open {
+      display: flex;
+    }
+
+    .video-live-preview {
+      width: 100%;
+      max-height: 220px;
+      border-radius: 8px;
+      background: #06090f;
+      object-fit: cover;
+    }
+
+    .video-thumb-player {
+      width: 100%;
+      max-height: 200px;
+      border-radius: 8px;
+      background: #06090f;
+      margin-top: 8px;
     }
 
     @keyframes pulse {
@@ -1062,9 +1123,9 @@
   <div class="app-shell">
     <header class="topbar">
       <div class="brand-group">
-        <div class="brand-logo" aria-hidden="true">
-          <svg width="28" height="28" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M32 9L49 15.8V30.5C49 42.2 41.8 51.5 32 55.4C22.2 51.5 15 42.2 15 30.5V15.8L32 9Z" stroke="#f3c669" stroke-width="3.2" fill="rgba(243,198,105,0.08)"/>
+        <div class="brand-logo" aria-label="Logo OmniDesk E2EE">
+          <svg width="30" height="30" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M32 9L49 15.8V30.5C49 42.2 41.8 51.5 32 55.4C22.2 51.5 15 42.2 15 30.5V15.8L32 9Z" stroke="#f3c669" stroke-width="3.2" fill="rgba(243,198,105,0.1)"/>
             <rect x="22.5" y="20.5" width="8" height="8" rx="2" fill="#34d399"/>
             <rect x="33.5" y="20.5" width="8" height="8" rx="2" fill="#f3c669"/>
             <rect x="22.5" y="31.5" width="8" height="9" rx="2" fill="#f59e0b"/>
@@ -1089,6 +1150,7 @@
         <button type="button" class="icon-btn btn-teal" id="btnExportJson" title="Esporta Backup JSON">⬇</button>
         <button type="button" class="icon-btn" id="btnImportJson" title="Importa Backup JSON">⬆</button>
         <input type="file" id="inputFileJson" accept="application/json,.json" class="hidden-file">
+        <input type="file" id="inputCaricaVideoFile" accept="video/*" capture="environment" class="hidden-file">
         <input type="file" id="inputAllegaVoceItem" accept="image/*,application/pdf" class="hidden-file">
         <input type="file" id="inputAllegaScadenzaItem" accept="image/*,application/pdf" class="hidden-file">
         <input type="file" id="inputAllegaAppuntoItem" accept="image/*,application/pdf" class="hidden-file">
@@ -1135,6 +1197,10 @@
           <button type="button" class="quick-tile tile-vocale" id="tileVocale">
             <span>🎙️</span>
             <span>Vocale</span>
+          </button>
+          <button type="button" class="quick-tile tile-video" id="tileVideo">
+            <span>🎥</span>
+            <span>Video</span>
           </button>
           <button type="button" class="quick-tile tile-file" id="tileFotoPdf">
             <span>📁</span>
@@ -1298,7 +1364,7 @@
                 <button type="button" class="btn-primary" id="btnSbloccaScadenze">Sblocca Scadenze</button>
               </div>
               <div class="bio-row">
-                <button type="button" class="btn-warn" id="btnResetPinScadenzeBloccato" style="font-size: 0.76rem; padding: 5px 10px;">↻ Reset PIN Scadenze (1234)</button>
+                <button type="button" class="btn-warn" id="btnResetPinScadenzeBloccato" style="font-size: 0.76rem; padding: 5px 10px;">↻ Reset PIN Scadenze</button>
               </div>
             </div>
 
@@ -1330,12 +1396,13 @@
                 <div class="pin-change-line">
                   <div>
                     <div class="item-title" style="font-size: 0.82rem;">Gestione PIN Scadenze</div>
-                    <div class="item-meta" id="infoPinScadenzeAttuale">PIN personalizzato attivo</div>
+                    <div class="item-meta" id="infoPinScadenzeAttuale">PIN Scadenze protetto</div>
                   </div>
                   <div class="item-actions">
-                    <input type="text" id="inputNuovoPinScadenze" placeholder="Nuovo PIN..." maxlength="20">
+                    <input type="password" id="inputNuovoPinScadenze" placeholder="Nuovo PIN..." maxlength="20">
+                    <button type="button" id="btnToggleVisNuovoPinScad" title="Mostra/Nascondi nuovo PIN">👁</button>
                     <button type="button" class="btn-primary" id="btnSalvaNuovoPinScadenze">Modifica PIN</button>
-                    <button type="button" class="btn-warn" id="btnResetPinScadenze">Reset (1234)</button>
+                    <button type="button" class="btn-warn" id="btnResetPinScadenze">Reset PIN</button>
                     <button type="button" id="btnBloccaScadenze">Blocca</button>
                   </div>
                 </div>
@@ -1400,10 +1467,10 @@
                 <div class="pin-change-line">
                   <div>
                     <div class="item-title" style="font-size: 0.82rem;">Cambia PIN Cassaforte</div>
-                    <div class="item-meta" id="infoPinAttuale">PIN personalizzato attivo</div>
+                    <div class="item-meta" id="infoPinAttuale">PIN protetto</div>
                   </div>
                   <div class="item-actions">
-                    <input type="text" id="inputNuovoPinVault" placeholder="Nuovo PIN..." maxlength="20">
+                    <input type="password" id="inputNuovoPinVault" placeholder="Nuovo PIN..." maxlength="20">
                     <button type="button" class="btn-primary" id="btnSalvaNuovoPin">Aggiorna PIN</button>
                   </div>
                 </div>
@@ -1467,6 +1534,51 @@
             </button>
             <div class="list-stack" id="listaVocali" style="margin-top: 10px;">
               <div class="empty-hint">Nessuna registrazione salvata.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CARTELLA VIDEO (REGISTRAZIONE WEBCAM / CELLULARE + ARCHIVIO VIDEO) -->
+        <section class="bento-card" id="sezioneCartellaVideo">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2 class="card-title">🎥 Cartella Video</h2>
+              <span class="card-subtitle-badge">Webcam &amp; Cellulare</span>
+              <span class="count-badge" id="conteggioVideo">0</span>
+            </div>
+            <div class="item-actions">
+              <button type="button" class="btn-teal" id="btnCaricaVideoCellulare" title="Registra o scegli video da fotocamera / cellulare">📱 Camera / File</button>
+              <button type="button" class="collapse-btn" data-collapse-target="bodyCartellaVideo" aria-expanded="true">▾ Nascondi</button>
+            </div>
+          </div>
+
+          <div id="bodyCartellaVideo" class="section-body">
+            <div class="inline-form" style="margin-bottom: 10px; padding: 8px;">
+              <input type="text" id="inputTitoloVideo" placeholder="Titolo video (opzionale)...">
+              <select id="selectCameraVideo">
+                <option value="user">Webcam / Frontale</option>
+                <option value="environment">Posteriore Cellulare</option>
+              </select>
+            </div>
+
+            <button type="button" class="video-rec-btn" id="btnRegistrazioneVideo">
+              <span>●</span>
+              <span id="testoBtnVideo">Registra Video Ora (Webcam / Camera)</span>
+            </button>
+
+            <div class="video-recorder-panel" id="videoRecorderPanel">
+              <video id="videoLiveStream" class="video-live-preview" autoplay playsinline muted></video>
+              <div class="item-actions" style="justify-content: space-between;">
+                <span class="item-meta" id="statoRegistrazioneVideo" style="margin-top: 0;">In registrazione...</span>
+                <div class="item-actions">
+                  <button type="button" class="btn-danger" id="btnStopSalvaVideo">⏹ Ferma e Salva Video</button>
+                  <button type="button" id="btnAnnullaVideo">Annulla</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="list-stack" id="listaVideo" style="margin-top: 10px;">
+              <div class="empty-hint">Nessun video nella Cartella Video.</div>
             </div>
           </div>
         </section>
@@ -1599,7 +1711,7 @@
       </div>
 
       <div class="item-meta" style="margin: 8px 0 14px;">
-        <strong>Cifratura End-to-End attiva:</strong> tutti i dati (inclusi Appunti e Diario) vengono cifrati con <code>PBKDF2 (150.000 iterazioni) + AES-GCM 256-bit</code> prima di essere salvati o inviati a Firebase.
+        <strong>Cifratura End-to-End attiva:</strong> tutti i dati (inclusi Appunti, Diario e Video) vengono cifrati con <code>PBKDF2 (150.000 iterazioni) + AES-GCM 256-bit</code> prima di essere salvati o inviati a Firebase.
       </div>
 
       <div class="item-actions" style="justify-content: space-between;">
@@ -1675,6 +1787,7 @@
         }
       ],
       vocali: [],
+      video: [],
       documenti: [],
       deletedIds: {},
       pinVault: localStorage.getItem(PIN_VAULT_LOCAL_KEY) || '1234',
@@ -1706,6 +1819,9 @@
     let sezioneAnteprimaAttiva = null;
     let mediaRecorder = null;
     let chunkVocali = [];
+    let videoMediaRecorder = null;
+    let chunkVideo = [];
+    let videoCaptureStream = null;
     let pollTimer = null;
     let isSyncingFromRemote = false;
     let localLockUntil = 0;
@@ -1775,6 +1891,19 @@
     const testoBtnVocale = document.getElementById('testoBtnVocale');
     const listaVocali = document.getElementById('listaVocali');
 
+    const inputTitoloVideo = document.getElementById('inputTitoloVideo');
+    const selectCameraVideo = document.getElementById('selectCameraVideo');
+    const btnRegistrazioneVideo = document.getElementById('btnRegistrazioneVideo');
+    const testoBtnVideo = document.getElementById('testoBtnVideo');
+    const videoRecorderPanel = document.getElementById('videoRecorderPanel');
+    const videoLiveStream = document.getElementById('videoLiveStream');
+    const statoRegistrazioneVideo = document.getElementById('statoRegistrazioneVideo');
+    const btnStopSalvaVideo = document.getElementById('btnStopSalvaVideo');
+    const btnAnnullaVideo = document.getElementById('btnAnnullaVideo');
+    const btnCaricaVideoCellulare = document.getElementById('btnCaricaVideoCellulare');
+    const inputCaricaVideoFile = document.getElementById('inputCaricaVideoFile');
+    const listaVideo = document.getElementById('listaVideo');
+
     const inputFileStampa = document.getElementById('inputFileStampa');
     const inputNomeUrlFile = document.getElementById('inputNomeUrlFile');
     const inputUrlFile = document.getElementById('inputUrlFile');
@@ -1832,7 +1961,7 @@
       const pwd = (cloudCfg.syncPassword || '').trim();
       if (pwd.length >= 10) {
         securityBanner.classList.remove('warn');
-        securityBannerText.innerHTML = '🛡️ <strong>Cifratura End-to-End AES-256 Attiva:</strong> Appuntamenti, Diario, Appunti, Scadenze e Cassaforte vengono cifrati localmente.';
+        securityBannerText.innerHTML = '🛡️ <strong>Cifratura End-to-End AES-256 Attiva:</strong> Appuntamenti, Diario, Appunti, Scadenze, Video e Cassaforte vengono cifrati localmente.';
       } else if (pwd.length > 0) {
         securityBanner.classList.add('warn');
         securityBannerText.innerHTML = '⚠️ <strong>Chiave corta:</strong> usa almeno 10 caratteri con lettere, numeri e simboli per una protezione AES-256 robusta.';
@@ -1864,6 +1993,7 @@
       const totEventi = (state.eventiAccaduti || []).length;
       const totAppunti = (state.appunti || []).length;
       const totVocali = (state.vocali || []).length;
+      const totVideo = (state.video || []).length;
       const totPwd = (state.password || []).length;
       const totDoc = (state.documenti || []).length;
 
@@ -1873,8 +2003,11 @@
       const elVoc = document.getElementById('conteggioVocali');
       if (elVoc) elVoc.textContent = String(totVocali);
 
+      const elVid = document.getElementById('conteggioVideo');
+      if (elVid) elVid.textContent = String(totVideo);
+
       const elRap = document.getElementById('conteggioNotificheRapide');
-      if (elRap) elRap.textContent = String(openImpegni + totEventi + totAppunti + totVocali + totDoc);
+      if (elRap) elRap.textContent = String(openImpegni + totEventi + totAppunti + totVocali + totVideo + totDoc);
     }
 
     function mostraToast(msg) {
@@ -2295,6 +2428,7 @@
       merged.scadenze = mergeListById(base.scadenze, normalizeArrayField(incoming.scadenze, []), deletedMap);
       merged.password = mergeListById(base.password, normalizeArrayField(incoming.password, []), deletedMap);
       merged.vocali = mergeListById(base.vocali, normalizeArrayField(incoming.vocali, []), deletedMap);
+      merged.video = mergeListById(base.video, normalizeArrayField(incoming.video, []), deletedMap);
       merged.documenti = mergeListById(base.documenti, normalizeArrayField(incoming.documenti, []), deletedMap);
 
       const baseVaultTs = Number(base.pinVaultUpdatedAt || 0);
@@ -2344,6 +2478,7 @@
         scadenze: st.scadenze || [],
         password: st.password || [],
         vocali: st.vocali || [],
+        video: st.video || [],
         documenti: st.documenti || [],
         pinVault: st.pinVault || '1234',
         pinScadenze: st.pinScadenze || '1234',
@@ -2374,7 +2509,7 @@
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(envelope));
       } catch (e) {
-        mostraToast('Memoria localStorage piena: rimuovi allegati grandi o esporta JSON.');
+        mostraToast('Memoria localStorage piena: rimuovi file/video pesanti o esporta JSON.');
       }
       await writeIDBBackup(envelope, cloudCfg);
       return envelope;
@@ -2430,6 +2565,7 @@
           scadenze: state.scadenze || [],
           password: state.password || [],
           vocali: state.vocali || [],
+          video: state.video || [],
           documenti: state.documenti || [],
           deletedIds: state.deletedIds || {},
           pinVault: (state.pinVault || '1234').trim(),
@@ -3148,7 +3284,9 @@
       state.pinScadenze = currentPinScad;
 
       if (infoPinScadenzeAttuale) {
-        infoPinScadenzeAttuale.textContent = `PIN Scadenze attivo: "${currentPinScad}" (${currentPinScad === '1234' ? 'predefinito' : 'personalizzato'})`;
+        infoPinScadenzeAttuale.textContent = currentPinScad === '1234'
+          ? 'PIN Scadenze su predefinito (nascosto)'
+          : 'PIN Scadenze personalizzato attivo (nascosto)';
       }
 
       if (!scadenzeSbloccateFlag) {
@@ -3264,7 +3402,9 @@
       state.pinVault = currentPinVault;
 
       if (infoPinAttuale) {
-        infoPinAttuale.textContent = `PIN attivo (${currentPinVault === '1234' ? 'predefinito 1234' : 'personalizzato'})`;
+        infoPinAttuale.textContent = currentPinVault === '1234'
+          ? 'PIN predefinito attivo (nascosto)'
+          : 'PIN personalizzato attivo (nascosto)';
       }
       aggiornaStatoBiometriaUI();
 
@@ -3340,6 +3480,174 @@
         row.appendChild(wrap);
         row.appendChild(del);
         listaVocali.appendChild(row);
+      });
+    }
+
+    // --- CARTELLA VIDEO (REGISTRAZIONE WEBCAM / CELLULARE + ARCHIVIO) ---
+    function fermaRegistrazioneVideo(discard = false) {
+      if (videoMediaRecorder && videoMediaRecorder.state !== 'inactive') {
+        if (discard) {
+          videoMediaRecorder.onstop = null;
+        }
+        videoMediaRecorder.stop();
+      }
+      videoMediaRecorder = null;
+      chunkVideo = [];
+      if (videoCaptureStream) {
+        videoCaptureStream.getTracks().forEach((t) => t.stop());
+        videoCaptureStream = null;
+      }
+      videoLiveStream.srcObject = null;
+      videoRecorderPanel.classList.remove('open');
+      btnRegistrazioneVideo.classList.remove('recording');
+      testoBtnVideo.textContent = 'Registra Video Ora (Webcam / Camera)';
+    }
+
+    async function avviaRegistrazioneVideoLive() {
+      espandiSezione('bodyCartellaVideo');
+      if (videoMediaRecorder && videoMediaRecorder.state === 'recording') {
+        videoMediaRecorder.stop();
+        return;
+      }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined') {
+        inputCaricaVideoFile.value = '';
+        inputCaricaVideoFile.click();
+        return;
+      }
+      const facing = selectCameraVideo.value || 'user';
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: facing, width: { ideal: 640 }, height: { ideal: 480 } },
+          audio: true
+        });
+        videoCaptureStream = stream;
+        videoLiveStream.srcObject = stream;
+        await videoLiveStream.play();
+
+        chunkVideo = [];
+        const options = MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')
+          ? { mimeType: 'video/webm;codecs=vp8,opus' }
+          : undefined;
+        videoMediaRecorder = options ? new MediaRecorder(stream, options) : new MediaRecorder(stream);
+
+        videoMediaRecorder.ondataavailable = (ev) => {
+          if (ev.data && ev.data.size > 0) chunkVideo.push(ev.data);
+        };
+
+        videoMediaRecorder.onstop = () => {
+          const mime = videoMediaRecorder && videoMediaRecorder.mimeType ? videoMediaRecorder.mimeType : 'video/webm';
+          const blob = new Blob(chunkVideo, { type: mime });
+          if (videoCaptureStream) {
+            videoCaptureStream.getTracks().forEach((t) => t.stop());
+            videoCaptureStream = null;
+          }
+          videoLiveStream.srcObject = null;
+          videoRecorderPanel.classList.remove('open');
+          btnRegistrazioneVideo.classList.remove('recording');
+          testoBtnVideo.textContent = 'Registra Video Ora (Webcam / Camera)';
+
+          if (blob.size > 0) {
+            const reader = new FileReader();
+            reader.onload = async () => {
+              const customTitle = inputTitoloVideo.value.trim();
+              const titolo = customTitle || `Video #${(state.video || []).length + 1}`;
+              state.video = state.video || [];
+              state.video.unshift({
+                id: 'vid-' + Date.now(),
+                titolo,
+                origine: facing === 'environment' ? 'Camera Cellulare' : 'Webcam',
+                data: new Date().toLocaleString('it-IT'),
+                videoUrl: reader.result
+              });
+              inputTitoloVideo.value = '';
+              await saveState(true, true);
+              renderVideo();
+              mostraToast('Video salvato nella Cartella Video.');
+            };
+            reader.readAsDataURL(blob);
+          }
+          videoMediaRecorder = null;
+          chunkVideo = [];
+        };
+
+        videoMediaRecorder.start();
+        videoRecorderPanel.classList.add('open');
+        statoRegistrazioneVideo.textContent = facing === 'environment' ? 'Registrazione con camera cellulare...' : 'Registrazione con webcam...';
+        btnRegistrazioneVideo.classList.add('recording');
+        testoBtnVideo.textContent = 'Registrazione Video in corso...';
+      } catch (err) {
+        mostraToast('Fotocamera non accessibile dal browser: apro la fotocamera/archivio del dispositivo.');
+        inputCaricaVideoFile.value = '';
+        inputCaricaVideoFile.click();
+      }
+    }
+
+    function renderVideo() {
+      listaVideo.innerHTML = '';
+      const q = inputRicerca.value.trim();
+      const items = (state.video || []).filter((v) => matchesSmartQuery(`${v.titolo || ''} ${v.origine || ''} ${v.data || ''}`, q));
+      aggiornaContatoriTotali();
+
+      if (items.length === 0) {
+        listaVideo.innerHTML = '<div class="empty-hint">Nessun video nella Cartella Video.</div>';
+        return;
+      }
+
+      items.forEach((v) => {
+        const row = document.createElement('div');
+        row.className = 'row-item';
+        const wrap = document.createElement('div');
+        wrap.style.flex = '1';
+        wrap.style.minWidth = '0';
+
+        const tags = document.createElement('div');
+        tags.className = 'tag-row';
+        tags.style.marginTop = '0';
+        tags.style.marginBottom = '4px';
+
+        const badgeVid = document.createElement('span');
+        badgeVid.className = 'pill-tag video';
+        badgeVid.textContent = v.origine || 'Video';
+
+        const badgeData = document.createElement('span');
+        badgeData.className = 'pill-tag';
+        badgeData.textContent = v.data || '';
+
+        tags.appendChild(badgeVid);
+        tags.appendChild(badgeData);
+
+        const title = document.createElement('div');
+        title.className = 'item-title';
+        title.textContent = v.titolo;
+
+        wrap.appendChild(tags);
+        wrap.appendChild(title);
+
+        if (v.videoUrl) {
+          const vid = document.createElement('video');
+          vid.className = 'video-thumb-player';
+          vid.controls = true;
+          vid.playsInline = true;
+          vid.preload = 'metadata';
+          vid.src = v.videoUrl;
+          wrap.appendChild(vid);
+        }
+
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'btn-danger';
+        del.textContent = '✕';
+        del.addEventListener('click', async () => {
+          registerDeletedId(v.id);
+          state.video = (state.video || []).filter((x) => x.id !== v.id);
+          await saveState(true, true);
+          renderVideo();
+          mostraToast('Video eliminato dalla Cartella Video.');
+        });
+
+        row.appendChild(wrap);
+        row.appendChild(del);
+        listaVideo.appendChild(row);
       });
     }
 
@@ -3480,6 +3788,7 @@
       renderScadenze();
       renderVault();
       renderVocali();
+      renderVideo();
       renderDocumenti();
       aggiornaContatoriTotali();
       aggiornaIndicatoreSpazio();
@@ -3710,6 +4019,10 @@
       inputPinScadenze.type = inputPinScadenze.type === 'password' ? 'text' : 'password';
     });
 
+    document.getElementById('btnToggleVisNuovoPinScad').addEventListener('click', () => {
+      inputNuovoPinScadenze.type = inputNuovoPinScadenze.type === 'password' ? 'text' : 'password';
+    });
+
     document.getElementById('btnSbloccaScadenze').addEventListener('click', () => {
       const pinInserito = inputPinScadenze.value.trim();
       const pinAtteso = (state.pinScadenze || localStorage.getItem(PIN_SCADENZE_LOCAL_KEY) || '1234').trim();
@@ -3748,9 +4061,10 @@
       state.pinScadenzeUpdatedAt = Date.now();
       localStorage.setItem(PIN_SCADENZE_LOCAL_KEY, nuovoPin);
       inputNuovoPinScadenze.value = '';
+      inputNuovoPinScadenze.type = 'password';
       await saveState(true, true);
       renderScadenze();
-      mostraToast(`PIN Scadenze aggiornato a "${nuovoPin}" e cifrato.`);
+      mostraToast('Nuovo PIN Scadenze salvato e cifrato.');
     });
 
     inputNuovoPinScadenze.addEventListener('keydown', (e) => {
@@ -3765,10 +4079,11 @@
       state.pinScadenzeUpdatedAt = Date.now();
       localStorage.setItem(PIN_SCADENZE_LOCAL_KEY, '1234');
       inputNuovoPinScadenze.value = '';
+      inputNuovoPinScadenze.type = 'password';
       inputPinScadenze.value = '';
       await saveState(true, true);
       renderScadenze();
-      mostraToast('PIN Scadenze reimpostato su "1234".');
+      mostraToast('PIN Scadenze reimpostato al valore predefinito.');
     }
 
     document.getElementById('btnResetPinScadenze').addEventListener('click', eseguiResetPinScadenze);
@@ -3843,6 +4158,7 @@
       renderScadenze();
       renderVault();
       renderVocali();
+      renderVideo();
       renderDocumenti();
     });
 
@@ -4017,6 +4333,46 @@
       }
     });
 
+    // --- EVENTI VIDEO ---
+    btnRegistrazioneVideo.addEventListener('click', avviaRegistrazioneVideoLive);
+    btnStopSalvaVideo.addEventListener('click', () => {
+      if (videoMediaRecorder && videoMediaRecorder.state === 'recording') {
+        videoMediaRecorder.stop();
+      } else {
+        fermaRegistrazioneVideo(true);
+      }
+    });
+    btnAnnullaVideo.addEventListener('click', () => fermaRegistrazioneVideo(true));
+
+    btnCaricaVideoCellulare.addEventListener('click', () => {
+      espandiSezione('bodyCartellaVideo');
+      inputCaricaVideoFile.value = '';
+      inputCaricaVideoFile.click();
+    });
+
+    inputCaricaVideoFile.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const customTitle = inputTitoloVideo.value.trim();
+        const titolo = customTitle || file.name || `Video #${(state.video || []).length + 1}`;
+        state.video = state.video || [];
+        state.video.unshift({
+          id: 'vid-' + Date.now(),
+          titolo,
+          origine: 'Camera / File',
+          data: new Date().toLocaleString('it-IT'),
+          videoUrl: reader.result
+        });
+        inputTitoloVideo.value = '';
+        await saveState(true, true);
+        renderVideo();
+        mostraToast('Video aggiunto alla Cartella Video.');
+      };
+      reader.readAsDataURL(file);
+    });
+
     document.getElementById('btnCaricaFotoPdf').addEventListener('click', () => {
       espandiSezione('bodyCartelleFile');
       inputFileStampa.value = '';
@@ -4125,6 +4481,7 @@
     });
 
     document.getElementById('tileVocale').addEventListener('click', () => btnRegistrazioneVocale.click());
+    document.getElementById('tileVideo').addEventListener('click', avviaRegistrazioneVideoLive);
     document.getElementById('tileFotoPdf').addEventListener('click', () => {
       espandiSezione('bodyCartelleFile');
       inputFileStampa.value = '';
