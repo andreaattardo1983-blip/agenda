@@ -457,6 +457,25 @@
       gap: 8px;
     }
 
+    .attach-picker-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      border: 1px dashed var(--border);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .attach-picker-row input[type="file"] {
+      max-width: 280px;
+      font-size: 0.76rem;
+    }
+
     .inline-form.hidden { display: none; }
 
     .inline-form input,
@@ -993,6 +1012,8 @@
         <input type="file" id="inputFileJson" accept="application/json,.json" class="hidden-file">
         <input type="file" id="inputAllegaVoceItem" accept="image/*,application/pdf" class="hidden-file">
         <input type="file" id="inputAllegaScadenzaItem" accept="image/*,application/pdf" class="hidden-file">
+        <input type="file" id="inputAllegaAppuntoItem" accept="image/*,application/pdf" class="hidden-file">
+        <input type="file" id="inputAllegaEventoItem" accept="image/*,application/pdf" class="hidden-file">
       </div>
     </header>
 
@@ -1121,6 +1142,10 @@
                 </select>
               </div>
               <textarea id="eventoDescrizione" placeholder="Dettagli dell'evento accaduto da ricordare in futuro..."></textarea>
+              <div class="attach-picker-row">
+                <span>📎 Allega foto o PDF all'evento (opzionale):</span>
+                <input type="file" id="eventoAllegato" accept="image/*,application/pdf">
+              </div>
               <div style="display: flex; justify-content: flex-end;">
                 <button type="submit" class="btn-primary">Salva nel Diario</button>
               </div>
@@ -1157,6 +1182,10 @@
                 </select>
               </div>
               <textarea id="appuntoTesto" placeholder="Scrivi qui il contenuto dell'appunto o della nota..." required></textarea>
+              <div class="attach-picker-row">
+                <span>📎 Allega foto o PDF all'appunto (opzionale):</span>
+                <input type="file" id="appuntoAllegato" accept="image/*,application/pdf">
+              </div>
               <div style="display: flex; justify-content: flex-end;">
                 <button type="submit" class="btn-primary">Salva Appunto</button>
               </div>
@@ -1367,7 +1396,7 @@
 
             <div class="doc-search-box">
               <span aria-hidden="true">🔍</span>
-              <input type="search" id="inputRicercaDocumenti" placeholder="Cerca anche file allegati ad appuntamenti o scadenze...">
+              <input type="search" id="inputRicercaDocumenti" placeholder="Cerca anche file allegati ad appunti, diario, appuntamenti o scadenze...">
               <button type="button" id="btnPulisciRicercaDoc" style="padding: 2px 7px; font-size: 0.74rem;" title="Pulisci ricerca">✕</button>
             </div>
 
@@ -1618,6 +1647,8 @@
     const cloudSyncPasswordInput = document.getElementById('cloudSyncPassword');
     const inputAllegaVoceItem = document.getElementById('inputAllegaVoceItem');
     const inputAllegaScadenzaItem = document.getElementById('inputAllegaScadenzaItem');
+    const inputAllegaAppuntoItem = document.getElementById('inputAllegaAppuntoItem');
+    const inputAllegaEventoItem = document.getElementById('inputAllegaEventoItem');
 
     const modalFoglioGiornaliero = document.getElementById('modalFoglioGiornaliero');
     const inputDataFoglioGiornaliero = document.getElementById('inputDataFoglioGiornaliero');
@@ -2310,6 +2341,8 @@
       etichettaAnteprima.textContent = etichetta;
       btnStampaAnteprima.disabled = false;
       renderImpegni();
+      renderEventiAccaduti();
+      renderAppunti();
       renderDocumenti();
       previewPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
@@ -2323,6 +2356,8 @@
       previewPdf.src = '';
       btnStampaAnteprima.disabled = true;
       renderImpegni();
+      renderEventiAccaduti();
+      renderAppunti();
       renderDocumenti();
     }
 
@@ -2564,7 +2599,7 @@
     function renderEventiAccaduti() {
       const q = inputRicerca.value.trim();
       const lista = (state.eventiAccaduti || []).filter((ev) => {
-        const testo = `${ev.titolo || ''} ${ev.descrizione || ''} ${ev.ambito || ''} ${ev.data || ''} ${ev.ora || ''}`;
+        const testo = `${ev.titolo || ''} ${ev.descrizione || ''} ${ev.ambito || ''} ${ev.data || ''} ${ev.ora || ''} ${ev.allegato ? ev.allegato.nome : ''}`;
         return matchesSmartQuery(testo, q);
       });
 
@@ -2578,7 +2613,8 @@
 
       lista.forEach((ev) => {
         const row = document.createElement('div');
-        row.className = 'row-item';
+        const isSelected = elementoAnteprima && elementoAnteprima.eventoId === ev.id;
+        row.className = `row-item ${isSelected ? 'selected' : ''}`;
 
         const left = document.createElement('div');
         left.style.flex = '1';
@@ -2600,6 +2636,13 @@
         tags.appendChild(badgeAmbito);
         tags.appendChild(badgeData);
 
+        if (ev.allegato) {
+          const badgeAll = document.createElement('span');
+          badgeAll.className = 'pill-tag file';
+          badgeAll.textContent = `${ev.allegato.tipo.toUpperCase()}: ${ev.allegato.nome}`;
+          tags.appendChild(badgeAll);
+        }
+
         const title = document.createElement('div');
         title.className = 'item-title';
         title.textContent = ev.titolo;
@@ -2616,6 +2659,36 @@
 
         const actions = document.createElement('div');
         actions.className = 'item-actions';
+
+        if (ev.allegato) {
+          const el = { tipo: ev.allegato.tipo, src: ev.allegato.dataUrl, nome: ev.allegato.nome, eventoId: ev.id };
+          const btnAnt = document.createElement('button');
+          btnAnt.type = 'button';
+          btnAnt.textContent = 'Anteprima';
+          btnAnt.addEventListener('click', () => apriAnteprimaSottoAppunti(el, `Evento "${ev.titolo}" — ${ev.allegato.nome}`));
+
+          const btnStampa = document.createElement('button');
+          btnStampa.type = 'button';
+          btnStampa.className = 'btn-primary';
+          btnStampa.textContent = 'Stampa';
+          btnStampa.addEventListener('click', () => {
+            apriAnteprimaSottoAppunti(el, `Evento "${ev.titolo}" — ${ev.allegato.nome}`);
+            stampaElemento(el);
+          });
+
+          actions.appendChild(btnAnt);
+          actions.appendChild(btnStampa);
+        } else {
+          const btnAll = document.createElement('button');
+          btnAll.type = 'button';
+          btnAll.textContent = '+ Allega';
+          btnAll.addEventListener('click', () => {
+            inputAllegaEventoItem.dataset.targetId = ev.id;
+            inputAllegaEventoItem.value = '';
+            inputAllegaEventoItem.click();
+          });
+          actions.appendChild(btnAll);
+        }
 
         const btnDel = document.createElement('button');
         btnDel.type = 'button';
@@ -2640,7 +2713,7 @@
     function renderAppunti() {
       const q = inputRicerca.value.trim();
       const lista = (state.appunti || []).filter((ap) => {
-        const testo = `${ap.titolo || ''} ${ap.testo || ''} ${ap.categoria || ''} ${ap.dataCreazione || ''}`;
+        const testo = `${ap.titolo || ''} ${ap.testo || ''} ${ap.categoria || ''} ${ap.dataCreazione || ''} ${ap.allegato ? ap.allegato.nome : ''}`;
         return matchesSmartQuery(testo, q);
       });
 
@@ -2654,7 +2727,8 @@
 
       lista.forEach((ap) => {
         const row = document.createElement('div');
-        row.className = 'row-item';
+        const isSelected = elementoAnteprima && elementoAnteprima.appuntoId === ap.id;
+        row.className = `row-item ${isSelected ? 'selected' : ''}`;
 
         const left = document.createElement('div');
         left.style.flex = '1';
@@ -2676,6 +2750,13 @@
         tags.appendChild(badgeCat);
         tags.appendChild(badgeData);
 
+        if (ap.allegato) {
+          const badgeAll = document.createElement('span');
+          badgeAll.className = 'pill-tag file';
+          badgeAll.textContent = `${ap.allegato.tipo.toUpperCase()}: ${ap.allegato.nome}`;
+          tags.appendChild(badgeAll);
+        }
+
         const title = document.createElement('div');
         title.className = 'item-title';
         title.textContent = ap.titolo;
@@ -2690,6 +2771,36 @@
 
         const actions = document.createElement('div');
         actions.className = 'item-actions';
+
+        if (ap.allegato) {
+          const el = { tipo: ap.allegato.tipo, src: ap.allegato.dataUrl, nome: ap.allegato.nome, appuntoId: ap.id };
+          const btnAnt = document.createElement('button');
+          btnAnt.type = 'button';
+          btnAnt.textContent = 'Anteprima';
+          btnAnt.addEventListener('click', () => apriAnteprimaSottoAppunti(el, `Appunto "${ap.titolo}" — ${ap.allegato.nome}`));
+
+          const btnStampa = document.createElement('button');
+          btnStampa.type = 'button';
+          btnStampa.className = 'btn-primary';
+          btnStampa.textContent = 'Stampa';
+          btnStampa.addEventListener('click', () => {
+            apriAnteprimaSottoAppunti(el, `Appunto "${ap.titolo}" — ${ap.allegato.nome}`);
+            stampaElemento(el);
+          });
+
+          actions.appendChild(btnAnt);
+          actions.appendChild(btnStampa);
+        } else {
+          const btnAll = document.createElement('button');
+          btnAll.type = 'button';
+          btnAll.textContent = '+ Allega';
+          btnAll.addEventListener('click', () => {
+            inputAllegaAppuntoItem.dataset.targetId = ap.id;
+            inputAllegaAppuntoItem.value = '';
+            inputAllegaAppuntoItem.click();
+          });
+          actions.appendChild(btnAll);
+        }
 
         const btnDel = document.createElement('button');
         btnDel.type = 'button';
@@ -2941,7 +3052,7 @@
             : cartellaDocumentiAttiva === 'foto'
               ? 'Cartella Foto'
               : 'archivio';
-        listaDocumenti.innerHTML = `<div class="empty-hint">Nessun file in ${nomeCartella}. Gli allegati di appuntamenti/scadenze appaiono qui quando li cerchi.</div>`;
+        listaDocumenti.innerHTML = `<div class="empty-hint">Nessun file in ${nomeCartella}. Gli allegati di appunti, diario, appuntamenti o scadenze appaiono qui quando li cerchi.</div>`;
         return;
       }
 
@@ -3148,7 +3259,20 @@
       const ora = document.getElementById('eventoOra').value;
       const ambito = document.getElementById('eventoAmbito').value;
       const descrizione = document.getElementById('eventoDescrizione').value.trim();
+      const file = document.getElementById('eventoAllegato').files[0];
       if (!titolo || !data) return;
+
+      let allegato = null;
+      if (file) {
+        allegato = await leggiFileComeDataUrl(file);
+        await aggiungiDocumentoInCartella({
+          nome: allegato.nome,
+          tipo: allegato.tipo,
+          dataUrl: allegato.dataUrl,
+          origine: `Evento: ${titolo}`,
+          nascostoFincheCercato: true
+        });
+      }
 
       state.eventiAccaduti = state.eventiAccaduti || [];
       state.eventiAccaduti.unshift({
@@ -3157,14 +3281,35 @@
         data,
         ora,
         ambito,
-        descrizione
+        descrizione,
+        allegato
       });
 
       formEventoAccaduto.reset();
       formEventoAccaduto.classList.add('hidden');
       await saveState(true, true);
       renderEventiAccaduti();
-      mostraToast('Evento accaduto registrato e sincronizzato su Cloud.');
+      mostraToast(allegato ? `Evento salvato con allegato "${allegato.nome}".` : 'Evento accaduto registrato e sincronizzato su Cloud.');
+    });
+
+    inputAllegaEventoItem.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      const id = e.target.dataset.targetId;
+      if (!file || !id) return;
+      const target = (state.eventiAccaduti || []).find((x) => x.id === id);
+      if (!target) return;
+      const allegato = await leggiFileComeDataUrl(file);
+      target.allegato = allegato;
+      await aggiungiDocumentoInCartella({
+        nome: allegato.nome,
+        tipo: allegato.tipo,
+        dataUrl: allegato.dataUrl,
+        origine: `Evento: ${target.titolo}`,
+        nascostoFincheCercato: true
+      });
+      await saveState(true, true);
+      renderEventiAccaduti();
+      mostraToast(`Allegato aggiunto all'evento: ${allegato.nome}`);
     });
 
     // --- EVENTI APPUNTI ---
@@ -3179,7 +3324,20 @@
       const titolo = document.getElementById('appuntoTitolo').value.trim();
       const categoria = document.getElementById('appuntoCategoria').value;
       const testo = document.getElementById('appuntoTesto').value.trim();
+      const file = document.getElementById('appuntoAllegato').files[0];
       if (!titolo || !testo) return;
+
+      let allegato = null;
+      if (file) {
+        allegato = await leggiFileComeDataUrl(file);
+        await aggiungiDocumentoInCartella({
+          nome: allegato.nome,
+          tipo: allegato.tipo,
+          dataUrl: allegato.dataUrl,
+          origine: `Appunto: ${titolo}`,
+          nascostoFincheCercato: true
+        });
+      }
 
       state.appunti = state.appunti || [];
       state.appunti.unshift({
@@ -3187,6 +3345,7 @@
         titolo,
         categoria,
         testo,
+        allegato,
         dataCreazione: new Date().toLocaleString('it-IT')
       });
 
@@ -3194,7 +3353,27 @@
       formAppunto.classList.add('hidden');
       await saveState(true, true);
       renderAppunti();
-      mostraToast('Appunto salvato e sincronizzato su Cloud.');
+      mostraToast(allegato ? `Appunto salvato con allegato "${allegato.nome}".` : 'Appunto salvato e sincronizzato su Cloud.');
+    });
+
+    inputAllegaAppuntoItem.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      const id = e.target.dataset.targetId;
+      if (!file || !id) return;
+      const target = (state.appunti || []).find((x) => x.id === id);
+      if (!target) return;
+      const allegato = await leggiFileComeDataUrl(file);
+      target.allegato = allegato;
+      await aggiungiDocumentoInCartella({
+        nome: allegato.nome,
+        tipo: allegato.tipo,
+        dataUrl: allegato.dataUrl,
+        origine: `Appunto: ${target.titolo}`,
+        nascostoFincheCercato: true
+      });
+      await saveState(true, true);
+      renderAppunti();
+      mostraToast(`Allegato aggiunto all'appunto: ${allegato.nome}`);
     });
 
     // --- EVENTI SCADENZE ---
