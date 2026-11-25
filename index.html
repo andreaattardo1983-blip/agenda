@@ -1071,12 +1071,12 @@
 
     <div class="main-bento">
       <div class="left-stack">
-        <!-- 1. IMPEGNI E APPUNTAMENTI FUTURI + FOGLIO GIORNALIERO -->
+        <!-- 1. IMPEGNI E APPUNTAMENTI FUTURI (COSE DA RICORDARE) + FOGLIO GIORNALIERO -->
         <section class="bento-card" id="sezioneImpegni">
           <div class="card-header">
             <div class="card-title-group">
               <h2 class="card-title">📅 Impegni &amp; Appuntamenti</h2>
-              <span class="card-subtitle-badge">Agenda ordinata per ora</span>
+              <span class="card-subtitle-badge">Cose da ricordare • Agenda per ora</span>
               <span class="count-badge" id="conteggioImpegni">0</span>
             </div>
             <div class="item-actions">
@@ -1155,12 +1155,12 @@
           </div>
         </section>
 
-        <!-- 3. APPUNTI & NOTE LIBERE + ANTEPRIMA & STAMPA SOTTO APPUNTI -->
+        <!-- 3. APPUNTI & NOTE LIBERE -->
         <section class="bento-card" id="sezioneAppunti">
           <div class="card-header">
             <div class="card-title-group">
               <h2 class="card-title">📝 Appunti &amp; Note</h2>
-              <span class="card-subtitle-badge">Note, appunti e anteprima file</span>
+              <span class="card-subtitle-badge">Note e appunti</span>
               <span class="count-badge" id="conteggioAppunti">0</span>
             </div>
             <div class="item-actions">
@@ -1192,27 +1192,6 @@
             </form>
 
             <div class="list-stack" id="listaAppunti"></div>
-
-            <!-- ANTEPRIMA PDF / FOTO POSIZIONATA SOTTO GLI APPUNTI -->
-            <div class="preview-panel hidden" id="previewPanel">
-              <div class="card-header" style="margin-bottom: 6px;">
-                <div>
-                  <div class="item-title" style="font-size: 0.86rem;">👁️ Anteprima in Appunti</div>
-                  <div class="item-meta" id="etichettaAnteprima" style="margin-top: 2px;">Anteprima selezionata</div>
-                </div>
-                <div class="item-actions">
-                  <button type="button" class="btn-primary" id="btnStampaAnteprima" disabled>🖨️ Stampa</button>
-                  <button type="button" id="btnChiudiAnteprima">Chiudi</button>
-                </div>
-              </div>
-              <div class="preview-surface" id="previewSurface">
-                <div class="empty-hint" id="previewPlaceholder">
-                  Clicca su "Anteprima" o "Stampa" su un file o allegato per visualizzarlo qui sotto agli appunti.
-                </div>
-                <img id="previewImg" alt="Anteprima immagine">
-                <iframe id="previewPdf" title="Anteprima PDF"></iframe>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -1413,6 +1392,27 @@
     </div>
   </div>
 
+  <!-- RIQUADRO ANTEPRIMA CONTESTUALE (VIENE SPOSTATO NELLA SEZIONE DI ORIGINE) -->
+  <div class="preview-panel hidden" id="previewPanel">
+    <div class="card-header" style="margin-bottom: 6px;">
+      <div>
+        <div class="item-title" style="font-size: 0.86rem;">👁️ Anteprima Sezione</div>
+        <div class="item-meta" id="etichettaAnteprima" style="margin-top: 2px;">Anteprima selezionata</div>
+      </div>
+      <div class="item-actions">
+        <button type="button" class="btn-primary" id="btnStampaAnteprima" disabled>🖨️ Stampa</button>
+        <button type="button" id="btnChiudiAnteprima">Chiudi</button>
+      </div>
+    </div>
+    <div class="preview-surface" id="previewSurface">
+      <div class="empty-hint" id="previewPlaceholder">
+        Clicca su "Anteprima" o "Stampa" su un file o allegato per visualizzarlo nella sezione corrispondente.
+      </div>
+      <img id="previewImg" alt="Anteprima immagine">
+      <iframe id="previewPdf" title="Anteprima PDF"></iframe>
+    </div>
+  </div>
+
   <!-- MODALE FOGLIO GIORNALIERO STAMPABILE -->
   <div class="modal-backdrop" id="modalFoglioGiornaliero" role="dialog" aria-modal="true" aria-labelledby="titoloFoglioGiornaliero">
     <div class="modal-card">
@@ -1577,6 +1577,7 @@
     let vaultSbloccato = false;
     let scadenzeSbloccateFlag = false;
     let elementoAnteprima = null;
+    let sezioneAnteprimaAttiva = null;
     let mediaRecorder = null;
     let chunkVocali = [];
     let pollTimer = null;
@@ -2316,14 +2317,27 @@
       });
     }
 
-    function apriAnteprimaSottoAppunti(el, etichetta) {
-      const bodyAppunti = document.getElementById('bodyAppunti');
-      if (bodyAppunti && bodyAppunti.classList.contains('collapsed')) {
-        espandiSezione('bodyAppunti');
+    function aggiornaPosizioneAnteprima() {
+      if (!sezioneAnteprimaAttiva || !elementoAnteprima) {
+        previewPanel.classList.add('hidden');
+        return;
       }
-
-      elementoAnteprima = el;
+      const sectionBody = document.getElementById(sezioneAnteprimaAttiva);
+      if (!sectionBody) {
+        previewPanel.classList.add('hidden');
+        return;
+      }
+      espandiSezione(sezioneAnteprimaAttiva);
+      if (previewPanel.parentElement !== sectionBody) {
+        sectionBody.appendChild(previewPanel);
+      }
       previewPanel.classList.remove('hidden');
+    }
+
+    function apriAnteprimaInSezione(el, etichetta, targetSectionId) {
+      elementoAnteprima = el;
+      sezioneAnteprimaAttiva = targetSectionId;
+
       previewPlaceholder.style.display = 'none';
       previewImg.style.display = 'none';
       previewPdf.style.display = 'none';
@@ -2340,24 +2354,30 @@
 
       etichettaAnteprima.textContent = etichetta;
       btnStampaAnteprima.disabled = false;
+
       renderImpegni();
       renderEventiAccaduti();
       renderAppunti();
+      renderScadenze();
       renderDocumenti();
+      aggiornaPosizioneAnteprima();
       previewPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     function chiudiAnteprima() {
       elementoAnteprima = null;
+      sezioneAnteprimaAttiva = null;
       previewPanel.classList.add('hidden');
       previewImg.style.display = 'none';
       previewPdf.style.display = 'none';
       previewImg.src = '';
       previewPdf.src = '';
       btnStampaAnteprima.disabled = true;
+
       renderImpegni();
       renderEventiAccaduti();
       renderAppunti();
+      renderScadenze();
       renderDocumenti();
     }
 
@@ -2487,7 +2507,7 @@
       });
     });
 
-    // --- RENDER 1: IMPEGNI & APPUNTAMENTI ---
+    // --- RENDER 1: IMPEGNI & APPUNTAMENTI (COSE DA RICORDARE) ---
     function renderImpegni() {
       const filtrati = filtraPerPeriodo(state.impegni || [], filtroTemporale, inputDataRiferimento.value).slice().sort((a, b) => {
         if ((a.data || '') !== (b.data || '')) return (a.data || '').localeCompare(b.data || '');
@@ -2498,12 +2518,13 @@
 
       if (filtrati.length === 0) {
         listaImpegni.innerHTML = `<div class="empty-hint">Nessun appuntamento per il filtro "${filtroTemporale}".</div>`;
+        aggiornaPosizioneAnteprima();
         return;
       }
 
       filtrati.forEach((item) => {
         const row = document.createElement('div');
-        const isSelected = elementoAnteprima && elementoAnteprima.impegnoId === item.id;
+        const isSelected = elementoAnteprima && elementoAnteprima.impegnoId === item.id && sezioneAnteprimaAttiva === 'bodyImpegni';
         row.className = `row-item ${item.completato ? 'done' : ''} ${isSelected ? 'selected' : ''}`;
 
         const main = document.createElement('div');
@@ -2551,14 +2572,14 @@
           const btnAnt = document.createElement('button');
           btnAnt.type = 'button';
           btnAnt.textContent = 'Anteprima';
-          btnAnt.addEventListener('click', () => apriAnteprimaSottoAppunti(el, `Appuntamento "${item.titolo}" — ${item.allegato.nome}`));
+          btnAnt.addEventListener('click', () => apriAnteprimaInSezione(el, `Impegni / Da ricordare "${item.titolo}" — ${item.allegato.nome}`, 'bodyImpegni'));
 
           const btnStampa = document.createElement('button');
           btnStampa.type = 'button';
           btnStampa.className = 'btn-primary';
           btnStampa.textContent = 'Stampa';
           btnStampa.addEventListener('click', () => {
-            apriAnteprimaSottoAppunti(el, `Appuntamento "${item.titolo}" — ${item.allegato.nome}`);
+            apriAnteprimaInSezione(el, `Impegni / Da ricordare "${item.titolo}" — ${item.allegato.nome}`, 'bodyImpegni');
             stampaElemento(el);
           });
 
@@ -2593,6 +2614,7 @@
         row.appendChild(actions);
         listaImpegni.appendChild(row);
       });
+      aggiornaPosizioneAnteprima();
     }
 
     // --- RENDER 2: DIARIO & EVENTI ACCADUTI ---
@@ -2608,12 +2630,13 @@
 
       if (lista.length === 0) {
         listaEventiAccaduti.innerHTML = '<div class="empty-hint">Nessun evento accaduto registrato nel diario.</div>';
+        aggiornaPosizioneAnteprima();
         return;
       }
 
       lista.forEach((ev) => {
         const row = document.createElement('div');
-        const isSelected = elementoAnteprima && elementoAnteprima.eventoId === ev.id;
+        const isSelected = elementoAnteprima && elementoAnteprima.eventoId === ev.id && sezioneAnteprimaAttiva === 'bodyDiario';
         row.className = `row-item ${isSelected ? 'selected' : ''}`;
 
         const left = document.createElement('div');
@@ -2665,14 +2688,14 @@
           const btnAnt = document.createElement('button');
           btnAnt.type = 'button';
           btnAnt.textContent = 'Anteprima';
-          btnAnt.addEventListener('click', () => apriAnteprimaSottoAppunti(el, `Evento "${ev.titolo}" — ${ev.allegato.nome}`));
+          btnAnt.addEventListener('click', () => apriAnteprimaInSezione(el, `Diario "${ev.titolo}" — ${ev.allegato.nome}`, 'bodyDiario'));
 
           const btnStampa = document.createElement('button');
           btnStampa.type = 'button';
           btnStampa.className = 'btn-primary';
           btnStampa.textContent = 'Stampa';
           btnStampa.addEventListener('click', () => {
-            apriAnteprimaSottoAppunti(el, `Evento "${ev.titolo}" — ${ev.allegato.nome}`);
+            apriAnteprimaInSezione(el, `Diario "${ev.titolo}" — ${ev.allegato.nome}`, 'bodyDiario');
             stampaElemento(el);
           });
 
@@ -2707,6 +2730,7 @@
         row.appendChild(actions);
         listaEventiAccaduti.appendChild(row);
       });
+      aggiornaPosizioneAnteprima();
     }
 
     // --- RENDER 3: APPUNTI & NOTE ---
@@ -2722,12 +2746,13 @@
 
       if (lista.length === 0) {
         listaAppunti.innerHTML = '<div class="empty-hint">Nessun appunto salvato in questa sezione.</div>';
+        aggiornaPosizioneAnteprima();
         return;
       }
 
       lista.forEach((ap) => {
         const row = document.createElement('div');
-        const isSelected = elementoAnteprima && elementoAnteprima.appuntoId === ap.id;
+        const isSelected = elementoAnteprima && elementoAnteprima.appuntoId === ap.id && sezioneAnteprimaAttiva === 'bodyAppunti';
         row.className = `row-item ${isSelected ? 'selected' : ''}`;
 
         const left = document.createElement('div');
@@ -2777,14 +2802,14 @@
           const btnAnt = document.createElement('button');
           btnAnt.type = 'button';
           btnAnt.textContent = 'Anteprima';
-          btnAnt.addEventListener('click', () => apriAnteprimaSottoAppunti(el, `Appunto "${ap.titolo}" — ${ap.allegato.nome}`));
+          btnAnt.addEventListener('click', () => apriAnteprimaInSezione(el, `Appunti "${ap.titolo}" — ${ap.allegato.nome}`, 'bodyAppunti'));
 
           const btnStampa = document.createElement('button');
           btnStampa.type = 'button';
           btnStampa.className = 'btn-primary';
           btnStampa.textContent = 'Stampa';
           btnStampa.addEventListener('click', () => {
-            apriAnteprimaSottoAppunti(el, `Appunto "${ap.titolo}" — ${ap.allegato.nome}`);
+            apriAnteprimaInSezione(el, `Appunti "${ap.titolo}" — ${ap.allegato.nome}`, 'bodyAppunti');
             stampaElemento(el);
           });
 
@@ -2819,6 +2844,7 @@
         row.appendChild(actions);
         listaAppunti.appendChild(row);
       });
+      aggiornaPosizioneAnteprima();
     }
 
     // --- RENDER 4: SCADENZE CON PIN DEDICATO ---
@@ -2834,6 +2860,7 @@
         btnToggleFormScadenza.style.display = 'none';
         pill.textContent = 'PIN';
         conteggioScadenze.textContent = String((state.scadenze || []).length);
+        aggiornaPosizioneAnteprima();
         return;
       }
 
@@ -2854,6 +2881,7 @@
 
       if (filtered.length === 0) {
         listaScadenze.innerHTML = '<div class="empty-hint">Nessuna scadenza per questa categoria.</div>';
+        aggiornaPosizioneAnteprima();
         return;
       }
 
@@ -2898,7 +2926,7 @@
           btnDoc.type = 'button';
           btnDoc.textContent = 'Anteprima';
           btnDoc.addEventListener('click', () => {
-            apriAnteprimaSottoAppunti({ tipo: sc.allegato.tipo, src: sc.allegato.dataUrl, nome: sc.allegato.nome }, `Scadenza "${sc.titolo}" — ${sc.allegato.nome}`);
+            apriAnteprimaInSezione({ tipo: sc.allegato.tipo, src: sc.allegato.dataUrl, nome: sc.allegato.nome }, `Scadenza "${sc.titolo}" — ${sc.allegato.nome}`, 'bodyScadenze');
           });
           actions.appendChild(btnDoc);
         } else {
@@ -2930,6 +2958,7 @@
         row.appendChild(actions);
         listaScadenze.appendChild(row);
       });
+      aggiornaPosizioneAnteprima();
     }
 
     // --- RENDER 5: CASSAFORTE PASSWORD ---
@@ -3053,12 +3082,13 @@
               ? 'Cartella Foto'
               : 'archivio';
         listaDocumenti.innerHTML = `<div class="empty-hint">Nessun file in ${nomeCartella}. Gli allegati di appunti, diario, appuntamenti o scadenze appaiono qui quando li cerchi.</div>`;
+        aggiornaPosizioneAnteprima();
         return;
       }
 
       filtrati.forEach((doc) => {
         const row = document.createElement('div');
-        const isSelected = elementoAnteprima && elementoAnteprima.docId === doc.id;
+        const isSelected = elementoAnteprima && elementoAnteprima.docId === doc.id && sezioneAnteprimaAttiva === 'bodyCartelleFile';
         row.className = `row-item ${isSelected ? 'selected' : ''}`;
 
         const info = document.createElement('div');
@@ -3107,7 +3137,7 @@
         btnAnt.type = 'button';
         btnAnt.textContent = 'Anteprima';
         btnAnt.addEventListener('click', () => {
-          apriAnteprimaSottoAppunti(el, `${doc.tipo === 'pdf' ? 'PDF' : 'Foto'}: ${doc.nome}`);
+          apriAnteprimaInSezione(el, `${doc.tipo === 'pdf' ? 'PDF' : 'Foto'}: ${doc.nome}`, 'bodyCartelleFile');
         });
 
         const btnStampa = document.createElement('button');
@@ -3115,7 +3145,7 @@
         btnStampa.className = 'btn-primary';
         btnStampa.textContent = 'Stampa';
         btnStampa.addEventListener('click', () => {
-          apriAnteprimaSottoAppunti(el, `${doc.tipo === 'pdf' ? 'PDF' : 'Foto'}: ${doc.nome}`);
+          apriAnteprimaInSezione(el, `${doc.tipo === 'pdf' ? 'PDF' : 'Foto'}: ${doc.nome}`, 'bodyCartelleFile');
           stampaElemento(el);
         });
 
@@ -3142,6 +3172,7 @@
         row.appendChild(actions);
         listaDocumenti.appendChild(row);
       });
+      aggiornaPosizioneAnteprima();
     }
 
     function renderAll() {
@@ -3210,7 +3241,7 @@
       formImpegnoCompleto.reset();
       formImpegnoCompleto.classList.add('hidden');
       renderImpegni();
-      mostraToast(allegato ? `Salvato e cifrato. Anteprima disponibile sotto Appunti.` : 'Appuntamento salvato e cifrato.');
+      mostraToast(allegato ? 'Salvato e cifrato. Anteprima disponibile in Impegni.' : 'Appuntamento salvato e cifrato.');
     });
 
     inputAllegaVoceItem.addEventListener('change', async (e) => {
