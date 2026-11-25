@@ -17,6 +17,8 @@
       --accent: #5b5cff;
       --accent-hover: #494af5;
       --accent-soft: rgba(91, 92, 255, 0.16);
+      --blue-title: #60a5fa;
+      --blue-soft: rgba(96, 165, 250, 0.14);
       --ok: #10b981;
       --ok-soft: rgba(16, 185, 129, 0.14);
       --warn: #f59e0b;
@@ -73,7 +75,7 @@
       width: 36px;
       height: 36px;
       border-radius: 10px;
-      background: linear-gradient(135deg, #10b981, #5b5cff);
+      background: linear-gradient(135deg, #3b82f6, #5b5cff);
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 3px;
@@ -97,7 +99,7 @@
       font-size: 1.05rem;
       font-weight: 700;
       letter-spacing: -0.01em;
-      color: #fca5a5;
+      color: var(--blue-title);
     }
 
     .cloud-pill {
@@ -153,7 +155,12 @@
       padding: 8px 12px;
       border-radius: var(--radius-sm);
       font-size: 0.85rem;
-      width: 220px;
+      width: 240px;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--blue-title);
     }
 
     button {
@@ -187,6 +194,16 @@
 
     button.btn-primary:hover:not(:disabled) {
       background: var(--accent-hover);
+    }
+
+    button.btn-blue {
+      background: var(--blue-soft);
+      border-color: rgba(96, 165, 250, 0.45);
+      color: #93c5fd;
+    }
+
+    button.btn-blue:hover:not(:disabled) {
+      background: rgba(96, 165, 250, 0.25);
     }
 
     button.btn-bio {
@@ -232,6 +249,18 @@
       color: #fff;
     }
 
+    .collapse-btn {
+      padding: 5px 10px;
+      font-size: 0.76rem;
+      color: #93c5fd;
+      background: rgba(96, 165, 250, 0.1);
+      border-color: rgba(96, 165, 250, 0.3);
+    }
+
+    .section-body.collapsed {
+      display: none;
+    }
+
     .icon-btn {
       padding: 8px 10px;
       display: inline-flex;
@@ -274,6 +303,10 @@
       flex-wrap: wrap;
     }
 
+    .card-header.no-margin {
+      margin-bottom: 0;
+    }
+
     .card-title-group {
       display: flex;
       align-items: center;
@@ -283,9 +316,9 @@
 
     .card-title {
       margin: 0;
-      font-size: 0.96rem;
+      font-size: 0.98rem;
       font-weight: 700;
-      color: #f87171;
+      color: var(--blue-title);
     }
 
     .card-subtitle-badge {
@@ -462,13 +495,13 @@
     }
 
     .row-item.selected {
-      border-color: var(--accent);
-      background: rgba(91, 92, 255, 0.08);
+      border-color: var(--blue-title);
+      background: rgba(96, 165, 250, 0.08);
     }
 
     .row-item.done .item-title {
       text-decoration: line-through;
-      color: var(--text-muted);
+      opacity: 0.65;
     }
 
     .item-main {
@@ -480,8 +513,9 @@
     }
 
     .item-title {
-      font-size: 0.9rem;
-      font-weight: 600;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--blue-title);
       word-break: break-word;
     }
 
@@ -537,9 +571,9 @@
     }
 
     .pill-tag.file {
-      background: var(--accent-soft);
-      border-color: rgba(99, 102, 241, 0.35);
-      color: #a5b4fc;
+      background: var(--blue-soft);
+      border-color: rgba(96, 165, 250, 0.4);
+      color: #93c5fd;
     }
 
     .pill-tag.pdf {
@@ -679,9 +713,9 @@
     }
 
     .preview-panel {
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border-soft);
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
     }
 
     .preview-panel.hidden { display: none; }
@@ -692,7 +726,7 @@
       border: 1px dashed var(--border);
       border-radius: 11px;
       padding: 12px;
-      min-height: 190px;
+      min-height: 210px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -701,7 +735,7 @@
 
     .preview-surface img {
       max-width: 100%;
-      max-height: 360px;
+      max-height: 400px;
       object-fit: contain;
       display: none;
       border-radius: 6px;
@@ -709,7 +743,7 @@
 
     .preview-surface iframe {
       width: 100%;
-      height: 360px;
+      height: 400px;
       border: none;
       display: none;
       border-radius: 6px;
@@ -728,7 +762,7 @@
       bottom: 18px;
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-left: 4px solid var(--danger);
+      border-left: 4px solid var(--blue-title);
       color: var(--text-main);
       padding: 11px 14px;
       border-radius: 10px;
@@ -756,11 +790,94 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      max-width: 640px;
+      max-width: 680px;
       width: 100%;
       padding: 20px;
       max-height: 90vh;
       overflow-y: auto;
+    }
+
+    .agenda-sheet {
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 12px;
+      border: 1px solid #cbd5e1;
+    }
+
+    .agenda-sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 2px solid #1d4ed8;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .agenda-sheet-title {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #1e3a8a;
+    }
+
+    .agenda-sheet-date {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .agenda-slot-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .agenda-slot-row {
+      display: grid;
+      grid-template-columns: 78px 1fr auto;
+      gap: 12px;
+      align-items: start;
+      padding: 10px 12px;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #2563eb;
+      border-radius: 8px;
+      background: #f8fafc;
+    }
+
+    .agenda-slot-time {
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: #1d4ed8;
+    }
+
+    .agenda-slot-main {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .agenda-slot-sub {
+      font-size: 0.78rem;
+      color: #475569;
+      margin-top: 2px;
+    }
+
+    .agenda-slot-status {
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .agenda-slot-status.done {
+      background: #dcfce7;
+      color: #166534;
     }
 
     .modal-grid {
@@ -772,6 +889,7 @@
 
     @media (max-width: 580px) {
       .modal-grid { grid-template-columns: 1fr; }
+      .agenda-slot-row { grid-template-columns: 64px 1fr; }
     }
 
     .field-group {
@@ -816,24 +934,35 @@
     .progress-fill {
       height: 100%;
       width: 12%;
-      background: linear-gradient(90deg, #ef4444, #6366f1);
+      background: linear-gradient(90deg, #3b82f6, #6366f1);
       transition: width 0.25s ease;
     }
 
     .hidden-file { display: none; }
 
     @media print {
-      body { background: #fff; padding: 0; }
-      .topbar,
-      .security-banner,
-      .bento-card:not(.print-target-card),
-      .main-bento > .left-stack,
-      .main-bento > .right-stack > .bento-card:not(.print-target-card),
+      body { background: #fff; padding: 0; color: #000; }
+      .app-shell,
       .status-toast,
-      .modal-backdrop { display: none !important; }
-      .main-bento, .right-stack { display: block !important; }
-      .print-target-card { border: none; padding: 0; background: #fff; }
-      .preview-surface { border: none; padding: 0; background: #fff; }
+      #modalCloud { display: none !important; }
+      .modal-backdrop.open {
+        position: static;
+        background: #fff;
+        padding: 0;
+        display: block !important;
+      }
+      .modal-card {
+        max-width: 100%;
+        border: none;
+        background: #fff;
+        color: #000;
+        padding: 0;
+        max-height: none;
+        overflow: visible;
+      }
+      .modal-card .card-header button,
+      .modal-card .no-print { display: none !important; }
+      .agenda-sheet { border: none; padding: 0; margin: 0; }
     }
   </style>
 </head>
@@ -857,7 +986,7 @@
       </div>
 
       <div class="topbar-actions">
-        <input type="search" id="inputRicerca" class="search-input" placeholder="Cerca ovunque...">
+        <input type="search" id="inputRicerca" class="search-input" placeholder="Ricerca intelligente per parola...">
         <button type="button" id="btnApriCloud">Sicurezza &amp; Cloud</button>
         <button type="button" class="icon-btn" id="btnExportJson" title="Esporta Backup JSON">⬇</button>
         <button type="button" class="icon-btn" id="btnImportJson" title="Importa Backup JSON">⬆</button>
@@ -875,83 +1004,92 @@
     <section class="bento-card">
       <div class="card-header" style="margin-bottom: 10px;">
         <div class="card-title-group">
-          <span class="cloud-dot" style="background: var(--danger);"></span>
+          <span class="cloud-dot" style="background: var(--blue-title);"></span>
           <h2 class="card-title">Azioni Rapide (Sezioni Separate)</h2>
           <span class="count-badge" id="conteggioNotificheRapide">0</span>
         </div>
-        <button type="button" id="btnSincronizzaOra" style="padding: 5px 10px; font-size: 0.78rem;">↻ Sync Cifrato Ora</button>
+        <div class="item-actions">
+          <button type="button" id="btnSincronizzaOra" style="padding: 5px 10px; font-size: 0.78rem;">↻ Sync Cifrato Ora</button>
+          <button type="button" class="collapse-btn" data-collapse-target="bodyAzioniRapide" aria-expanded="true">▾ Nascondi</button>
+        </div>
       </div>
 
-      <div class="quick-grid">
-        <button type="button" class="quick-tile tile-impegno" id="tileNuovoImpegno">
-          <span>🗓️</span>
-          <span>+ Impegno / Appunt.</span>
-        </button>
-        <button type="button" class="quick-tile tile-diario" id="tileNuovoEventoAccaduto">
-          <span>📖</span>
-          <span>+ Evento Accaduto</span>
-        </button>
-        <button type="button" class="quick-tile tile-appunti" id="tileNuovoAppunto">
-          <span>📝</span>
-          <span>+ Appunto / Nota</span>
-        </button>
-        <button type="button" class="quick-tile tile-scadenza" id="tileNuovaScadenza">
-          <span>💳</span>
-          <span>+ Scadenza</span>
-        </button>
-        <button type="button" class="quick-tile tile-vocale" id="tileVocale">
-          <span>🎙️</span>
-          <span>Vocale</span>
-        </button>
-        <button type="button" class="quick-tile tile-file" id="tileFotoPdf">
-          <span>📁</span>
-          <span>+ Foto/PDF</span>
-        </button>
-        <button type="button" class="quick-tile tile-password" id="tilePassword">
-          <span>🔑</span>
-          <span>+ Password</span>
-        </button>
+      <div id="bodyAzioniRapide" class="section-body">
+        <div class="quick-grid">
+          <button type="button" class="quick-tile tile-impegno" id="tileNuovoImpegno">
+            <span>🗓️</span>
+            <span>+ Impegno / Appunt.</span>
+          </button>
+          <button type="button" class="quick-tile tile-diario" id="tileNuovoEventoAccaduto">
+            <span>📖</span>
+            <span>+ Evento Accaduto</span>
+          </button>
+          <button type="button" class="quick-tile tile-appunti" id="tileNuovoAppunto">
+            <span>📝</span>
+            <span>+ Appunto / Nota</span>
+          </button>
+          <button type="button" class="quick-tile tile-scadenza" id="tileNuovaScadenza">
+            <span>💳</span>
+            <span>+ Scadenza</span>
+          </button>
+          <button type="button" class="quick-tile tile-vocale" id="tileVocale">
+            <span>🎙️</span>
+            <span>Vocale</span>
+          </button>
+          <button type="button" class="quick-tile tile-file" id="tileFotoPdf">
+            <span>📁</span>
+            <span>+ Foto/PDF</span>
+          </button>
+          <button type="button" class="quick-tile tile-password" id="tilePassword">
+            <span>🔑</span>
+            <span>+ Password</span>
+          </button>
+        </div>
       </div>
     </section>
 
     <div class="main-bento">
       <div class="left-stack">
-        <!-- 1. IMPEGNI E APPUNTAMENTI FUTURI -->
+        <!-- 1. IMPEGNI E APPUNTAMENTI FUTURI + FOGLIO GIORNALIERO -->
         <section class="bento-card" id="sezioneImpegni">
           <div class="card-header">
             <div class="card-title-group">
               <h2 class="card-title">📅 Impegni &amp; Appuntamenti</h2>
-              <span class="card-subtitle-badge">Cosa devo fare</span>
+              <span class="card-subtitle-badge">Agenda ordinata per ora</span>
               <span class="count-badge" id="conteggioImpegni">0</span>
             </div>
             <div class="item-actions">
+              <button type="button" class="btn-blue" id="btnApriFoglioGiornaliero">📄 Foglio Giornaliero</button>
               <button type="button" class="btn-primary" id="btnToggleFormImpegno">+ Appuntamento</button>
+              <button type="button" class="collapse-btn" data-collapse-target="bodyImpegni" aria-expanded="true">▾ Nascondi</button>
             </div>
           </div>
 
-          <div class="filter-row">
-            <div class="filter-buttons" role="group" aria-label="Filtro temporale appuntamenti">
-              <button type="button" class="active-time-filter" data-time-filter="giornaliero">Giornaliero</button>
-              <button type="button" data-time-filter="settimanale">Settimanale</button>
-              <button type="button" data-time-filter="mensile">Mensile</button>
-              <button type="button" data-time-filter="tutti">Tutti</button>
+          <div id="bodyImpegni" class="section-body">
+            <div class="filter-row">
+              <div class="filter-buttons" role="group" aria-label="Filtro temporale appuntamenti">
+                <button type="button" class="active-time-filter" data-time-filter="giornaliero">Giornaliero</button>
+                <button type="button" data-time-filter="settimanale">Settimanale</button>
+                <button type="button" data-time-filter="mensile">Mensile</button>
+                <button type="button" data-time-filter="tutti">Tutti</button>
+              </div>
+              <div class="ref-date-wrap">
+                <label for="inputDataRiferimento">Giorno agenda:</label>
+                <input type="date" id="inputDataRiferimento">
+              </div>
             </div>
-            <div class="ref-date-wrap">
-              <label for="inputDataRiferimento">Rif.:</label>
-              <input type="date" id="inputDataRiferimento">
-            </div>
+
+            <form class="inline-form hidden" id="formImpegnoCompleto">
+              <input type="text" id="impegnoTitolo" placeholder="Es. Sostituzione interruttore, Roberto Alotta..." required>
+              <input type="date" id="impegnoData" required>
+              <input type="time" id="impegnoOra">
+              <input type="text" id="impegnoLuogo" placeholder="Luogo (es. Studio, Casa)">
+              <input type="file" id="impegnoAllegato" accept="image/*,application/pdf">
+              <button type="submit" class="btn-primary">Salva Appuntamento</button>
+            </form>
+
+            <div class="list-stack" id="listaImpegni"></div>
           </div>
-
-          <form class="inline-form hidden" id="formImpegnoCompleto">
-            <input type="text" id="impegnoTitolo" placeholder="Es. Visita medica, Riunione, Chiamata..." required>
-            <input type="date" id="impegnoData" required>
-            <input type="time" id="impegnoOra">
-            <input type="text" id="impegnoLuogo" placeholder="Luogo (es. Studio, Ufficio)">
-            <input type="file" id="impegnoAllegato" accept="image/*,application/pdf">
-            <button type="submit" class="btn-primary">Salva Appuntamento</button>
-          </form>
-
-          <div class="list-stack" id="listaImpegni"></div>
         </section>
 
         <!-- 2. DIARIO & EVENTI ACCADUTI -->
@@ -962,60 +1100,91 @@
               <span class="card-subtitle-badge">Cosa è già successo</span>
               <span class="count-badge" id="conteggioEventiAccaduti">0</span>
             </div>
-            <button type="button" class="btn-primary" id="btnToggleFormEvento">+ Registra Evento</button>
+            <div class="item-actions">
+              <button type="button" class="btn-primary" id="btnToggleFormEvento">+ Registra Evento</button>
+              <button type="button" class="collapse-btn" data-collapse-target="bodyDiario" aria-expanded="true">▾ Nascondi</button>
+            </div>
           </div>
 
-          <form class="inline-form stack-form hidden" id="formEventoAccaduto">
-            <div class="inline-form-row">
-              <input type="text" id="eventoTitolo" placeholder="Titolo evento accaduto (es. Pagato acconto, Consegna pacco...)" required>
-              <input type="date" id="eventoData" required>
-              <input type="time" id="eventoOra">
-              <select id="eventoAmbito">
-                <option value="Personale">Personale</option>
-                <option value="Lavoro">Lavoro</option>
-                <option value="Salute">Salute</option>
-                <option value="Casa / Auto">Casa / Auto</option>
-                <option value="Pagamenti">Pagamenti</option>
-              </select>
-            </div>
-            <textarea id="eventoDescrizione" placeholder="Dettagli dell'evento accaduto da ricordare in futuro..."></textarea>
-            <div style="display: flex; justify-content: flex-end;">
-              <button type="submit" class="btn-primary">Salva nel Diario</button>
-            </div>
-          </form>
+          <div id="bodyDiario" class="section-body">
+            <form class="inline-form stack-form hidden" id="formEventoAccaduto">
+              <div class="inline-form-row">
+                <input type="text" id="eventoTitolo" placeholder="Titolo evento accaduto (es. Sostituzione interruttore...)" required>
+                <input type="date" id="eventoData" required>
+                <input type="time" id="eventoOra">
+                <select id="eventoAmbito">
+                  <option value="Personale">Personale</option>
+                  <option value="Lavoro">Lavoro</option>
+                  <option value="Salute">Salute</option>
+                  <option value="Casa / Auto">Casa / Auto</option>
+                  <option value="Pagamenti">Pagamenti</option>
+                </select>
+              </div>
+              <textarea id="eventoDescrizione" placeholder="Dettagli dell'evento accaduto da ricordare in futuro..."></textarea>
+              <div style="display: flex; justify-content: flex-end;">
+                <button type="submit" class="btn-primary">Salva nel Diario</button>
+              </div>
+            </form>
 
-          <div class="list-stack" id="listaEventiAccaduti"></div>
+            <div class="list-stack" id="listaEventiAccaduti"></div>
+          </div>
         </section>
 
-        <!-- 3. APPUNTI & NOTE LIBERE -->
+        <!-- 3. APPUNTI & NOTE LIBERE + ANTEPRIMA & STAMPA SOTTO APPUNTI -->
         <section class="bento-card" id="sezioneAppunti">
           <div class="card-header">
             <div class="card-title-group">
               <h2 class="card-title">📝 Appunti &amp; Note</h2>
-              <span class="card-subtitle-badge">Idee, promemoria testuali, elenchi</span>
+              <span class="card-subtitle-badge">Note, appunti e anteprima file</span>
               <span class="count-badge" id="conteggioAppunti">0</span>
             </div>
-            <button type="button" class="btn-primary" id="btnToggleFormAppunto">+ Nuovo Appunto</button>
+            <div class="item-actions">
+              <button type="button" class="btn-primary" id="btnToggleFormAppunto">+ Nuovo Appunto</button>
+              <button type="button" class="collapse-btn" data-collapse-target="bodyAppunti" aria-expanded="true">▾ Nascondi</button>
+            </div>
           </div>
 
-          <form class="inline-form stack-form hidden" id="formAppunto">
-            <div class="inline-form-row">
-              <input type="text" id="appuntoTitolo" placeholder="Titolo appunto..." required>
-              <select id="appuntoCategoria">
-                <option value="Generale">Generale</option>
-                <option value="Lavoro">Lavoro</option>
-                <option value="Idee">Idee</option>
-                <option value="Lista / Spesa">Lista / Spesa</option>
-                <option value="Riferimenti">Riferimenti</option>
-              </select>
-            </div>
-            <textarea id="appuntoTesto" placeholder="Scrivi qui il contenuto dell'appunto..." required></textarea>
-            <div style="display: flex; justify-content: flex-end;">
-              <button type="submit" class="btn-primary">Salva Appunto</button>
-            </div>
-          </form>
+          <div id="bodyAppunti" class="section-body">
+            <form class="inline-form stack-form hidden" id="formAppunto">
+              <div class="inline-form-row">
+                <input type="text" id="appuntoTitolo" placeholder="Titolo appunto (es. Roberto Alotta)..." required>
+                <select id="appuntoCategoria">
+                  <option value="Generale">Generale</option>
+                  <option value="Lavoro">Lavoro</option>
+                  <option value="Idee">Idee</option>
+                  <option value="Lista / Spesa">Lista / Spesa</option>
+                  <option value="Riferimenti">Riferimenti</option>
+                </select>
+              </div>
+              <textarea id="appuntoTesto" placeholder="Scrivi qui il contenuto dell'appunto o della nota..." required></textarea>
+              <div style="display: flex; justify-content: flex-end;">
+                <button type="submit" class="btn-primary">Salva Appunto</button>
+              </div>
+            </form>
 
-          <div class="list-stack" id="listaAppunti"></div>
+            <div class="list-stack" id="listaAppunti"></div>
+
+            <!-- ANTEPRIMA PDF / FOTO POSIZIONATA SOTTO GLI APPUNTI -->
+            <div class="preview-panel hidden" id="previewPanel">
+              <div class="card-header" style="margin-bottom: 6px;">
+                <div>
+                  <div class="item-title" style="font-size: 0.86rem;">👁️ Anteprima in Appunti</div>
+                  <div class="item-meta" id="etichettaAnteprima" style="margin-top: 2px;">Anteprima selezionata</div>
+                </div>
+                <div class="item-actions">
+                  <button type="button" class="btn-primary" id="btnStampaAnteprima" disabled>🖨️ Stampa</button>
+                  <button type="button" id="btnChiudiAnteprima">Chiudi</button>
+                </div>
+              </div>
+              <div class="preview-surface" id="previewSurface">
+                <div class="empty-hint" id="previewPlaceholder">
+                  Clicca su "Anteprima" o "Stampa" su un file o allegato per visualizzarlo qui sotto agli appunti.
+                </div>
+                <img id="previewImg" alt="Anteprima immagine">
+                <iframe id="previewPdf" title="Anteprima PDF"></iframe>
+              </div>
+            </div>
+          </div>
         </section>
 
         <!-- 4. SCADENZE PROTETTE DA PIN -->
@@ -1028,56 +1197,59 @@
             <div class="item-actions">
               <span class="pill-tag" id="statoScadenzePill">PIN</span>
               <button type="button" class="btn-primary" id="btnToggleFormScadenza" style="display: none;">+ Scadenza</button>
+              <button type="button" class="collapse-btn" data-collapse-target="bodyScadenze" aria-expanded="true">▾ Nascondi</button>
             </div>
           </div>
 
-          <div id="scadenzeBloccate" class="vault-box">
-            <div style="font-size: 1.45rem; margin-bottom: 6px;">🔐</div>
-            <div class="item-meta">Inserisci il <strong>PIN Scadenze</strong> per visualizzare o modificare carte, polizze e documenti</div>
-            <div class="pin-row">
-              <input type="password" id="inputPinScadenze" placeholder="PIN Scadenze" maxlength="20">
-              <button type="button" class="btn-primary" id="btnSbloccaScadenze">Sblocca Scadenze</button>
-            </div>
-            <div class="bio-row">
-              <button type="button" class="btn-warn" id="btnResetPinScadenzeBloccato" style="font-size: 0.76rem; padding: 5px 10px;">↻ Reset PIN Scadenze (1234)</button>
-            </div>
-          </div>
-
-          <div id="scadenzeSbloccate" style="display: none;">
-            <div class="filter-buttons" style="margin-bottom: 12px;" id="filtriCategoriaScadenze">
-              <button type="button" class="active-filter" data-cat-scadenza="Tutte">Tutte</button>
-              <button type="button" data-cat-scadenza="Carte">Carte</button>
-              <button type="button" data-cat-scadenza="Assicurazioni">Assicurazioni</button>
-              <button type="button" data-cat-scadenza="Documenti">Documenti</button>
-              <button type="button" data-cat-scadenza="Abbonamenti">Abbonamenti</button>
+          <div id="bodyScadenze" class="section-body">
+            <div id="scadenzeBloccate" class="vault-box">
+              <div style="font-size: 1.45rem; margin-bottom: 6px;">🔐</div>
+              <div class="item-meta">Inserisci il <strong>PIN Scadenze</strong> per visualizzare o modificare carte, polizze e documenti</div>
+              <div class="pin-row">
+                <input type="password" id="inputPinScadenze" placeholder="PIN Scadenze" maxlength="20">
+                <button type="button" class="btn-primary" id="btnSbloccaScadenze">Sblocca Scadenze</button>
+              </div>
+              <div class="bio-row">
+                <button type="button" class="btn-warn" id="btnResetPinScadenzeBloccato" style="font-size: 0.76rem; padding: 5px 10px;">↻ Reset PIN Scadenze (1234)</button>
+              </div>
             </div>
 
-            <form class="inline-form hidden" id="formScadenza">
-              <input type="text" id="scadenzaTitolo" placeholder="Es. Assicurazione Auto RC" required>
-              <select id="scadenzaCategoria">
-                <option value="Assicurazioni">Assicurazioni</option>
-                <option value="Carte">Carte</option>
-                <option value="Documenti">Documenti</option>
-                <option value="Abbonamenti">Abbonamenti</option>
-              </select>
-              <input type="date" id="scadenzaData" required>
-              <input type="text" id="scadenzaDettaglio" placeholder="Dettaglio / Polizza / IBAN">
-              <button type="submit" class="btn-primary">Salva Scadenza</button>
-            </form>
+            <div id="scadenzeSbloccate" style="display: none;">
+              <div class="filter-buttons" style="margin-bottom: 12px;" id="filtriCategoriaScadenze">
+                <button type="button" class="active-filter" data-cat-scadenza="Tutte">Tutte</button>
+                <button type="button" data-cat-scadenza="Carte">Carte</button>
+                <button type="button" data-cat-scadenza="Assicurazioni">Assicurazioni</button>
+                <button type="button" data-cat-scadenza="Documenti">Documenti</button>
+                <button type="button" data-cat-scadenza="Abbonamenti">Abbonamenti</button>
+              </div>
 
-            <div class="list-stack" id="listaScadenze"></div>
+              <form class="inline-form hidden" id="formScadenza">
+                <input type="text" id="scadenzaTitolo" placeholder="Es. Assicurazione Auto RC" required>
+                <select id="scadenzaCategoria">
+                  <option value="Assicurazioni">Assicurazioni</option>
+                  <option value="Carte">Carte</option>
+                  <option value="Documenti">Documenti</option>
+                  <option value="Abbonamenti">Abbonamenti</option>
+                </select>
+                <input type="date" id="scadenzaData" required>
+                <input type="text" id="scadenzaDettaglio" placeholder="Dettaglio / Polizza / IBAN">
+                <button type="submit" class="btn-primary">Salva Scadenza</button>
+              </form>
 
-            <div class="pin-change-box">
-              <div class="pin-change-line">
-                <div>
-                  <div class="item-title" style="font-size: 0.82rem;">Gestione PIN Scadenze</div>
-                  <div class="item-meta" id="infoPinScadenzeAttuale">PIN personalizzato attivo</div>
-                </div>
-                <div class="item-actions">
-                  <input type="text" id="inputNuovoPinScadenze" placeholder="Nuovo PIN..." maxlength="20">
-                  <button type="button" class="btn-primary" id="btnSalvaNuovoPinScadenze">Modifica PIN</button>
-                  <button type="button" class="btn-warn" id="btnResetPinScadenze">Reset (1234)</button>
-                  <button type="button" id="btnBloccaScadenze">Blocca</button>
+              <div class="list-stack" id="listaScadenze"></div>
+
+              <div class="pin-change-box">
+                <div class="pin-change-line">
+                  <div>
+                    <div class="item-title" style="font-size: 0.82rem;">Gestione PIN Scadenze</div>
+                    <div class="item-meta" id="infoPinScadenzeAttuale">PIN personalizzato attivo</div>
+                  </div>
+                  <div class="item-actions">
+                    <input type="text" id="inputNuovoPinScadenze" placeholder="Nuovo PIN..." maxlength="20">
+                    <button type="button" class="btn-primary" id="btnSalvaNuovoPinScadenze">Modifica PIN</button>
+                    <button type="button" class="btn-warn" id="btnResetPinScadenze">Reset (1234)</button>
+                    <button type="button" id="btnBloccaScadenze">Blocca</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1093,52 +1265,57 @@
               <h2 class="card-title">🔒 Cassaforte Password</h2>
               <span class="count-badge" id="conteggioPassword">0</span>
             </div>
-            <span class="pill-tag" id="statoVaultPill">PIN + VOLTO</span>
+            <div class="item-actions">
+              <span class="pill-tag" id="statoVaultPill">PIN + VOLTO</span>
+              <button type="button" class="collapse-btn" data-collapse-target="bodyVault" aria-expanded="true">▾ Nascondi</button>
+            </div>
           </div>
 
-          <div id="vaultBloccata" class="vault-box">
-            <div style="font-size: 1.5rem; margin-bottom: 6px;">🛡️</div>
-            <div class="item-meta">Sblocca con il PIN oppure con il riconoscimento del volto / biometria</div>
-            <div class="pin-row">
-              <input type="password" id="inputPinVault" placeholder="PIN Cassaforte" maxlength="20">
-              <button type="button" class="btn-primary" id="btnSbloccaVault">Sblocca con PIN</button>
-            </div>
-            <div class="bio-row">
-              <button type="button" class="btn-bio" id="btnSbloccaBio">🪪 Sblocca con Volto / Biometria</button>
-            </div>
-            <div class="item-meta" id="statoBioBloccata" style="margin-top: 8px; font-size: 0.73rem;"></div>
-          </div>
-
-          <div id="vaultSbloccata" style="display: none;">
-            <form class="inline-form" id="formPassword">
-              <input type="text" id="pwdServizio" placeholder="Servizio / Account" required>
-              <input type="text" id="pwdUtente" placeholder="Username / Email" required>
-              <input type="text" id="pwdValore" placeholder="Password" required>
-              <button type="submit" class="btn-primary">Salva</button>
-            </form>
-            <div class="list-stack" id="listaPassword"></div>
-
-            <div class="pin-change-box">
-              <div class="pin-change-line">
-                <div>
-                  <div class="item-title" style="font-size: 0.82rem;">Cambia PIN Cassaforte</div>
-                  <div class="item-meta" id="infoPinAttuale">PIN personalizzato attivo</div>
-                </div>
-                <div class="item-actions">
-                  <input type="text" id="inputNuovoPinVault" placeholder="Nuovo PIN..." maxlength="20">
-                  <button type="button" class="btn-primary" id="btnSalvaNuovoPin">Aggiorna PIN</button>
-                </div>
+          <div id="bodyVault" class="section-body">
+            <div id="vaultBloccata" class="vault-box">
+              <div style="font-size: 1.5rem; margin-bottom: 6px;">🛡️</div>
+              <div class="item-meta">Sblocca con il PIN oppure con il riconoscimento del volto / biometria</div>
+              <div class="pin-row">
+                <input type="password" id="inputPinVault" placeholder="PIN Cassaforte" maxlength="20">
+                <button type="button" class="btn-primary" id="btnSbloccaVault">Sblocca con PIN</button>
               </div>
+              <div class="bio-row">
+                <button type="button" class="btn-bio" id="btnSbloccaBio">🪪 Sblocca con Volto / Biometria</button>
+              </div>
+              <div class="item-meta" id="statoBioBloccata" style="margin-top: 8px; font-size: 0.73rem;"></div>
+            </div>
 
-              <div class="pin-change-line" style="border-top: 1px solid var(--border-soft); padding-top: 8px;">
-                <div>
-                  <div class="item-title" style="font-size: 0.82rem;">Sblocco con Volto / Biometria</div>
-                  <div class="item-meta" id="infoStatoBio">Non ancora configurato su questo dispositivo</div>
+            <div id="vaultSbloccata" style="display: none;">
+              <form class="inline-form" id="formPassword">
+                <input type="text" id="pwdServizio" placeholder="Servizio / Account" required>
+                <input type="text" id="pwdUtente" placeholder="Username / Email" required>
+                <input type="text" id="pwdValore" placeholder="Password" required>
+                <button type="submit" class="btn-primary">Salva</button>
+              </form>
+              <div class="list-stack" id="listaPassword"></div>
+
+              <div class="pin-change-box">
+                <div class="pin-change-line">
+                  <div>
+                    <div class="item-title" style="font-size: 0.82rem;">Cambia PIN Cassaforte</div>
+                    <div class="item-meta" id="infoPinAttuale">PIN personalizzato attivo</div>
+                  </div>
+                  <div class="item-actions">
+                    <input type="text" id="inputNuovoPinVault" placeholder="Nuovo PIN..." maxlength="20">
+                    <button type="button" class="btn-primary" id="btnSalvaNuovoPin">Aggiorna PIN</button>
+                  </div>
                 </div>
-                <div class="item-actions">
-                  <button type="button" class="btn-bio" id="btnRegistraBio">🪪 Attiva Volto / Biometria</button>
-                  <button type="button" class="btn-danger" id="btnRimuoviBio" style="display: none;">Rimuovi</button>
-                  <button type="button" id="btnBloccaVault">Blocca</button>
+
+                <div class="pin-change-line" style="border-top: 1px solid var(--border-soft); padding-top: 8px;">
+                  <div>
+                    <div class="item-title" style="font-size: 0.82rem;">Sblocco con Volto / Biometria</div>
+                    <div class="item-meta" id="infoStatoBio">Non ancora configurato su questo dispositivo</div>
+                  </div>
+                  <div class="item-actions">
+                    <button type="button" class="btn-bio" id="btnRegistraBio">🪪 Attiva Volto / Biometria</button>
+                    <button type="button" class="btn-danger" id="btnRimuoviBio" style="display: none;">Rimuovi</button>
+                    <button type="button" id="btnBloccaVault">Blocca</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1152,18 +1329,22 @@
               <h2 class="card-title">🎙️ Registrazioni Vocali</h2>
               <span class="count-badge" id="conteggioVocali">0</span>
             </div>
+            <button type="button" class="collapse-btn" data-collapse-target="bodyVocali" aria-expanded="true">▾ Nascondi</button>
           </div>
-          <button type="button" class="voice-btn" id="btnRegistrazioneVocale">
-            <span>●</span>
-            <span id="testoBtnVocale">Avvia Registrazione Vocale</span>
-          </button>
-          <div class="list-stack" id="listaVocali" style="margin-top: 10px;">
-            <div class="empty-hint">Nessuna registrazione salvata.</div>
+
+          <div id="bodyVocali" class="section-body">
+            <button type="button" class="voice-btn" id="btnRegistrazioneVocale">
+              <span>●</span>
+              <span id="testoBtnVocale">Avvia Registrazione Vocale</span>
+            </button>
+            <div class="list-stack" id="listaVocali" style="margin-top: 10px;">
+              <div class="empty-hint">Nessuna registrazione salvata.</div>
+            </div>
           </div>
         </section>
 
         <!-- CARTELLE PDF E FOTO -->
-        <section class="bento-card print-target-card" id="sezioneCartelleFile">
+        <section class="bento-card" id="sezioneCartelleFile">
           <div class="card-header">
             <div class="card-title-group">
               <h2 class="card-title">📁 Cartelle PDF &amp; Foto</h2>
@@ -1171,49 +1352,51 @@
             </div>
             <div class="item-actions">
               <button type="button" class="btn-primary" id="btnCaricaFotoPdf">+ Carica File</button>
+              <button type="button" class="collapse-btn" data-collapse-target="bodyCartelleFile" aria-expanded="true">▾ Nascondi</button>
             </div>
           </div>
 
-          <input type="file" id="inputFileStampa" accept="image/*,application/pdf" multiple class="hidden-file">
+          <div id="bodyCartelleFile" class="section-body">
+            <input type="file" id="inputFileStampa" accept="image/*,application/pdf" multiple class="hidden-file">
 
-          <div class="filter-buttons" style="margin-bottom: 10px;" id="filtriCartellaDocumenti">
-            <button type="button" class="active-folder" data-doc-folder="pdf">📕 Cartella PDF (<span id="countFolderPdf">0</span>)</button>
-            <button type="button" data-doc-folder="foto">🖼️ Cartella Foto (<span id="countFolderFoto">0</span>)</button>
-            <button type="button" data-doc-folder="tutti">📂 Tutti (<span id="countFolderTutti">0</span>)</button>
-          </div>
-
-          <div class="doc-search-box">
-            <span aria-hidden="true">🔍</span>
-            <input type="search" id="inputRicercaDocumenti" placeholder="Search per nome file (es. bolletta, carta, ricevuta)...">
-            <button type="button" id="btnPulisciRicercaDoc" style="padding: 2px 7px; font-size: 0.74rem;" title="Pulisci ricerca">✕</button>
-          </div>
-
-          <div class="inline-form" style="margin-bottom: 10px; padding: 8px;">
-            <input type="text" id="inputNomeUrlFile" placeholder="Nome file opzionale (es. contratto_2026.pdf)">
-            <input type="url" id="inputUrlFile" placeholder="URL foto o PDF...">
-            <button type="button" id="btnApriUrlFile">Salva URL</button>
-          </div>
-
-          <div class="list-stack" id="listaDocumenti"></div>
-
-          <div class="preview-panel hidden" id="previewPanel">
-            <div class="card-header" style="margin-bottom: 6px;">
-              <div class="item-meta" id="etichettaAnteprima" style="margin-top: 0;">Anteprima selezionata</div>
-              <div class="item-actions">
-                <button type="button" class="btn-primary" id="btnStampaAnteprima" disabled>Stampa</button>
-                <button type="button" id="btnChiudiAnteprima">Chiudi</button>
-              </div>
+            <div class="filter-buttons" style="margin-bottom: 10px;" id="filtriCartellaDocumenti">
+              <button type="button" class="active-folder" data-doc-folder="pdf">📕 Cartella PDF (<span id="countFolderPdf">0</span>)</button>
+              <button type="button" data-doc-folder="foto">🖼️ Cartella Foto (<span id="countFolderFoto">0</span>)</button>
+              <button type="button" data-doc-folder="tutti">📂 Tutti (<span id="countFolderTutti">0</span>)</button>
             </div>
-            <div class="preview-surface" id="previewSurface">
-              <div class="empty-hint" id="previewPlaceholder">
-                Clicca su "Anteprima" o "Stampa" su un file della cartella per aprirlo qui.
-              </div>
-              <img id="previewImg" alt="Anteprima immagine">
-              <iframe id="previewPdf" title="Anteprima PDF"></iframe>
+
+            <div class="doc-search-box">
+              <span aria-hidden="true">🔍</span>
+              <input type="search" id="inputRicercaDocumenti" placeholder="Cerca anche file allegati ad appuntamenti o scadenze...">
+              <button type="button" id="btnPulisciRicercaDoc" style="padding: 2px 7px; font-size: 0.74rem;" title="Pulisci ricerca">✕</button>
             </div>
+
+            <div class="inline-form" style="margin-bottom: 10px; padding: 8px;">
+              <input type="text" id="inputNomeUrlFile" placeholder="Nome file opzionale (es. contratto_2026.pdf)">
+              <input type="url" id="inputUrlFile" placeholder="URL foto o PDF...">
+              <button type="button" id="btnApriUrlFile">Salva URL</button>
+            </div>
+
+            <div class="list-stack" id="listaDocumenti"></div>
           </div>
         </section>
       </div>
+    </div>
+  </div>
+
+  <!-- MODALE FOGLIO GIORNALIERO STAMPABILE -->
+  <div class="modal-backdrop" id="modalFoglioGiornaliero" role="dialog" aria-modal="true" aria-labelledby="titoloFoglioGiornaliero">
+    <div class="modal-card">
+      <div class="card-header no-print">
+        <h2 class="card-title" id="titoloFoglioGiornaliero">📄 Foglio Giornaliero Agenda</h2>
+        <div class="item-actions">
+          <input type="date" id="inputDataFoglioGiornaliero" style="background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); border-radius: 7px; padding: 6px 8px; font-size: 0.8rem;">
+          <button type="button" class="btn-primary" id="btnStampaFoglioGiornaliero">🖨️ Stampa Foglio</button>
+          <button type="button" id="btnChiudiFoglioGiornaliero">✕</button>
+        </div>
+      </div>
+
+      <div class="agenda-sheet" id="foglioGiornalieroContenuto"></div>
     </div>
   </div>
 
@@ -1294,6 +1477,15 @@
       impegni: [
         {
           id: 'imp-1',
+          titolo: 'Roberto Alotta — Sostituzione interruttore',
+          data: '2026-11-25',
+          ora: '10:30',
+          luogo: 'Casa / Quadro elettrico',
+          completato: false,
+          allegato: null
+        },
+        {
+          id: 'imp-2',
           titolo: 'Chiamare commercialista',
           data: '2026-11-25',
           ora: '16:30',
@@ -1427,6 +1619,10 @@
     const inputAllegaVoceItem = document.getElementById('inputAllegaVoceItem');
     const inputAllegaScadenzaItem = document.getElementById('inputAllegaScadenzaItem');
 
+    const modalFoglioGiornaliero = document.getElementById('modalFoglioGiornaliero');
+    const inputDataFoglioGiornaliero = document.getElementById('inputDataFoglioGiornaliero');
+    const foglioGiornalieroContenuto = document.getElementById('foglioGiornalieroContenuto');
+
     function oggiISO() {
       const d = new Date();
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -1435,6 +1631,27 @@
     function oraAttualeHHMM() {
       const d = new Date();
       return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    }
+
+    function formatDataLeggibileIT(isoDate) {
+      if (!isoDate) return '';
+      const [y, m, d] = isoDate.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      const s = dt.toLocaleDateString('it-IT', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    function matchesSmartQuery(rawText, queryStr) {
+      const q = (queryStr || '').trim().toLowerCase();
+      if (!q) return true;
+      const haystack = (rawText || '').toLowerCase();
+      const tokens = q.split(/\s+/).filter(Boolean);
+      return tokens.every((tok) => haystack.includes(tok));
     }
 
     function aggiornaBannerSicurezza() {
@@ -1900,7 +2117,7 @@
         const modeLabel = envelope.__e2ee ? 'E2EE AES-256 Attivo' : 'Live Cloud (Non Cifrato)';
         aggiornaStatoCloudUI(true, modeLabel);
         if (showFeedback) {
-          mostraToast(envelope.__e2ee ? 'Dati (inclusi Appunti e Diario) cifrati e inviati al Cloud.' : 'Dati inviati al Cloud.');
+          mostraToast(envelope.__e2ee ? 'Dati cifrati AES-256 e inviati al Cloud.' : 'Dati inviati al Cloud.');
         }
       } catch (err) {
         aggiornaStatoCloudUI(false, 'Errore Cloud');
@@ -2011,28 +2228,31 @@
       });
     }
 
-    async function aggiungiDocumentoInCartella({ nome, tipo, dataUrl, origine = 'Archivio' }) {
+    async function aggiungiDocumentoInCartella({ nome, tipo, dataUrl, origine = 'Archivio', nascostoFincheCercato = false }) {
       const docItem = {
         id: 'doc-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
         nome,
         tipo: tipo === 'pdf' ? 'pdf' : 'foto',
         dataUrl,
         origine,
+        nascostoFincheCercato,
         dataCaricamento: new Date().toLocaleString('it-IT')
       };
       state.documenti = state.documenti || [];
       state.documenti.unshift(docItem);
-      cartellaDocumentiAttiva = docItem.tipo;
-      document.querySelectorAll('[data-doc-folder]').forEach((btn) => {
-        btn.classList.toggle('active-folder', btn.dataset.docFolder === cartellaDocumentiAttiva);
-      });
+      if (!nascostoFincheCercato) {
+        cartellaDocumentiAttiva = docItem.tipo;
+        document.querySelectorAll('[data-doc-folder]').forEach((btn) => {
+          btn.classList.toggle('active-folder', btn.dataset.docFolder === cartellaDocumentiAttiva);
+        });
+      }
       await saveState(true, true);
       renderDocumenti();
       return docItem;
     }
 
     function filtraPerPeriodo(items, filtro, dataRifStr) {
-      const query = inputRicerca.value.trim().toLowerCase();
+      const query = inputRicerca.value.trim();
       const [y, m, d] = (dataRifStr || oggiISO()).split('-').map(Number);
       const rif = new Date(y, m - 1, d);
       rif.setHours(0, 0, 0, 0);
@@ -2048,8 +2268,8 @@
 
       return items.filter((item) => {
         if (query) {
-          const testo = `${item.titolo || ''} ${item.luogo || ''} ${item.data || ''}`.toLowerCase();
-          if (!testo.includes(query)) return false;
+          const testo = `${item.titolo || ''} ${item.luogo || ''} ${item.data || ''} ${item.ora || ''} ${item.allegato ? item.allegato.nome : ''}`;
+          if (!matchesSmartQuery(testo, query)) return false;
         }
         if (filtro === 'tutti') return true;
         if (!item.data) return filtro === 'giornaliero';
@@ -2065,7 +2285,12 @@
       });
     }
 
-    function apriAnteprimaSuRichiesta(el, etichetta) {
+    function apriAnteprimaSottoAppunti(el, etichetta) {
+      const bodyAppunti = document.getElementById('bodyAppunti');
+      if (bodyAppunti && bodyAppunti.classList.contains('collapsed')) {
+        espandiSezione('bodyAppunti');
+      }
+
       elementoAnteprima = el;
       previewPanel.classList.remove('hidden');
       previewPlaceholder.style.display = 'none';
@@ -2086,6 +2311,7 @@
       btnStampaAnteprima.disabled = false;
       renderImpegni();
       renderDocumenti();
+      previewPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     function chiudiAnteprima() {
@@ -2144,8 +2370,94 @@
       }
     }
 
+    // --- FOGLIO GIORNALIERO STAMPABILE ORDINATO PER ORARIO ---
+    function renderFoglioGiornaliero(dataIso) {
+      const targetDate = dataIso || inputDataRiferimento.value || oggiISO();
+      inputDataFoglioGiornaliero.value = targetDate;
+
+      const dayItems = (state.impegni || [])
+        .filter((item) => item.data === targetDate)
+        .slice()
+        .sort((a, b) => {
+          const ta = (a.ora || '99:99').padStart(5, '0');
+          const tb = (b.ora || '99:99').padStart(5, '0');
+          if (ta !== tb) return ta.localeCompare(tb);
+          return (a.titolo || '').localeCompare(b.titolo || '');
+        });
+
+      const headerHtml = `
+        <div class="agenda-sheet-header">
+          <div>
+            <h3 class="agenda-sheet-title">Agenda Giornaliera — Foglio di Lavoro</h3>
+            <div style="font-size: 0.8rem; color: #475569; margin-top: 2px;">Impegni e appuntamenti ordinati per orario</div>
+          </div>
+          <div class="agenda-sheet-date">📅 ${formatDataLeggibileIT(targetDate)}</div>
+        </div>
+      `;
+
+      if (dayItems.length === 0) {
+        foglioGiornalieroContenuto.innerHTML = `${headerHtml}<div style="padding: 24px; text-align: center; color: #64748b; font-size: 0.9rem;">Nessun appuntamento o impegno inserito per questa data.</div>`;
+        return;
+      }
+
+      const rowsHtml = dayItems
+        .map((item) => {
+          const oraLabel = item.ora ? item.ora : 'Senza ora';
+          const luogoText = item.luogo ? ` • Luogo: ${item.luogo}` : '';
+          const allText = item.allegato ? ` • Allegato: ${item.allegato.nome}` : '';
+          const statusClass = item.completato ? 'agenda-slot-status done' : 'agenda-slot-status';
+          const statusLabel = item.completato ? '✓ Completato' : 'Da svolgere';
+          return `
+            <div class="agenda-slot-row">
+              <div class="agenda-slot-time">${oraLabel}</div>
+              <div>
+                <div class="agenda-slot-main" style="${item.completato ? 'text-decoration: line-through; opacity: 0.7;' : ''}">${item.titolo}</div>
+                <div class="agenda-slot-sub">Data: ${item.data}${luogoText}${allText}</div>
+              </div>
+              <span class="${statusClass}">${statusLabel}</span>
+            </div>
+          `;
+        })
+        .join('');
+
+      foglioGiornalieroContenuto.innerHTML = `${headerHtml}<div class="agenda-slot-list">${rowsHtml}</div>`;
+    }
+
+    function apriFoglioGiornaliero() {
+      renderFoglioGiornaliero(inputDataRiferimento.value || oggiISO());
+      modalFoglioGiornaliero.classList.add('open');
+    }
+
+    // --- TENDINE NASCONDI / MOSTRA ---
+    function espandiSezione(targetId) {
+      const bodyEl = document.getElementById(targetId);
+      if (!bodyEl) return;
+      bodyEl.classList.remove('collapsed');
+      const btn = document.querySelector(`[data-collapse-target="${targetId}"]`);
+      if (btn) {
+        btn.textContent = '▾ Nascondi';
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    document.querySelectorAll('[data-collapse-target]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.dataset.collapseTarget;
+        const bodyEl = document.getElementById(targetId);
+        if (!bodyEl) return;
+        const willCollapse = !bodyEl.classList.contains('collapsed');
+        bodyEl.classList.toggle('collapsed', willCollapse);
+        btn.textContent = willCollapse ? '▸ Mostra' : '▾ Nascondi';
+        btn.setAttribute('aria-expanded', String(!willCollapse));
+      });
+    });
+
+    // --- RENDER 1: IMPEGNI & APPUNTAMENTI ---
     function renderImpegni() {
-      const filtrati = filtraPerPeriodo(state.impegni || [], filtroTemporale, inputDataRiferimento.value);
+      const filtrati = filtraPerPeriodo(state.impegni || [], filtroTemporale, inputDataRiferimento.value).slice().sort((a, b) => {
+        if ((a.data || '') !== (b.data || '')) return (a.data || '').localeCompare(b.data || '');
+        return (a.ora || '99:99').localeCompare(b.ora || '99:99');
+      });
       conteggioImpegni.textContent = String(filtrati.length);
       listaImpegni.innerHTML = '';
 
@@ -2178,7 +2490,7 @@
 
         const meta = document.createElement('div');
         meta.className = 'item-meta';
-        meta.textContent = `${item.data || ''}${item.ora ? ` • ${item.ora}` : ''}${item.luogo ? ` • Luogo: ${item.luogo}` : ''}`;
+        meta.textContent = `${item.data || ''}${item.ora ? ` • Ore ${item.ora}` : ''}${item.luogo ? ` • Luogo: ${item.luogo}` : ''}`;
 
         textWrap.appendChild(title);
         textWrap.appendChild(meta);
@@ -2204,14 +2516,14 @@
           const btnAnt = document.createElement('button');
           btnAnt.type = 'button';
           btnAnt.textContent = 'Anteprima';
-          btnAnt.addEventListener('click', () => apriAnteprimaSuRichiesta(el, `Appuntamento "${item.titolo}" — ${item.allegato.nome}`));
+          btnAnt.addEventListener('click', () => apriAnteprimaSottoAppunti(el, `Appuntamento "${item.titolo}" — ${item.allegato.nome}`));
 
           const btnStampa = document.createElement('button');
           btnStampa.type = 'button';
           btnStampa.className = 'btn-primary';
           btnStampa.textContent = 'Stampa';
           btnStampa.addEventListener('click', () => {
-            apriAnteprimaSuRichiesta(el, `Appuntamento "${item.titolo}" — ${item.allegato.nome}`);
+            apriAnteprimaSottoAppunti(el, `Appuntamento "${item.titolo}" — ${item.allegato.nome}`);
             stampaElemento(el);
           });
 
@@ -2248,11 +2560,12 @@
       });
     }
 
+    // --- RENDER 2: DIARIO & EVENTI ACCADUTI ---
     function renderEventiAccaduti() {
-      const q = inputRicerca.value.trim().toLowerCase();
+      const q = inputRicerca.value.trim();
       const lista = (state.eventiAccaduti || []).filter((ev) => {
-        if (!q) return true;
-        return `${ev.titolo || ''} ${ev.descrizione || ''} ${ev.ambito || ''} ${ev.data || ''}`.toLowerCase().includes(q);
+        const testo = `${ev.titolo || ''} ${ev.descrizione || ''} ${ev.ambito || ''} ${ev.data || ''} ${ev.ora || ''}`;
+        return matchesSmartQuery(testo, q);
       });
 
       conteggioEventiAccaduti.textContent = String(lista.length);
@@ -2323,11 +2636,12 @@
       });
     }
 
+    // --- RENDER 3: APPUNTI & NOTE ---
     function renderAppunti() {
-      const q = inputRicerca.value.trim().toLowerCase();
+      const q = inputRicerca.value.trim();
       const lista = (state.appunti || []).filter((ap) => {
-        if (!q) return true;
-        return `${ap.titolo || ''} ${ap.testo || ''} ${ap.categoria || ''}`.toLowerCase().includes(q);
+        const testo = `${ap.titolo || ''} ${ap.testo || ''} ${ap.categoria || ''} ${ap.dataCreazione || ''}`;
+        return matchesSmartQuery(testo, q);
       });
 
       conteggioAppunti.textContent = String(lista.length);
@@ -2396,6 +2710,7 @@
       });
     }
 
+    // --- RENDER 4: SCADENZE CON PIN DEDICATO ---
     function renderScadenze() {
       const pill = document.getElementById('statoScadenzePill');
       if (infoPinScadenzeAttuale) {
@@ -2416,11 +2731,11 @@
       btnToggleFormScadenza.style.display = 'inline-block';
       pill.textContent = 'SBLOCCATE';
 
-      const q = inputRicerca.value.trim().toLowerCase();
+      const q = inputRicerca.value.trim();
       const filtered = (state.scadenze || []).filter((s) => {
         const catOk = categoriaScadenzaAttiva === 'Tutte' || s.categoria === categoriaScadenzaAttiva;
-        const qOk = !q || `${s.titolo} ${s.categoria} ${s.dettaglio || ''}`.toLowerCase().includes(q);
-        return catOk && qOk;
+        const testo = `${s.titolo || ''} ${s.categoria || ''} ${s.dettaglio || ''} ${s.data || ''}`;
+        return catOk && matchesSmartQuery(testo, q);
       });
 
       conteggioScadenze.textContent = String(filtered.length);
@@ -2470,9 +2785,9 @@
         if (sc.allegato) {
           const btnDoc = document.createElement('button');
           btnDoc.type = 'button';
-          btnDoc.textContent = 'Apri Doc';
+          btnDoc.textContent = 'Anteprima';
           btnDoc.addEventListener('click', () => {
-            apriAnteprimaSuRichiesta({ tipo: sc.allegato.tipo, src: sc.allegato.dataUrl, nome: sc.allegato.nome }, `Scadenza "${sc.titolo}" — ${sc.allegato.nome}`);
+            apriAnteprimaSottoAppunti({ tipo: sc.allegato.tipo, src: sc.allegato.dataUrl, nome: sc.allegato.nome }, `Scadenza "${sc.titolo}" — ${sc.allegato.nome}`);
           });
           actions.appendChild(btnDoc);
         } else {
@@ -2506,6 +2821,7 @@
       });
     }
 
+    // --- RENDER 5: CASSAFORTE PASSWORD ---
     function renderVault() {
       const pill = document.getElementById('statoVaultPill');
       if (infoPinAttuale) {
@@ -2524,7 +2840,10 @@
       pill.textContent = 'SBLOCCATA';
       listaPassword.innerHTML = '';
 
-      state.password.forEach((p) => {
+      const q = inputRicerca.value.trim();
+      const items = (state.password || []).filter((p) => matchesSmartQuery(`${p.servizio || ''} ${p.utente || ''}`, q));
+
+      items.forEach((p) => {
         const row = document.createElement('div');
         row.className = 'row-item';
         const info = document.createElement('div');
@@ -2548,11 +2867,13 @@
 
     function renderVocali() {
       listaVocali.innerHTML = '';
-      if (!state.vocali || state.vocali.length === 0) {
+      const q = inputRicerca.value.trim();
+      const items = (state.vocali || []).filter((v) => matchesSmartQuery(`${v.titolo || ''} ${v.data || ''}`, q));
+      if (items.length === 0) {
         listaVocali.innerHTML = '<div class="empty-hint">Nessuna registrazione salvata.</div>';
         return;
       }
-      state.vocali.forEach((v) => {
+      items.forEach((v) => {
         const row = document.createElement('div');
         row.className = 'row-item';
         const wrap = document.createElement('div');
@@ -2583,28 +2904,31 @@
       });
     }
 
+    // --- RENDER 6: CARTELLE PDF & FOTO (ALLEGATI MOSTRATI SOLO SE CERCATE) ---
     function renderDocumenti() {
       const allDocs = state.documenti || [];
-      const pdfCount = allDocs.filter((d) => d.tipo === 'pdf').length;
-      const fotoCount = allDocs.filter((d) => d.tipo !== 'pdf').length;
+      const qDoc = inputRicercaDocumenti.value.trim();
+      const qGlobal = inputRicerca.value.trim();
+      const hasSearchActive = Boolean(qDoc || qGlobal);
+
+      const visibleBaseDocs = allDocs.filter((d) => !d.nascostoFincheCercato || hasSearchActive);
+      const pdfCount = visibleBaseDocs.filter((d) => d.tipo === 'pdf').length;
+      const fotoCount = visibleBaseDocs.filter((d) => d.tipo !== 'pdf').length;
 
       document.getElementById('countFolderPdf').textContent = String(pdfCount);
       document.getElementById('countFolderFoto').textContent = String(fotoCount);
-      document.getElementById('countFolderTutti').textContent = String(allDocs.length);
-
-      const qDoc = inputRicercaDocumenti.value.trim().toLowerCase();
-      const qGlobal = inputRicerca.value.trim().toLowerCase();
+      document.getElementById('countFolderTutti').textContent = String(visibleBaseDocs.length);
 
       const filtrati = allDocs.filter((doc) => {
+        if (doc.nascostoFincheCercato && !hasSearchActive) {
+          return false;
+        }
         const folderOk =
           cartellaDocumentiAttiva === 'tutti' ||
           (cartellaDocumentiAttiva === 'pdf' && doc.tipo === 'pdf') ||
           (cartellaDocumentiAttiva === 'foto' && doc.tipo !== 'pdf');
-        const nomeLower = (doc.nome || '').toLowerCase();
-        const origineLower = (doc.origine || '').toLowerCase();
-        const searchDocOk = !qDoc || nomeLower.includes(qDoc) || origineLower.includes(qDoc);
-        const searchGlobalOk = !qGlobal || nomeLower.includes(qGlobal) || origineLower.includes(qGlobal);
-        return folderOk && searchDocOk && searchGlobalOk;
+        const testo = `${doc.nome || ''} ${doc.origine || ''} ${doc.dataCaricamento || ''}`;
+        return folderOk && matchesSmartQuery(testo, qDoc) && matchesSmartQuery(testo, qGlobal);
       });
 
       document.getElementById('conteggioDocumenti').textContent = String(filtrati.length);
@@ -2617,7 +2941,7 @@
             : cartellaDocumentiAttiva === 'foto'
               ? 'Cartella Foto'
               : 'archivio';
-        listaDocumenti.innerHTML = `<div class="empty-hint">Nessun file trovato in ${nomeCartella}.</div>`;
+        listaDocumenti.innerHTML = `<div class="empty-hint">Nessun file in ${nomeCartella}. Gli allegati di appuntamenti/scadenze appaiono qui quando li cerchi.</div>`;
         return;
       }
 
@@ -2672,7 +2996,7 @@
         btnAnt.type = 'button';
         btnAnt.textContent = 'Anteprima';
         btnAnt.addEventListener('click', () => {
-          apriAnteprimaSuRichiesta(el, `${doc.tipo === 'pdf' ? 'PDF' : 'Foto'}: ${doc.nome}`);
+          apriAnteprimaSottoAppunti(el, `${doc.tipo === 'pdf' ? 'PDF' : 'Foto'}: ${doc.nome}`);
         });
 
         const btnStampa = document.createElement('button');
@@ -2680,7 +3004,7 @@
         btnStampa.className = 'btn-primary';
         btnStampa.textContent = 'Stampa';
         btnStampa.addEventListener('click', () => {
-          apriAnteprimaSuRichiesta(el, `${doc.tipo === 'pdf' ? 'PDF' : 'Foto'}: ${doc.nome}`);
+          apriAnteprimaSottoAppunti(el, `${doc.tipo === 'pdf' ? 'PDF' : 'Foto'}: ${doc.nome}`);
           stampaElemento(el);
         });
 
@@ -2722,9 +3046,21 @@
       aggiornaDataOraHeader();
     }
 
+    // --- EVENTI IMPEGNI & FOGLIO GIORNALIERO ---
     document.getElementById('btnToggleFormImpegno').addEventListener('click', () => {
+      espandiSezione('bodyImpegni');
       formImpegnoCompleto.classList.toggle('hidden');
       document.getElementById('impegnoData').value = inputDataRiferimento.value || oggiISO();
+    });
+
+    document.getElementById('btnApriFoglioGiornaliero').addEventListener('click', apriFoglioGiornaliero);
+    inputDataFoglioGiornaliero.addEventListener('change', () => renderFoglioGiornaliero(inputDataFoglioGiornaliero.value));
+    document.getElementById('btnStampaFoglioGiornaliero').addEventListener('click', () => {
+      renderFoglioGiornaliero(inputDataFoglioGiornaliero.value || oggiISO());
+      window.print();
+    });
+    document.getElementById('btnChiudiFoglioGiornaliero').addEventListener('click', () => {
+      modalFoglioGiornaliero.classList.remove('open');
     });
 
     formImpegnoCompleto.addEventListener('submit', async (e) => {
@@ -2743,7 +3079,8 @@
           nome: allegato.nome,
           tipo: allegato.tipo,
           dataUrl: allegato.dataUrl,
-          origine: `Appuntamento: ${titolo}`
+          origine: `Appuntamento: ${titolo}`,
+          nascostoFincheCercato: true
         });
       }
 
@@ -2762,7 +3099,7 @@
       formImpegnoCompleto.reset();
       formImpegnoCompleto.classList.add('hidden');
       renderImpegni();
-      mostraToast(allegato ? `Salvato e cifrato in cartella ${allegato.tipo.toUpperCase()}` : 'Appuntamento salvato e cifrato.');
+      mostraToast(allegato ? `Salvato e cifrato. Anteprima disponibile sotto Appunti.` : 'Appuntamento salvato e cifrato.');
     });
 
     inputAllegaVoceItem.addEventListener('change', async (e) => {
@@ -2777,11 +3114,12 @@
         nome: allegato.nome,
         tipo: allegato.tipo,
         dataUrl: allegato.dataUrl,
-        origine: `Appuntamento: ${target.titolo}`
+        origine: `Appuntamento: ${target.titolo}`,
+        nascostoFincheCercato: true
       });
       await saveState(true, true);
       renderImpegni();
-      mostraToast(`Salvato in cartella ${allegato.tipo.toUpperCase()}: ${allegato.nome}`);
+      mostraToast(`Allegato salvato: ${allegato.nome}`);
     });
 
     document.querySelectorAll('[data-time-filter]').forEach((btn) => {
@@ -2795,7 +3133,9 @@
 
     inputDataRiferimento.addEventListener('change', renderImpegni);
 
+    // --- EVENTI DIARIO ---
     document.getElementById('btnToggleFormEvento').addEventListener('click', () => {
+      espandiSezione('bodyDiario');
       formEventoAccaduto.classList.toggle('hidden');
       document.getElementById('eventoData').value = oggiISO();
       document.getElementById('eventoOra').value = oraAttualeHHMM();
@@ -2827,7 +3167,9 @@
       mostraToast('Evento accaduto registrato e sincronizzato su Cloud.');
     });
 
+    // --- EVENTI APPUNTI ---
     document.getElementById('btnToggleFormAppunto').addEventListener('click', () => {
+      espandiSezione('bodyAppunti');
       formAppunto.classList.toggle('hidden');
       document.getElementById('appuntoTitolo').focus();
     });
@@ -2855,6 +3197,7 @@
       mostraToast('Appunto salvato e sincronizzato su Cloud.');
     });
 
+    // --- EVENTI SCADENZE ---
     document.getElementById('btnSbloccaScadenze').addEventListener('click', () => {
       const pin = inputPinScadenze.value.trim();
       if (pin === (state.pinScadenze || '1234')) {
@@ -2913,6 +3256,7 @@
         mostraToast('Sblocca prima le Scadenze con il PIN.');
         return;
       }
+      espandiSezione('bodyScadenze');
       formScadenza.classList.toggle('hidden');
       document.getElementById('scadenzaData').value = oggiISO();
     });
@@ -2945,11 +3289,12 @@
         nome: allegato.nome,
         tipo: allegato.tipo,
         dataUrl: allegato.dataUrl,
-        origine: `Scadenza: ${sc.titolo}`
+        origine: `Scadenza: ${sc.titolo}`,
+        nascostoFincheCercato: true
       });
       await saveState(true, true);
       renderScadenze();
-      mostraToast(`Salvato in cartella ${allegato.tipo.toUpperCase()}: ${allegato.nome}`);
+      mostraToast(`Allegato salvato: ${allegato.nome}`);
     });
 
     document.querySelectorAll('[data-cat-scadenza]').forEach((btn) => {
@@ -2966,6 +3311,8 @@
       renderEventiAccaduti();
       renderAppunti();
       renderScadenze();
+      renderVault();
+      renderVocali();
       renderDocumenti();
     });
 
@@ -3024,6 +3371,7 @@
     });
 
     btnRegistrazioneVocale.addEventListener('click', async () => {
+      espandiSezione('bodyVocali');
       if (mediaRecorder && mediaRecorder.state === 'recording') {
         mediaRecorder.stop();
         return;
@@ -3066,6 +3414,7 @@
     });
 
     document.getElementById('btnCaricaFotoPdf').addEventListener('click', () => {
+      espandiSezione('bodyCartelleFile');
       inputFileStampa.value = '';
       inputFileStampa.click();
     });
@@ -3081,7 +3430,8 @@
           nome: dati.nome,
           tipo: dati.tipo,
           dataUrl: dati.dataUrl,
-          origine: 'Caricamento diretto'
+          origine: 'Caricamento diretto',
+          nascostoFincheCercato: false
         });
       }
       mostraToast(
@@ -3110,7 +3460,8 @@
         nome: derivedName,
         tipo,
         dataUrl: url,
-        origine: 'Link URL'
+        origine: 'Link URL',
+        nascostoFincheCercato: false
       });
       inputUrlFile.value = '';
       inputNomeUrlFile.value = '';
@@ -3137,12 +3488,14 @@
     document.getElementById('btnChiudiAnteprima').addEventListener('click', chiudiAnteprima);
 
     document.getElementById('tileNuovoImpegno').addEventListener('click', () => {
+      espandiSezione('bodyImpegni');
       formImpegnoCompleto.classList.remove('hidden');
       document.getElementById('impegnoData').value = inputDataRiferimento.value || oggiISO();
       document.getElementById('impegnoTitolo').focus();
     });
 
     document.getElementById('tileNuovoEventoAccaduto').addEventListener('click', () => {
+      espandiSezione('bodyDiario');
       formEventoAccaduto.classList.remove('hidden');
       document.getElementById('eventoData').value = oggiISO();
       document.getElementById('eventoOra').value = oraAttualeHHMM();
@@ -3150,11 +3503,13 @@
     });
 
     document.getElementById('tileNuovoAppunto').addEventListener('click', () => {
+      espandiSezione('bodyAppunti');
       formAppunto.classList.remove('hidden');
       document.getElementById('appuntoTitolo').focus();
     });
 
     document.getElementById('tileNuovaScadenza').addEventListener('click', () => {
+      espandiSezione('bodyScadenze');
       if (!scadenzeSbloccateFlag) {
         inputPinScadenze.focus();
         mostraToast('Inserisci il PIN Scadenze per sbloccare e aggiungere una scadenza.');
@@ -3167,10 +3522,12 @@
 
     document.getElementById('tileVocale').addEventListener('click', () => btnRegistrazioneVocale.click());
     document.getElementById('tileFotoPdf').addEventListener('click', () => {
+      espandiSezione('bodyCartelleFile');
       inputFileStampa.value = '';
       inputFileStampa.click();
     });
     document.getElementById('tilePassword').addEventListener('click', () => {
+      espandiSezione('bodyVault');
       inputPinVault.focus();
       mostraToast('Sblocca la Cassaforte con PIN o Volto / Biometria per aggiungere una password.');
     });
@@ -3278,7 +3635,10 @@
     });
 
     async function initApp() {
-      inputDataRiferimento.value = oggiISO();
+      const today = oggiISO();
+      inputDataRiferimento.value = today;
+      inputDataFoglioGiornaliero.value = today;
+
       const idbCfg = await readIDBBackup('cloudCfg');
       if (idbCfg && typeof idbCfg === 'object') {
         cloudCfg = { ...defaultCloudCfg, ...cloudCfg, ...idbCfg };
