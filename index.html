@@ -20,6 +20,10 @@
       --warn: #f59e0b;
       --danger: #ef4444;
       --gold-title: #f5c451;
+      --gold-btn-bg: linear-gradient(135deg, #fbbf24 0%, #eab308 55%, #ca8a04 100%);
+      --gold-btn-hover: linear-gradient(135deg, #fcd34d 0%, #facc15 55%, #eab308 100%);
+      --gold-btn-border: #fde047;
+      --gold-btn-text: #1c1917;
       --radius: 12px;
       --shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
     }
@@ -155,65 +159,41 @@
       pointer-events: none;
     }
 
-    button {
+    /* Tutti i pulsanti standard sono dorati, esclusi i comandi rapidi (.quick-tile) */
+    button:not(.quick-tile) {
       font-family: inherit;
       cursor: pointer;
       border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--bg-card-alt);
-      color: var(--text-main);
+      border: 1px solid var(--gold-btn-border);
+      background: var(--gold-btn-bg);
+      color: var(--gold-btn-text);
       padding: 7px 11px;
       font-size: 0.82rem;
-      font-weight: 600;
-      transition: background 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(234, 179, 8, 0.22);
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.08s ease, filter 0.15s ease;
     }
 
-    button:hover:not(:disabled) {
-      background: #2e405b;
-      border-color: rgba(148, 163, 184, 0.4);
+    button:not(.quick-tile):hover:not(:disabled) {
+      background: var(--gold-btn-hover);
+      border-color: #fef08a;
+      filter: brightness(1.03);
     }
 
-    button:active:not(:disabled) {
+    button:not(.quick-tile):active:not(:disabled) {
       transform: scale(0.98);
     }
 
-    button:disabled {
+    button:not(.quick-tile):disabled {
       opacity: 0.45;
       cursor: not-allowed;
     }
 
-    .btn-primary {
-      background: #0284c7;
-      border-color: #38bdf8;
-      color: #ffffff;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      background: #0369a1;
-    }
-
-    .btn-warm {
-      background: rgba(245, 196, 81, 0.16);
-      border-color: rgba(245, 196, 81, 0.45);
-      color: #fde68a;
-    }
-
-    .btn-teal {
-      background: rgba(20, 184, 166, 0.16);
-      border-color: rgba(45, 212, 191, 0.4);
-      color: #99f6e4;
-    }
-
-    .btn-bio {
-      background: rgba(168, 85, 247, 0.18);
-      border-color: rgba(192, 132, 252, 0.45);
-      color: #e9d5ff;
-    }
-
-    .btn-danger {
-      background: rgba(239, 68, 68, 0.15);
-      border-color: rgba(248, 113, 113, 0.35);
-      color: #fca5a5;
+    button.recording {
+      background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%) !important;
+      border-color: #fca5a5 !important;
+      color: #ffffff !important;
+      box-shadow: 0 2px 10px rgba(239, 68, 68, 0.45) !important;
     }
 
     .icon-btn {
@@ -224,13 +204,7 @@
     .collapse-btn {
       padding: 4px 8px;
       font-size: 0.75rem;
-      font-weight: 600;
-      background: rgba(15, 23, 42, 0.45);
-      color: var(--text-muted);
-    }
-
-    .collapse-btn:hover:not(:disabled) {
-      color: var(--text-main);
+      font-weight: 700;
     }
 
     .section-body.collapsed {
@@ -306,6 +280,7 @@
       font-weight: 700;
     }
 
+    /* Comandi Rapidi: rettangoli pieni con colori distinti */
     .quick-grid {
       display: grid;
       grid-template-columns: repeat(8, minmax(0, 1fr));
@@ -325,32 +300,76 @@
     }
 
     .quick-tile {
+      font-family: inherit;
+      cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 4px;
-      padding: 10px 8px;
+      padding: 11px 8px;
       border-radius: 10px;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #ffffff;
       font-size: 0.76rem;
-      font-weight: 600;
+      font-weight: 700;
       text-align: center;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      transition: filter 0.15s ease, transform 0.08s ease;
+    }
+
+    .quick-tile:hover {
+      filter: brightness(1.09);
+    }
+
+    .quick-tile:active {
+      transform: scale(0.98);
     }
 
     .quick-tile span:first-child {
       font-size: 1.15rem;
     }
 
-    .tile-impegno { border-color: rgba(56, 189, 248, 0.35); }
-    .tile-diario { border-color: rgba(129, 140, 248, 0.4); }
-    .tile-appunti { border-color: rgba(251, 191, 36, 0.35); }
-    .tile-scadenza { border-color: rgba(245, 158, 11, 0.35); }
-    .tile-vocale { border-color: rgba(239, 68, 68, 0.35); }
-    .tile-video { border-color: rgba(244, 114, 182, 0.4); }
-    .tile-file { border-color: rgba(45, 212, 191, 0.35); }
-    .tile-password { border-color: rgba(168, 85, 247, 0.38); }
+    .tile-impegno {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      border-color: #38bdf8;
+    }
+
+    .tile-diario {
+      background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+      border-color: #818cf8;
+    }
+
+    .tile-appunti {
+      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+      border-color: #fbbf24;
+    }
+
+    .tile-scadenza {
+      background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+      border-color: #fb923c;
+    }
+
+    .tile-vocale {
+      background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+      border-color: #f87171;
+    }
+
+    .tile-video {
+      background: linear-gradient(135deg, #db2777 0%, #9d174d 100%);
+      border-color: #f472b6;
+    }
+
+    .tile-file {
+      background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+      border-color: #2dd4bf;
+    }
+
+    .tile-password {
+      background: linear-gradient(135deg, #7e22ce 0%, #581c87 100%);
+      border-color: #c084fc;
+    }
 
     .main-bento {
       display: grid;
@@ -390,9 +409,8 @@
     .filter-buttons button.active-time-filter,
     .filter-buttons button.active-filter,
     .filter-buttons button.active-folder {
-      background: var(--accent-soft);
-      border-color: var(--accent);
-      color: var(--accent);
+      outline: 2px solid #ffffff;
+      filter: brightness(1.12);
     }
 
     .ref-date-wrap {
@@ -712,15 +730,6 @@
       justify-content: center;
       gap: 8px;
       padding: 9px 12px;
-      background: rgba(239, 68, 68, 0.14);
-      border-color: rgba(248, 113, 113, 0.4);
-      color: #fecaca;
-    }
-
-    .voice-btn.recording {
-      background: rgba(239, 68, 68, 0.32);
-      border-color: #ef4444;
-      color: #ffffff;
     }
 
     .video-rec-btn {
@@ -730,15 +739,6 @@
       justify-content: center;
       gap: 8px;
       padding: 9px 12px;
-      background: rgba(244, 114, 182, 0.15);
-      border-color: rgba(244, 114, 182, 0.45);
-      color: #fbcfe8;
-    }
-
-    .video-rec-btn.recording {
-      background: rgba(239, 68, 68, 0.34);
-      border-color: #ef4444;
-      color: #ffffff;
     }
 
     .video-recorder-panel {
@@ -1106,11 +1106,11 @@
           </button>
           <button type="button" class="quick-tile tile-vocale" id="tileVocale">
             <span>🎙️</span>
-            <span>Vocale</span>
+            <span>REC Vocale</span>
           </button>
           <button type="button" class="quick-tile tile-video" id="tileVideo">
             <span>🎥</span>
-            <span>Video</span>
+            <span>REC Video</span>
           </button>
           <button type="button" class="quick-tile tile-file" id="tileFotoPdf">
             <span>📁</span>
@@ -1440,7 +1440,7 @@
           <div id="bodyVocali" class="section-body">
             <button type="button" class="voice-btn" id="btnRegistrazioneVocale">
               <span>●</span>
-              <span id="testoBtnVocale">Avvia Registrazione Vocale</span>
+              <span id="testoBtnVocale">REC</span>
             </button>
             <div class="list-stack" id="listaVocali" style="margin-top: 10px;">
               <div class="empty-hint">Nessuna registrazione salvata.</div>
@@ -1473,13 +1473,13 @@
 
             <button type="button" class="video-rec-btn" id="btnRegistrazioneVideo">
               <span>●</span>
-              <span id="testoBtnVideo">Registra Video Ora (Webcam / Camera)</span>
+              <span id="testoBtnVideo">REC</span>
             </button>
 
             <div class="video-recorder-panel" id="videoRecorderPanel">
               <video id="videoLiveStream" class="video-live-preview" autoplay playsinline muted></video>
               <div class="item-actions" style="justify-content: space-between;">
-                <span class="item-meta" id="statoRegistrazioneVideo" style="margin-top: 0;">In registrazione...</span>
+                <span class="item-meta" id="statoRegistrazioneVideo" style="margin-top: 0;">REC in corso...</span>
                 <div class="item-actions">
                   <button type="button" class="btn-danger" id="btnStopSalvaVideo">⏹ Ferma e Salva Video</button>
                   <button type="button" id="btnAnnullaVideo">Annulla</button>
@@ -3411,7 +3411,7 @@
       videoLiveStream.srcObject = null;
       videoRecorderPanel.classList.remove('open');
       btnRegistrazioneVideo.classList.remove('recording');
-      testoBtnVideo.textContent = 'Registra Video Ora (Webcam / Camera)';
+      testoBtnVideo.textContent = 'REC';
     }
 
     async function avviaRegistrazioneVideoLive() {
@@ -3455,7 +3455,7 @@
           videoLiveStream.srcObject = null;
           videoRecorderPanel.classList.remove('open');
           btnRegistrazioneVideo.classList.remove('recording');
-          testoBtnVideo.textContent = 'Registra Video Ora (Webcam / Camera)';
+          testoBtnVideo.textContent = 'REC';
 
           if (blob.size > 0) {
             const reader = new FileReader();
@@ -3483,9 +3483,9 @@
 
         videoMediaRecorder.start();
         videoRecorderPanel.classList.add('open');
-        statoRegistrazioneVideo.textContent = facing === 'environment' ? 'Registrazione con camera cellulare...' : 'Registrazione con webcam...';
+        statoRegistrazioneVideo.textContent = facing === 'environment' ? 'REC in corso con camera cellulare...' : 'REC in corso con webcam...';
         btnRegistrazioneVideo.classList.add('recording');
-        testoBtnVideo.textContent = 'Registrazione Video in corso...';
+        testoBtnVideo.textContent = 'REC in corso...';
       } catch (err) {
         mostraToast('Fotocamera non accessibile dal browser: apro la fotocamera/archivio del dispositivo.');
         inputCaricaVideoFile.value = '';
@@ -3548,7 +3548,6 @@
         wrap.appendChild(title);
         wrap.appendChild(hint);
 
-        // Il player viene creato e mostrato SOLO quando il video è stato aperto con un click
         if (isOpen && v.videoUrl) {
           const box = document.createElement('div');
           box.className = 'video-opened-box';
@@ -4267,11 +4266,11 @@
           };
           reader.readAsDataURL(blob);
           btnRegistrazioneVocale.classList.remove('recording');
-          testoBtnVocale.textContent = 'Avvia Registrazione Vocale';
+          testoBtnVocale.textContent = 'REC';
         };
         mediaRecorder.start();
         btnRegistrazioneVocale.classList.add('recording');
-        testoBtnVocale.textContent = 'Ferma Registrazione';
+        testoBtnVocale.textContent = 'REC in corso (ferma)';
       } catch (err) {
         mostraToast('Permesso microfono negato o non disponibile.');
       }
