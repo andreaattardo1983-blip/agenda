@@ -4,34 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OmniDesk E2EE — Agenda, Diario, Appunti &amp; Vault Cifrato</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%2323324d'/%3E%3Cstop offset='100%25' stop-color='%23121926'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M32 10L48 16.5V30.5C48 41.8 41.1 50.8 32 54.5C22.9 50.8 16 41.8 16 30.5V16.5L32 10Z' fill='none' stroke='%23e2b866' stroke-width='3'/%3E%3Crect x='23' y='21' width='8' height='8' rx='2' fill='%2334d399'/%3E%3Crect x='33' y='21' width='8' height='8' rx='2' fill='%23e2b866'/%3E%3Crect x='23' y='31' width='8' height='9' rx='2' fill='%23f59e0b'/%3E%3Ccircle cx='37' cy='35.5' r='3.5' fill='%2334d399'/%3E%3C/svg%3E">
   <style>
-    /* Palette scura ed elegante senza tonalità blu sui pulsanti */
     :root {
       --bg-main: #111722;
       --bg-card: #192232;
-      --bg-card-soft: #262933;
+      --bg-card-soft: #222e43;
       --bg-input: #131b29;
-      --border: #2a374e;
-      --border-soft: #222e42;
-      --btn-border: #4a4542;
+      --border: #2c3a52;
+      --border-soft: #232f44;
       --text-main: #eef3fb;
       --text-muted: #9fb0ca;
-      --accent: #d99b38;
-      --accent-hover: #e6ab49;
-      --accent-soft: rgba(217, 155, 56, 0.22);
-      --gold: #e2b866;
-      --gold-soft: rgba(226, 184, 102, 0.22);
-      --ok: #34d399;
-      --ok-soft: rgba(52, 211, 153, 0.22);
-      --copper: #d97742;
-      --copper-soft: rgba(217, 119, 66, 0.22);
-      --plum: #b5658b;
-      --plum-soft: rgba(181, 101, 139, 0.22);
+      --accent: #d97706;
+      --accent-hover: #b45309;
+      --accent-soft: rgba(217, 119, 6, 0.16);
+      --gold-title: #f3c669;
+      --gold-soft: rgba(243, 198, 105, 0.15);
+      --ok: #10b981;
+      --ok-soft: rgba(16, 185, 129, 0.16);
       --warn: #e2b866;
-      --warn-soft: rgba(226, 184, 102, 0.22);
-      --danger: #f87171;
-      --danger-soft: rgba(248, 113, 113, 0.22);
-      --pink: #fb7185;
+      --warn-soft: rgba(226, 184, 102, 0.16);
+      --danger: #e11d48;
+      --danger-soft: rgba(225, 29, 72, 0.16);
+      --pink: #be185d;
+      --cyan: #0d9488;
       --radius: 14px;
       --radius-sm: 9px;
     }
@@ -44,7 +40,7 @@
     body {
       margin: 0;
       padding: 18px;
-      background: radial-gradient(circle at top left, #182234 0%, var(--bg-main) 65%);
+      background: radial-gradient(circle at top left, #1b2538 0%, var(--bg-main) 65%);
       color: var(--text-main);
       min-height: 100vh;
     }
@@ -67,7 +63,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      box-shadow: 0 8px 24px rgba(5, 9, 16, 0.36);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
     }
 
     .brand-group {
@@ -78,21 +74,16 @@
     }
 
     .brand-logo {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #d99b38, #c2593f);
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 3px;
-      padding: 8px;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #24344f, #121927);
+      border: 1px solid rgba(243, 198, 105, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 2px 10px rgba(217, 155, 56, 0.25);
-    }
-
-    .brand-logo span {
-      background: #111722;
-      border-radius: 2px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
     }
 
     .brand-title-row {
@@ -103,10 +94,10 @@
     }
 
     .brand-title {
-      font-size: 1.05rem;
-      font-weight: 700;
+      font-size: 1.08rem;
+      font-weight: 800;
       letter-spacing: -0.01em;
-      color: var(--text-main);
+      color: var(--gold-title);
     }
 
     .cloud-pill {
@@ -117,22 +108,22 @@
       border-radius: 999px;
       font-size: 0.75rem;
       font-weight: 600;
-      border: 1px solid rgba(52, 211, 153, 0.45);
+      border: 1px solid rgba(16, 185, 129, 0.38);
       background: var(--ok-soft);
-      color: var(--ok);
+      color: #6ee7b7;
       cursor: pointer;
     }
 
     .cloud-pill.offline {
-      border-color: rgba(226, 184, 102, 0.48);
-      background: var(--gold-soft);
-      color: var(--gold);
+      border-color: rgba(226, 184, 102, 0.42);
+      background: var(--warn-soft);
+      color: #fcd34d;
     }
 
     .cloud-pill.locked {
-      border-color: rgba(248, 113, 113, 0.5);
+      border-color: rgba(225, 29, 72, 0.45);
       background: var(--danger-soft);
-      color: var(--danger);
+      color: #fda4af;
     }
 
     .cloud-dot {
@@ -166,32 +157,29 @@
     }
 
     .search-input::placeholder {
-      color: #6e809b;
+      color: #6e809c;
     }
 
     .search-input:focus {
       outline: none;
-      border-color: var(--gold);
-      box-shadow: 0 0 0 2px rgba(226, 184, 102, 0.2);
+      border-color: var(--gold-title);
     }
 
-    /* Pulsanti standard: tonalità calda pietra/bronzo ben visibile, mai blu */
     button {
       border-radius: var(--radius-sm);
       padding: 8px 13px;
       font-size: 0.84rem;
       font-weight: 600;
       cursor: pointer;
-      color: #f6efe4;
-      background: #2b2725;
-      border: 1px solid #595049;
-      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+      color: var(--text-main);
+      background: #283449;
+      border: 1px solid #3c4d6b;
+      transition: background 0.15s ease, border-color 0.15s ease;
     }
 
     button:hover:not(:disabled) {
-      background: #3a3430;
-      border-color: #7a6d62;
-      color: #ffffff;
+      background: #33425d;
+      border-color: #556b91;
     }
 
     button:disabled {
@@ -199,97 +187,85 @@
       cursor: not-allowed;
     }
 
-    /* Pulsante primario: ambra/oro pieno ad alto contrasto */
     button.btn-primary {
-      background: #d99b38;
-      border-color: #f0b95a;
-      color: #14110c;
+      background: #c26d10;
+      border-color: #e29532;
+      color: #fff;
     }
 
     button.btn-primary:hover:not(:disabled) {
-      background: #e8ad4a;
-      border-color: #ffd078;
-      color: #0d0b07;
+      background: #d97c14;
     }
 
-    /* Tonalità rame/terracotta visibile (sostituisce il vecchio blu) */
-    button.btn-blue {
-      background: #543326;
-      border-color: #b86b47;
-      color: #ffd8c2;
-    }
-
-    button.btn-blue:hover:not(:disabled) {
-      background: #6b4130;
-      border-color: #d4825b;
-      color: #ffffff;
-    }
-
-    /* Tonalità smeraldo/salvia visibile per biometria */
-    button.btn-bio {
-      background: #1f4537;
-      border-color: #34d399;
-      color: #a7f3d0;
-    }
-
-    button.btn-bio:hover:not(:disabled) {
-      background: #275947;
-      border-color: #6ee7b7;
-      color: #ffffff;
-    }
-
-    /* Tonalità oro caldo visibile per avvisi/reset */
-    button.btn-warn {
-      background: #4f3b19;
-      border-color: #e2b866;
+    button.btn-warm {
+      background: rgba(243, 198, 105, 0.18);
+      border-color: rgba(243, 198, 105, 0.45);
       color: #fde68a;
     }
 
-    button.btn-warn:hover:not(:disabled) {
-      background: #664c20;
-      border-color: #f5d08a;
-      color: #ffffff;
+    button.btn-warm:hover:not(:disabled) {
+      background: rgba(243, 198, 105, 0.28);
     }
 
-    /* Tonalità corallo/bordeaux visibile per eliminazione */
+    button.btn-bio {
+      background: rgba(16, 185, 129, 0.18);
+      border-color: rgba(16, 185, 129, 0.45);
+      color: #6ee7b7;
+    }
+
+    button.btn-bio:hover:not(:disabled) {
+      background: rgba(16, 185, 129, 0.28);
+    }
+
+    button.btn-teal {
+      background: rgba(13, 148, 136, 0.2);
+      border-color: rgba(45, 212, 191, 0.42);
+      color: #5eead4;
+    }
+
+    button.btn-teal:hover:not(:disabled) {
+      background: rgba(13, 148, 136, 0.3);
+    }
+
+    button.btn-warn {
+      background: rgba(180, 120, 25, 0.22);
+      border-color: rgba(226, 184, 102, 0.45);
+      color: #fcd34d;
+    }
+
+    button.btn-warn:hover:not(:disabled) {
+      background: rgba(180, 120, 25, 0.34);
+    }
+
     button.btn-danger {
-      background: #4d2228;
-      border-color: #f87171;
-      color: #fecaca;
+      background: rgba(190, 18, 60, 0.22);
+      border-color: rgba(251, 113, 133, 0.42);
+      color: #fda4af;
     }
 
     button.btn-danger:hover:not(:disabled) {
-      background: #632a32;
-      border-color: #fca5a5;
-      color: #ffffff;
+      background: rgba(190, 18, 60, 0.35);
     }
 
     button.active-filter {
-      background: #e2b866;
-      border-color: #fde68a;
-      color: #14110c;
+      background: #c26d10;
+      border-color: #f3c669;
+      color: #fff;
     }
 
     button.active-time-filter,
     button.active-folder {
-      background: #d99b38;
-      border-color: #fde68a;
-      color: #14110c;
+      background: #0f766e;
+      border-color: #5eead4;
+      color: #fff;
     }
 
-    /* Pulsante tendina Nascondi/Mostra: tonalità prugna/bronzo ben distinta */
     .collapse-btn {
       padding: 5px 10px;
       font-size: 0.76rem;
-      color: #f3d5e3;
-      background: #382532;
-      border-color: #8c5576;
-    }
-
-    .collapse-btn:hover:not(:disabled) {
-      background: #493041;
-      border-color: #b5658b;
-      color: #ffffff;
+      color: #fde68a;
+      background: rgba(243, 198, 105, 0.12);
+      border-color: rgba(243, 198, 105, 0.32);
     }
 
     .section-body.collapsed {
@@ -304,9 +280,8 @@
     }
 
     .security-banner {
-      background: linear-gradient(90deg, rgba(217, 155, 56, 0.14), rgba(52, 211, 153, 0.12));
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--ok);
+      background: linear-gradient(90deg, rgba(16, 185, 129, 0.14), rgba(217, 119, 6, 0.14));
+      border: 1px solid rgba(16, 185, 129, 0.35);
       border-radius: var(--radius);
       padding: 10px 14px;
       display: flex;
@@ -315,14 +290,12 @@
       justify-content: space-between;
       gap: 10px;
       font-size: 0.82rem;
-      color: var(--text-main);
     }
 
     .security-banner.warn {
-      background: var(--gold-soft);
-      border-color: rgba(226, 184, 102, 0.4);
-      border-left: 3px solid var(--gold);
-      color: #f3d79c;
+      background: rgba(217, 119, 6, 0.15);
+      border-color: rgba(226, 184, 102, 0.42);
+      color: #fde68a;
     }
 
     .bento-card {
@@ -330,7 +303,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 16px;
-      box-shadow: 0 6px 20px rgba(5, 9, 16, 0.28);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
     }
 
     .card-header {
@@ -340,10 +313,6 @@
       gap: 10px;
       margin-bottom: 12px;
       flex-wrap: wrap;
-    }
-
-    .card-header.no-margin {
-      margin-bottom: 0;
     }
 
     .card-title-group {
@@ -357,28 +326,29 @@
       margin: 0;
       font-size: 0.98rem;
       font-weight: 700;
-      color: var(--gold);
+      color: var(--gold-title);
     }
 
     .card-subtitle-badge {
       font-size: 0.72rem;
       color: var(--text-muted);
       background: var(--bg-input);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       padding: 2px 8px;
       border-radius: 6px;
     }
 
     .count-badge {
-      background: var(--gold-soft);
-      color: var(--gold);
-      border: 1px solid rgba(226, 184, 102, 0.42);
+      background: var(--danger-soft);
+      color: #fda4af;
+      border: 1px solid rgba(251, 113, 133, 0.35);
       border-radius: 999px;
       padding: 2px 8px;
       font-size: 0.74rem;
       font-weight: 700;
     }
 
+    /* AZIONI RAPIDE: RIEMPIMENTO PIENO UNIFORME DEL RETTANGOLO */
     .quick-grid {
       display: grid;
       grid-template-columns: repeat(7, minmax(105px, 1fr));
@@ -393,7 +363,6 @@
       .quick-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
-    /* Rettangoli Azioni Rapide: riempimento solido per l'intera tessera */
     .quick-tile {
       border-radius: 11px;
       padding: 15px 10px;
@@ -401,29 +370,27 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 7px;
       text-align: center;
-      font-size: 0.8rem;
+      font-size: 0.81rem;
       font-weight: 700;
       color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 4px 12px rgba(4, 7, 13, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       cursor: pointer;
     }
 
     .quick-tile:hover:not(:disabled) {
-      filter: brightness(1.12);
-      border-color: rgba(255, 255, 255, 0.55);
-      color: #ffffff;
+      filter: brightness(1.09);
+      border-color: rgba(255, 255, 255, 0.38);
     }
 
-    .tile-impegno { background-color: #2f4b82; }
-    .tile-diario { background-color: #24687a; }
-    .tile-appunti { background-color: #7a6623; }
-    .tile-scadenza { background-color: #8f4e24; }
-    .tile-vocale { background-color: #8f294d; }
-    .tile-file { background-color: #364f78; }
-    .tile-password { background-color: #236954; }
+    .tile-impegno { background-color: #b45309; }
+    .tile-diario { background-color: #0f766e; }
+    .tile-appunti { background-color: #856404; }
+    .tile-scadenza { background-color: #9a3412; }
+    .tile-vocale { background-color: #9d174d; }
+    .tile-file { background-color: #5b21b6; }
+    .tile-password { background-color: #047857; }
 
     .main-bento {
       display: grid;
@@ -452,7 +419,7 @@
       margin-bottom: 12px;
       padding: 8px;
       background: var(--bg-input);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       border-radius: var(--radius-sm);
     }
 
@@ -491,7 +458,7 @@
       margin-bottom: 12px;
       padding: 12px;
       background: var(--bg-input);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       border-radius: var(--radius-sm);
     }
 
@@ -541,14 +508,7 @@
 
     .inline-form input::placeholder,
     .inline-form textarea::placeholder {
-      color: #6e809b;
-    }
-
-    .inline-form input:focus,
-    .inline-form select:focus,
-    .inline-form textarea:focus {
-      outline: none;
-      border-color: var(--gold);
+      color: #6e809c;
     }
 
     .inline-form textarea {
@@ -565,7 +525,7 @@
 
     .row-item {
       background: var(--bg-input);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       border-radius: 11px;
       padding: 12px;
       display: flex;
@@ -575,8 +535,8 @@
     }
 
     .row-item.selected {
-      border-color: var(--gold);
-      background: rgba(226, 184, 102, 0.08);
+      border-color: var(--gold-title);
+      background: rgba(243, 198, 105, 0.08);
     }
 
     .row-item.done .item-title {
@@ -595,7 +555,7 @@
     .item-title {
       font-size: 0.92rem;
       font-weight: 700;
-      color: var(--text-main);
+      color: var(--gold-title);
       word-break: break-word;
     }
 
@@ -608,7 +568,7 @@
 
     .item-body-text {
       font-size: 0.83rem;
-      color: #d7e1f0;
+      color: #dbe4f2;
       margin-top: 6px;
       white-space: pre-wrap;
       line-height: 1.45;
@@ -627,45 +587,45 @@
       font-weight: 600;
       padding: 2px 8px;
       border-radius: 999px;
-      background: #2b2725;
-      border: 1px solid #595049;
-      color: #e6dccf;
+      background: var(--bg-card-soft);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
     }
 
     .pill-tag.ok {
       background: var(--ok-soft);
-      border-color: rgba(52, 211, 153, 0.4);
-      color: var(--ok);
+      border-color: rgba(16, 185, 129, 0.38);
+      color: #6ee7b7;
     }
 
     .pill-tag.cyan {
-      background: var(--copper-soft);
-      border-color: rgba(217, 119, 66, 0.42);
-      color: #f6b08a;
+      background: rgba(13, 148, 136, 0.18);
+      border-color: rgba(45, 212, 191, 0.38);
+      color: #5eead4;
     }
 
     .pill-tag.amber {
-      background: var(--gold-soft);
-      border-color: rgba(226, 184, 102, 0.42);
-      color: var(--gold);
+      background: var(--warn-soft);
+      border-color: rgba(226, 184, 102, 0.4);
+      color: #fcd34d;
     }
 
     .pill-tag.file {
-      background: var(--plum-soft);
-      border-color: rgba(181, 101, 139, 0.45);
-      color: #f3c4da;
+      background: rgba(124, 58, 237, 0.18);
+      border-color: rgba(167, 139, 250, 0.38);
+      color: #c4b5fd;
     }
 
     .pill-tag.pdf {
       background: var(--danger-soft);
-      border-color: rgba(248, 113, 113, 0.42);
-      color: var(--danger);
+      border-color: rgba(251, 113, 133, 0.38);
+      color: #fda4af;
     }
 
     .pill-tag.foto {
       background: var(--ok-soft);
-      border-color: rgba(52, 211, 153, 0.4);
-      color: var(--ok);
+      border-color: rgba(16, 185, 129, 0.38);
+      color: #6ee7b7;
     }
 
     .item-actions {
@@ -703,7 +663,7 @@
 
     .vault-box {
       background: var(--bg-input);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       border-radius: 11px;
       padding: 16px;
       text-align: center;
@@ -715,6 +675,7 @@
       gap: 8px;
       margin-top: 12px;
       flex-wrap: wrap;
+      align-items: center;
     }
 
     .pin-row input {
@@ -736,11 +697,62 @@
       flex-wrap: wrap;
     }
 
+    .webcam-box {
+      margin-top: 12px;
+      padding: 12px;
+      background: #0d131d;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .webcam-box.open {
+      display: flex;
+    }
+
+    .webcam-stage {
+      position: relative;
+      width: 220px;
+      height: 170px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #06090f;
+    }
+
+    .webcam-stage video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+
+    .face-oval-guide {
+      position: absolute;
+      inset: 14px 48px;
+      border: 2px dashed rgba(110, 231, 183, 0.85);
+      border-radius: 50%;
+      pointer-events: none;
+      box-shadow: 0 0 0 999px rgba(6, 9, 15, 0.35);
+    }
+
+    .face-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid rgba(110, 231, 183, 0.5);
+      display: none;
+    }
+
     .pin-change-box {
       margin-top: 12px;
       padding: 10px;
       background: var(--bg-input);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       border-radius: 9px;
       display: flex;
       flex-direction: column;
@@ -767,9 +779,9 @@
 
     .voice-btn {
       width: 100%;
-      background: #9e2a52;
-      border-color: #fb7185;
-      color: #ffffff;
+      background: var(--pink);
+      border-color: #f472b6;
+      color: #fff;
       padding: 11px 14px;
       font-size: 0.88rem;
       display: flex;
@@ -779,20 +791,17 @@
     }
 
     .voice-btn:hover:not(:disabled) {
-      background: #b83260;
-      border-color: #fda4af;
-      color: #ffffff;
+      background: #be123c;
     }
 
     .voice-btn.recording {
-      background: #dc2626;
-      border-color: #fca5a5;
+      background: #e11d48;
       animation: pulse 1.2s infinite;
     }
 
     @keyframes pulse {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
+      50% { opacity: 0.65; }
     }
 
     .preview-panel {
@@ -845,12 +854,12 @@
       bottom: 18px;
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-left: 4px solid var(--gold);
+      border-left: 4px solid var(--gold-title);
       color: var(--text-main);
       padding: 11px 14px;
       border-radius: 10px;
       font-size: 0.82rem;
-      box-shadow: 0 12px 32px rgba(4, 7, 14, 0.55);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
       z-index: 60;
       max-width: 340px;
       display: none;
@@ -859,7 +868,7 @@
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(6, 10, 17, 0.72);
+      background: rgba(5, 8, 14, 0.72);
       display: none;
       align-items: center;
       justify-content: center;
@@ -878,11 +887,10 @@
       padding: 20px;
       max-height: 90vh;
       overflow-y: auto;
-      box-shadow: 0 18px 44px rgba(4, 7, 14, 0.65);
     }
 
     .agenda-sheet {
-      background: #ffffff;
+      background: #f8fafc;
       color: #0f172a;
       border-radius: 10px;
       padding: 20px;
@@ -905,7 +913,7 @@
       margin: 0;
       font-size: 1.15rem;
       font-weight: 800;
-      color: #78350f;
+      color: #92400e;
     }
 
     .agenda-sheet-date {
@@ -929,7 +937,7 @@
       border: 1px solid #e2e8f0;
       border-left: 4px solid #d97706;
       border-radius: 8px;
-      background: #fffbeb;
+      background: #ffffff;
     }
 
     .agenda-slot-time {
@@ -960,8 +968,8 @@
     }
 
     .agenda-slot-status.done {
-      background: #dcfce7;
-      color: #166534;
+      background: #d1fae5;
+      color: #065f46;
     }
 
     .modal-grid {
@@ -1011,14 +1019,14 @@
       background: var(--bg-input);
       border-radius: 999px;
       overflow: hidden;
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       margin: 8px 0 12px;
     }
 
     .progress-fill {
       height: 100%;
       width: 12%;
-      background: linear-gradient(90deg, var(--accent), var(--ok));
+      background: linear-gradient(90deg, #d97706, #10b981);
       transition: width 0.25s ease;
     }
 
@@ -1028,8 +1036,7 @@
       body { background: #fff; padding: 0; color: #000; }
       .app-shell,
       .status-toast,
-      #modalCloud,
-      #modalConfirm { display: none !important; }
+      #modalCloud { display: none !important; }
       .modal-backdrop.open {
         position: static;
         background: #fff;
@@ -1053,11 +1060,16 @@
 </head>
 <body>
   <div class="app-shell">
-    <!-- Barra superiore con stato Cloud/E2EE, ricerca globale, impostazioni e backup JSON -->
     <header class="topbar">
       <div class="brand-group">
         <div class="brand-logo" aria-hidden="true">
-          <span></span><span></span><span></span><span></span>
+          <svg width="28" height="28" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M32 9L49 15.8V30.5C49 42.2 41.8 51.5 32 55.4C22.2 51.5 15 42.2 15 30.5V15.8L32 9Z" stroke="#f3c669" stroke-width="3.2" fill="rgba(243,198,105,0.08)"/>
+            <rect x="22.5" y="20.5" width="8" height="8" rx="2" fill="#34d399"/>
+            <rect x="33.5" y="20.5" width="8" height="8" rx="2" fill="#f3c669"/>
+            <rect x="22.5" y="31.5" width="8" height="9" rx="2" fill="#f59e0b"/>
+            <circle cx="37.5" cy="36" r="3.6" fill="#34d399"/>
+          </svg>
         </div>
         <div>
           <div class="brand-title-row">
@@ -1073,8 +1085,8 @@
 
       <div class="topbar-actions">
         <input type="search" id="inputRicerca" class="search-input" placeholder="Ricerca intelligente per parola...">
-        <button type="button" id="btnApriCloud">Sicurezza &amp; Cloud</button>
-        <button type="button" class="icon-btn" id="btnExportJson" title="Esporta Backup JSON">⬇</button>
+        <button type="button" class="btn-warm" id="btnApriCloud">Sicurezza &amp; Cloud</button>
+        <button type="button" class="icon-btn btn-teal" id="btnExportJson" title="Esporta Backup JSON">⬇</button>
         <button type="button" class="icon-btn" id="btnImportJson" title="Importa Backup JSON">⬆</button>
         <input type="file" id="inputFileJson" accept="application/json,.json" class="hidden-file">
         <input type="file" id="inputAllegaVoceItem" accept="image/*,application/pdf" class="hidden-file">
@@ -1084,22 +1096,20 @@
       </div>
     </header>
 
-    <!-- Banner di stato cifratura AES-256 -->
     <div class="security-banner warn" id="securityBanner">
       <span id="securityBannerText">⚠️ Imposta una <strong>Chiave Segreta AES-256</strong> (almeno 10 caratteri) in <strong>Sicurezza &amp; Cloud</strong> per cifrare tutti i dati prima dell'invio.</span>
       <button type="button" class="btn-primary" id="btnBannerConfig" style="padding: 5px 10px; font-size: 0.78rem;">Configura Chiave AES-256</button>
     </div>
 
-    <!-- Azioni rapide con rettangoli colorati pieni -->
     <section class="bento-card">
       <div class="card-header" style="margin-bottom: 10px;">
         <div class="card-title-group">
-          <span class="cloud-dot" style="background: var(--gold);"></span>
+          <span class="cloud-dot" style="background: var(--gold-title);"></span>
           <h2 class="card-title">Azioni Rapide (Sezioni Separate)</h2>
           <span class="count-badge" id="conteggioNotificheRapide">0</span>
         </div>
         <div class="item-actions">
-          <button type="button" id="btnSincronizzaOra" style="padding: 5px 10px; font-size: 0.78rem;">↻ Sync Cifrato Ora</button>
+          <button type="button" class="btn-teal" id="btnSincronizzaOra" style="padding: 5px 10px; font-size: 0.78rem;">↻ Sync Cifrato Ora</button>
           <button type="button" class="collapse-btn" data-collapse-target="bodyAzioniRapide" aria-expanded="true">▾ Nascondi</button>
         </div>
       </div>
@@ -1140,7 +1150,7 @@
 
     <div class="main-bento">
       <div class="left-stack">
-        <!-- 1. IMPEGNI E APPUNTAMENTI FUTURI + FOGLIO GIORNALIERO -->
+        <!-- 1. IMPEGNI E APPUNTAMENTI FUTURI (COSE DA RICORDARE) + FOGLIO GIORNALIERO -->
         <section class="bento-card" id="sezioneImpegni">
           <div class="card-header">
             <div class="card-title-group">
@@ -1149,7 +1159,7 @@
               <span class="count-badge" id="conteggioImpegni">0</span>
             </div>
             <div class="item-actions">
-              <button type="button" class="btn-blue" id="btnApriFoglioGiornaliero">📄 Foglio Giornaliero</button>
+              <button type="button" class="btn-warm" id="btnApriFoglioGiornaliero">📄 Foglio Giornaliero</button>
               <button type="button" class="btn-primary" id="btnToggleFormImpegno">+ Appuntamento</button>
               <button type="button" class="collapse-btn" data-collapse-target="bodyImpegni" aria-expanded="true">▾ Nascondi</button>
             </div>
@@ -1284,6 +1294,7 @@
               <div class="item-meta">Inserisci il <strong>PIN Scadenze</strong> per visualizzare o modificare carte, polizze e documenti</div>
               <div class="pin-row">
                 <input type="password" id="inputPinScadenze" placeholder="PIN Scadenze" maxlength="20">
+                <button type="button" id="btnToggleVisPinScadenze" title="Mostra/Nascondi PIN">👁</button>
                 <button type="button" class="btn-primary" id="btnSbloccaScadenze">Sblocca Scadenze</button>
               </div>
               <div class="bio-row">
@@ -1335,7 +1346,7 @@
       </div>
 
       <div class="right-stack">
-        <!-- CASSAFORTE PASSWORD (PIN + VOLTO) -->
+        <!-- CASSAFORTE PASSWORD (PIN + VOLTO WEBCAM + BIOMETRIA) -->
         <section class="bento-card">
           <div class="card-header">
             <div class="card-title-group">
@@ -1351,14 +1362,28 @@
           <div id="bodyVault" class="section-body">
             <div id="vaultBloccata" class="vault-box">
               <div style="font-size: 1.5rem; margin-bottom: 6px;">🛡️</div>
-              <div class="item-meta">Sblocca con il PIN oppure con il riconoscimento del volto / biometria</div>
+              <div class="item-meta">Sblocca con il PIN oppure con il tuo volto tramite webcam</div>
               <div class="pin-row">
                 <input type="password" id="inputPinVault" placeholder="PIN Cassaforte" maxlength="20">
                 <button type="button" class="btn-primary" id="btnSbloccaVault">Sblocca con PIN</button>
               </div>
               <div class="bio-row">
-                <button type="button" class="btn-bio" id="btnSbloccaBio">🪪 Sblocca con Volto / Biometria</button>
+                <button type="button" class="btn-bio" id="btnSbloccaWebcam">📷 Sblocca con Volto (Webcam)</button>
+                <button type="button" class="btn-teal" id="btnSbloccaBio" style="display: none;">🪪 Biometria Sistema</button>
               </div>
+
+              <div class="webcam-box" id="webcamVerifyBox">
+                <div class="webcam-stage">
+                  <video id="videoVerifyFace" autoplay playsinline muted></video>
+                  <div class="face-oval-guide"></div>
+                </div>
+                <div class="item-meta" style="margin-top: 0;">Inquadra il volto nell'ovale e premi Verifica</div>
+                <div class="item-actions">
+                  <button type="button" class="btn-bio" id="btnConfermaVerifyFace">✓ Verifica Volto e Sblocca</button>
+                  <button type="button" id="btnChiudiVerifyWebcam">Annulla</button>
+                </div>
+              </div>
+
               <div class="item-meta" id="statoBioBloccata" style="margin-top: 8px; font-size: 0.73rem;"></div>
             </div>
 
@@ -1384,14 +1409,40 @@
                 </div>
 
                 <div class="pin-change-line" style="border-top: 1px solid var(--border-soft); padding-top: 8px;">
-                  <div>
-                    <div class="item-title" style="font-size: 0.82rem;">Sblocco con Volto / Biometria</div>
-                    <div class="item-meta" id="infoStatoBio">Non ancora configurato su questo dispositivo</div>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <img id="faceRegisteredThumb" class="face-thumb" alt="Anteprima volto salvato">
+                    <div>
+                      <div class="item-title" style="font-size: 0.82rem;">Riconoscimento Volto (Webcam)</div>
+                      <div class="item-meta" id="infoStatoWebcam">Nessun volto registrato dalla webcam</div>
+                    </div>
                   </div>
                   <div class="item-actions">
-                    <button type="button" class="btn-bio" id="btnRegistraBio">🪪 Attiva Volto / Biometria</button>
-                    <button type="button" class="btn-danger" id="btnRimuoviBio" style="display: none;">Rimuovi</button>
+                    <button type="button" class="btn-bio" id="btnApriEnrollWebcam">📷 Registra Volto con Webcam</button>
+                    <button type="button" class="btn-danger" id="btnRimuoviWebcamFace" style="display: none;">Rimuovi Volto</button>
                     <button type="button" id="btnBloccaVault">Blocca</button>
+                  </div>
+                </div>
+
+                <div class="webcam-box" id="webcamEnrollBox">
+                  <div class="webcam-stage">
+                    <video id="videoEnrollFace" autoplay playsinline muted></video>
+                    <div class="face-oval-guide"></div>
+                  </div>
+                  <div class="item-meta" style="margin-top: 0;">Posiziona il viso al centro in buona luce e scatta</div>
+                  <div class="item-actions">
+                    <button type="button" class="btn-bio" id="btnScattaSalvaVolto">📸 Scatta e Salva Volto</button>
+                    <button type="button" id="btnChiudiEnrollWebcam">Chiudi Camera</button>
+                  </div>
+                </div>
+
+                <div class="pin-change-line" style="border-top: 1px solid var(--border-soft); padding-top: 8px;">
+                  <div>
+                    <div class="item-title" style="font-size: 0.82rem;">Biometria Dispositivo (WebAuthn)</div>
+                    <div class="item-meta" id="infoStatoBio">Opzionale su HTTPS / localhost</div>
+                  </div>
+                  <div class="item-actions">
+                    <button type="button" class="btn-teal" id="btnRegistraBio">🪪 Attiva Biometria</button>
+                    <button type="button" class="btn-danger" id="btnRimuoviBio" style="display: none;">Rimuovi</button>
                   </div>
                 </div>
               </div>
@@ -1451,7 +1502,7 @@
             <div class="inline-form" style="margin-bottom: 10px; padding: 8px;">
               <input type="text" id="inputNomeUrlFile" placeholder="Nome file opzionale (es. contratto_2026.pdf)">
               <input type="url" id="inputUrlFile" placeholder="URL foto o PDF...">
-              <button type="button" id="btnApriUrlFile">Salva URL</button>
+              <button type="button" class="btn-teal" id="btnApriUrlFile">Salva URL</button>
             </div>
 
             <div class="list-stack" id="listaDocumenti"></div>
@@ -1461,7 +1512,7 @@
     </div>
   </div>
 
-  <!-- Riquadro anteprima contestuale spostato dinamicamente nella sezione di origine -->
+  <!-- RIQUADRO ANTEPRIMA CONTESTUALE (VIENE SPOSTATO NELLA SEZIONE DI ORIGINE) -->
   <div class="preview-panel hidden" id="previewPanel">
     <div class="card-header" style="margin-bottom: 6px;">
       <div>
@@ -1482,7 +1533,7 @@
     </div>
   </div>
 
-  <!-- Modale Foglio Giornaliero stampabile -->
+  <!-- MODALE FOGLIO GIORNALIERO STAMPABILE -->
   <div class="modal-backdrop" id="modalFoglioGiornaliero" role="dialog" aria-modal="true" aria-labelledby="titoloFoglioGiornaliero">
     <div class="modal-card">
       <div class="card-header no-print">
@@ -1498,7 +1549,7 @@
     </div>
   </div>
 
-  <!-- Modale Sicurezza & Cloud E2EE -->
+  <!-- MODALE SICUREZZA & CLOUD E2EE -->
   <div class="modal-backdrop" id="modalCloud" role="dialog" aria-modal="true" aria-labelledby="titoloModalCloud">
     <div class="modal-card">
       <div class="card-header">
@@ -1554,25 +1605,10 @@
       <div class="item-actions" style="justify-content: space-between;">
         <div class="item-actions">
           <button type="button" class="btn-primary" id="btnSalvaConfigCloud">Salva e Cifra Cloud</button>
-          <button type="button" id="btnForzaPullCloud">Scarica e Decifra</button>
-          <button type="button" id="btnForzaPushCloud">Cifra e Invia</button>
+          <button type="button" class="btn-teal" id="btnForzaPullCloud">Scarica e Decifra</button>
+          <button type="button" class="btn-warm" id="btnForzaPushCloud">Cifra e Invia</button>
         </div>
         <button type="button" class="btn-danger" id="btnResetDati">Reset Dati</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modale di conferma interno (evita alert/confirm nativi) -->
-  <div class="modal-backdrop" id="modalConfirm" role="dialog" aria-modal="true" aria-labelledby="titoloModalConfirm">
-    <div class="modal-card" style="max-width: 440px;">
-      <div class="card-header">
-        <h2 class="card-title" id="titoloModalConfirm">Conferma Operazione</h2>
-        <button type="button" id="btnChiudiModalConfirm">✕</button>
-      </div>
-      <div class="item-body-text" id="testoModalConfirm" style="margin-top: 0; margin-bottom: 16px;"></div>
-      <div class="item-actions" style="justify-content: flex-end;">
-        <button type="button" id="btnAnnullaConfirm">Annulla</button>
-        <button type="button" class="btn-warn" id="btnConfermaAzione">Conferma</button>
       </div>
     </div>
   </div>
@@ -1583,6 +1619,9 @@
     const STORAGE_KEY = 'omnidesk_stato_v1';
     const CLOUD_CFG_KEY = 'omnidesk_cloud_cfg_v2';
     const BIO_CRED_KEY = 'omnidesk_vault_bio_cred_v1';
+    const PIN_SCADENZE_LOCAL_KEY = 'omnidesk_pin_scadenze_v1';
+    const PIN_VAULT_LOCAL_KEY = 'omnidesk_pin_vault_v1';
+    const WEBCAM_FACE_KEY = 'omnidesk_webcam_face_v1';
     const IDB_NAME = 'OmniDeskPersistDB';
     const IDB_STORE = 'snapshots';
 
@@ -1638,8 +1677,11 @@
       vocali: [],
       documenti: [],
       deletedIds: {},
-      pinVault: '1234',
-      pinScadenze: '1234',
+      pinVault: localStorage.getItem(PIN_VAULT_LOCAL_KEY) || '1234',
+      pinScadenze: localStorage.getItem(PIN_SCADENZE_LOCAL_KEY) || '1234',
+      pinVaultUpdatedAt: 0,
+      pinScadenzeUpdatedAt: 0,
+      webcamFaceProfile: null,
       updatedAt: Date.now()
     };
 
@@ -1667,7 +1709,7 @@
     let pollTimer = null;
     let isSyncingFromRemote = false;
     let localLockUntil = 0;
-    let pendingConfirmCallback = null;
+    let activeWebcamStream = null;
 
     const inputRicerca = document.getElementById('inputRicerca');
     const inputRicercaDocumenti = document.getElementById('inputRicercaDocumenti');
@@ -1714,6 +1756,21 @@
     const formPassword = document.getElementById('formPassword');
     const listaPassword = document.getElementById('listaPassword');
 
+    const btnSbloccaWebcam = document.getElementById('btnSbloccaWebcam');
+    const webcamVerifyBox = document.getElementById('webcamVerifyBox');
+    const videoVerifyFace = document.getElementById('videoVerifyFace');
+    const btnConfermaVerifyFace = document.getElementById('btnConfermaVerifyFace');
+    const btnChiudiVerifyWebcam = document.getElementById('btnChiudiVerifyWebcam');
+
+    const webcamEnrollBox = document.getElementById('webcamEnrollBox');
+    const videoEnrollFace = document.getElementById('videoEnrollFace');
+    const btnApriEnrollWebcam = document.getElementById('btnApriEnrollWebcam');
+    const btnScattaSalvaVolto = document.getElementById('btnScattaSalvaVolto');
+    const btnChiudiEnrollWebcam = document.getElementById('btnChiudiEnrollWebcam');
+    const btnRimuoviWebcamFace = document.getElementById('btnRimuoviWebcamFace');
+    const infoStatoWebcam = document.getElementById('infoStatoWebcam');
+    const faceRegisteredThumb = document.getElementById('faceRegisteredThumb');
+
     const btnRegistrazioneVocale = document.getElementById('btnRegistrazioneVocale');
     const testoBtnVocale = document.getElementById('testoBtnVocale');
     const listaVocali = document.getElementById('listaVocali');
@@ -1739,28 +1796,6 @@
     const modalFoglioGiornaliero = document.getElementById('modalFoglioGiornaliero');
     const inputDataFoglioGiornaliero = document.getElementById('inputDataFoglioGiornaliero');
     const foglioGiornalieroContenuto = document.getElementById('foglioGiornalieroContenuto');
-
-    const modalConfirm = document.getElementById('modalConfirm');
-    const testoModalConfirm = document.getElementById('testoModalConfirm');
-
-    function chiediConferma(messaggio, onConfirm) {
-      testoModalConfirm.textContent = messaggio;
-      pendingConfirmCallback = onConfirm;
-      modalConfirm.classList.add('open');
-    }
-
-    function chiudiConferma() {
-      pendingConfirmCallback = null;
-      modalConfirm.classList.remove('open');
-    }
-
-    document.getElementById('btnChiudiModalConfirm').addEventListener('click', chiudiConferma);
-    document.getElementById('btnAnnullaConfirm').addEventListener('click', chiudiConferma);
-    document.getElementById('btnConfermaAzione').addEventListener('click', async () => {
-      const cb = pendingConfirmCallback;
-      chiudiConferma();
-      if (typeof cb === 'function') await cb();
-    });
 
     function oggiISO() {
       const d = new Date();
@@ -1869,12 +1904,146 @@
       return bytes.buffer;
     }
 
-    function getSavedBioCredId() {
-      try {
-        return localStorage.getItem(BIO_CRED_KEY) || '';
-      } catch (e) {
-        return '';
+    // --- RICONOSCIMENTO VOLTO TRAMITE WEBCAM ---
+    function getSavedWebcamFaceProfile() {
+      if (state.webcamFaceProfile && Array.isArray(state.webcamFaceProfile.signature)) {
+        return state.webcamFaceProfile;
       }
+      try {
+        const raw = localStorage.getItem(WEBCAM_FACE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.signature)) {
+          state.webcamFaceProfile = parsed;
+          return parsed;
+        }
+      } catch (e) {}
+      return null;
+    }
+
+    function fermaWebcamStream() {
+      if (activeWebcamStream) {
+        activeWebcamStream.getTracks().forEach((t) => t.stop());
+        activeWebcamStream = null;
+      }
+      videoVerifyFace.srcObject = null;
+      videoEnrollFace.srcObject = null;
+      webcamVerifyBox.classList.remove('open');
+      webcamEnrollBox.classList.remove('open');
+    }
+
+    async function avviaWebcamSuVideo(videoEl, boxEl) {
+      fermaWebcamStream();
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        mostraToast('Accesso alla webcam non supportato su questo browser.');
+        return false;
+      }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 480 }, height: { ideal: 360 } },
+          audio: false
+        });
+        activeWebcamStream = stream;
+        videoEl.srcObject = stream;
+        await videoEl.play();
+        boxEl.classList.add('open');
+        return true;
+      } catch (err) {
+        mostraToast('Permesso fotocamera negato o webcam non trovata.');
+        return false;
+      }
+    }
+
+    function estraiFirmaFaccialeDaVideo(videoEl) {
+      const w = 32;
+      const h = 32;
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+
+      const vw = videoEl.videoWidth || 320;
+      const vh = videoEl.videoHeight || 240;
+      const cropSize = Math.min(vw, vh) * 0.62;
+      const sx = (vw - cropSize) / 2;
+      const sy = (vh - cropSize) / 2;
+
+      ctx.save();
+      ctx.translate(w, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(videoEl, sx, sy, cropSize, cropSize, 0, 0, w, h);
+      ctx.restore();
+
+      const imgData = ctx.getImageData(0, 0, w, h).data;
+      const lum = new Array(w * h);
+      let sum = 0;
+      for (let i = 0; i < w * h; i++) {
+        const r = imgData[i * 4];
+        const g = imgData[i * 4 + 1];
+        const b = imgData[i * 4 + 2];
+        const y = 0.299 * r + 0.587 * g + 0.114 * b;
+        lum[i] = y;
+        sum += y;
+      }
+      const mean = sum / lum.length;
+      let variance = 0;
+      for (let i = 0; i < lum.length; i++) {
+        const diff = lum[i] - mean;
+        variance += diff * diff;
+      }
+      const std = Math.sqrt(variance / lum.length) || 1;
+      const normalized = lum.map((v) => Number(((v - mean) / std).toFixed(4)));
+
+      const thumbCanvas = document.createElement('canvas');
+      thumbCanvas.width = 96;
+      thumbCanvas.height = 96;
+      const tctx = thumbCanvas.getContext('2d');
+      tctx.save();
+      tctx.translate(96, 0);
+      tctx.scale(-1, 1);
+      tctx.drawImage(videoEl, sx, sy, cropSize, cropSize, 0, 0, 96, 96);
+      tctx.restore();
+      const thumbDataUrl = thumbCanvas.toDataURL('image/jpeg', 0.78);
+
+      return { signature: normalized, thumb: thumbDataUrl, std };
+    }
+
+    function calcolaSimilaritaVolto(sigA, sigB) {
+      if (!Array.isArray(sigA) || !Array.isArray(sigB) || sigA.length !== sigB.length) return 0;
+      let dot = 0;
+      let normA = 0;
+      let normB = 0;
+      for (let i = 0; i < sigA.length; i++) {
+        dot += sigA[i] * sigB[i];
+        normA += sigA[i] * sigA[i];
+        normB += sigB[i] * sigB[i];
+      }
+      if (!normA || !normB) return 0;
+      return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+    }
+
+    function aggiornaStatoWebcamUI() {
+      const profile = getSavedWebcamFaceProfile();
+      if (profile) {
+        btnSbloccaWebcam.disabled = false;
+        btnRimuoviWebcamFace.style.display = 'inline-block';
+        infoStatoWebcam.textContent = `Volto registrato il ${profile.savedAt || 'dispositivo'}`;
+        if (profile.thumb) {
+          faceRegisteredThumb.src = profile.thumb;
+          faceRegisteredThumb.style.display = 'block';
+        }
+        statoBioBloccata.textContent = 'Volto Webcam configurato: premi "Sblocca con Volto (Webcam)" oppure usa il PIN.';
+      } else {
+        btnSbloccaWebcam.disabled = true;
+        btnRimuoviWebcamFace.style.display = 'none';
+        faceRegisteredThumb.style.display = 'none';
+        infoStatoWebcam.textContent = 'Nessun volto registrato dalla webcam';
+        statoBioBloccata.textContent = 'Sblocca con PIN la prima volta per registrare il tuo volto tramite Webcam.';
+      }
+    }
+
+    function getSavedBioCredId() {
+      return localStorage.getItem(BIO_CRED_KEY) || '';
     }
 
     function isWebAuthnSupported() {
@@ -1882,39 +2051,29 @@
     }
 
     function aggiornaStatoBiometriaUI() {
+      aggiornaStatoWebcamUI();
       const credId = getSavedBioCredId();
       const supported = isWebAuthnSupported();
       const isSecureOrigin = window.isSecureContext || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
 
-      if (!supported) {
-        btnSbloccaBio.disabled = true;
+      if (!supported || !isSecureOrigin) {
+        btnSbloccaBio.style.display = 'none';
         btnRegistraBio.disabled = true;
         btnRimuoviBio.style.display = credId ? 'inline-block' : 'none';
-        statoBioBloccata.textContent = 'Biometria WebAuthn non supportata in questo browser: usa il PIN.';
-        infoStatoBio.textContent = 'Non supportato su questo browser';
-        return;
-      }
-
-      if (!isSecureOrigin) {
-        btnSbloccaBio.disabled = true;
-        btnRegistraBio.disabled = true;
-        btnRimuoviBio.style.display = credId ? 'inline-block' : 'none';
-        statoBioBloccata.textContent = 'Per usare Volto/Biometria apri la pagina su HTTPS o localhost (usa il PIN in locale).';
-        infoStatoBio.textContent = 'Richiede contesto sicuro HTTPS / localhost';
+        infoStatoBio.textContent = 'Disponibile solo su HTTPS / localhost (usa la Webcam qui sopra)';
         return;
       }
 
       btnRegistraBio.disabled = false;
       if (credId) {
+        btnSbloccaBio.style.display = 'inline-block';
         btnSbloccaBio.disabled = false;
         btnRimuoviBio.style.display = 'inline-block';
-        statoBioBloccata.textContent = 'Volto / Biometria attivo su questo dispositivo (oppure usa il PIN).';
         infoStatoBio.textContent = 'Attivo su questo dispositivo';
       } else {
-        btnSbloccaBio.disabled = true;
+        btnSbloccaBio.style.display = 'none';
         btnRimuoviBio.style.display = 'none';
-        statoBioBloccata.textContent = 'Sblocca con PIN per attivare anche Volto / Biometria.';
-        infoStatoBio.textContent = 'Non ancora attivato su questo dispositivo';
+        infoStatoBio.textContent = 'Non attivato (puoi usare il Volto Webcam)';
       }
     }
 
@@ -1953,17 +2112,17 @@
         if (cred && cred.rawId) {
           localStorage.setItem(BIO_CRED_KEY, bufToB64(cred.rawId));
           aggiornaStatoBiometriaUI();
-          mostraToast('Sblocco con Volto / Biometria attivato (PIN sempre valido).');
+          mostraToast('Biometria di sistema attivata (PIN sempre valido).');
         }
       } catch (err) {
-        mostraToast('Registrazione biometrica annullata o non disponibile sul dispositivo.');
+        mostraToast('Registrazione biometrica annullata o non disponibile.');
       }
     }
 
     async function sbloccaConBiometriaVault() {
       const credB64 = getSavedBioCredId();
       if (!credB64 || !isWebAuthnSupported()) {
-        mostraToast('Attiva prima Volto / Biometria oppure usa il PIN.');
+        mostraToast('Usa il Volto Webcam oppure il PIN.');
         return;
       }
       try {
@@ -1982,18 +2141,19 @@
         if (assertion) {
           vaultSbloccato = true;
           inputPinVault.value = '';
+          fermaWebcamStream();
           renderVault();
-          mostraToast('Cassaforte sbloccata tramite Volto / Biometria.');
+          mostraToast('Cassaforte sbloccata tramite biometria.');
         }
       } catch (err) {
-        mostraToast('Verifica biometrica non riuscita: puoi usare il PIN.');
+        mostraToast('Verifica biometrica non riuscita: usa il Volto Webcam o il PIN.');
       }
     }
 
     function rimuoviBiometriaVault() {
       localStorage.removeItem(BIO_CRED_KEY);
       aggiornaStatoBiometriaUI();
-      mostraToast('Sblocco biometrico rimosso (resta attivo il PIN).');
+      mostraToast('Biometria di sistema rimossa.');
     }
 
     async function deriveAesKey(password, saltBuf) {
@@ -2137,16 +2297,39 @@
       merged.vocali = mergeListById(base.vocali, normalizeArrayField(incoming.vocali, []), deletedMap);
       merged.documenti = mergeListById(base.documenti, normalizeArrayField(incoming.documenti, []), deletedMap);
 
-      if (typeof incoming.pinVault === 'string' && incoming.pinVault.trim()) {
+      const baseVaultTs = Number(base.pinVaultUpdatedAt || 0);
+      const incVaultTs = Number(incoming.pinVaultUpdatedAt || 0);
+      if (typeof incoming.pinVault === 'string' && incoming.pinVault.trim() && incVaultTs >= baseVaultTs) {
         merged.pinVault = incoming.pinVault.trim();
+        merged.pinVaultUpdatedAt = incVaultTs;
       } else if (typeof base.pinVault === 'string' && base.pinVault.trim()) {
         merged.pinVault = base.pinVault.trim();
+        merged.pinVaultUpdatedAt = baseVaultTs;
+      } else {
+        merged.pinVault = '1234';
       }
+      localStorage.setItem(PIN_VAULT_LOCAL_KEY, merged.pinVault);
 
-      if (typeof incoming.pinScadenze === 'string' && incoming.pinScadenze.trim()) {
+      const baseScadTs = Number(base.pinScadenzeUpdatedAt || 0);
+      const incScadTs = Number(incoming.pinScadenzeUpdatedAt || 0);
+      if (typeof incoming.pinScadenze === 'string' && incoming.pinScadenze.trim() && incScadTs >= baseScadTs) {
         merged.pinScadenze = incoming.pinScadenze.trim();
+        merged.pinScadenzeUpdatedAt = incScadTs;
       } else if (typeof base.pinScadenze === 'string' && base.pinScadenze.trim()) {
         merged.pinScadenze = base.pinScadenze.trim();
+        merged.pinScadenzeUpdatedAt = baseScadTs;
+      } else {
+        merged.pinScadenze = '1234';
+      }
+      localStorage.setItem(PIN_SCADENZE_LOCAL_KEY, merged.pinScadenze);
+
+      if (incoming.webcamFaceProfile && Array.isArray(incoming.webcamFaceProfile.signature)) {
+        merged.webcamFaceProfile = incoming.webcamFaceProfile;
+        try {
+          localStorage.setItem(WEBCAM_FACE_KEY, JSON.stringify(merged.webcamFaceProfile));
+        } catch (e) {}
+      } else if (base.webcamFaceProfile && Array.isArray(base.webcamFaceProfile.signature)) {
+        merged.webcamFaceProfile = base.webcamFaceProfile;
       }
 
       merged.updatedAt = Math.max(Number(base.updatedAt || 0), Number(incoming.updatedAt || 0), Date.now());
@@ -2163,7 +2346,8 @@
         vocali: st.vocali || [],
         documenti: st.documenti || [],
         pinVault: st.pinVault || '1234',
-        pinScadenze: st.pinScadenze || '1234'
+        pinScadenze: st.pinScadenze || '1234',
+        hasFace: Boolean(st.webcamFaceProfile)
       });
     }
 
@@ -2184,6 +2368,8 @@
     }
 
     async function persistLocalEncrypted(plainState) {
+      localStorage.setItem(PIN_SCADENZE_LOCAL_KEY, plainState.pinScadenze || '1234');
+      localStorage.setItem(PIN_VAULT_LOCAL_KEY, plainState.pinVault || '1234');
       const envelope = await encryptStateEnvelope(plainState, cloudCfg.syncPassword);
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(envelope));
@@ -2246,8 +2432,11 @@
           vocali: state.vocali || [],
           documenti: state.documenti || [],
           deletedIds: state.deletedIds || {},
-          pinVault: state.pinVault || '1234',
-          pinScadenze: state.pinScadenze || '1234',
+          pinVault: (state.pinVault || '1234').trim(),
+          pinScadenze: (state.pinScadenze || '1234').trim(),
+          pinVaultUpdatedAt: Number(state.pinVaultUpdatedAt || 0),
+          pinScadenzeUpdatedAt: Number(state.pinScadenzeUpdatedAt || 0),
+          webcamFaceProfile: state.webcamFaceProfile || null,
           updatedAt: Number(state.updatedAt || Date.now())
         };
         const envelope = prebuiltEnvelope || (await encryptStateEnvelope(plainPayload, cloudCfg.syncPassword));
@@ -2955,8 +3144,11 @@
 
     function renderScadenze() {
       const pill = document.getElementById('statoScadenzePill');
+      const currentPinScad = (state.pinScadenze || localStorage.getItem(PIN_SCADENZE_LOCAL_KEY) || '1234').trim();
+      state.pinScadenze = currentPinScad;
+
       if (infoPinScadenzeAttuale) {
-        infoPinScadenzeAttuale.textContent = `PIN Scadenze attivo (${state.pinScadenze === '1234' ? 'predefinito 1234' : 'personalizzato'})`;
+        infoPinScadenzeAttuale.textContent = `PIN Scadenze attivo: "${currentPinScad}" (${currentPinScad === '1234' ? 'predefinito' : 'personalizzato'})`;
       }
 
       if (!scadenzeSbloccateFlag) {
@@ -3068,8 +3260,11 @@
 
     function renderVault() {
       const pill = document.getElementById('statoVaultPill');
+      const currentPinVault = (state.pinVault || localStorage.getItem(PIN_VAULT_LOCAL_KEY) || '1234').trim();
+      state.pinVault = currentPinVault;
+
       if (infoPinAttuale) {
-        infoPinAttuale.textContent = 'PIN personalizzato attivo';
+        infoPinAttuale.textContent = `PIN attivo (${currentPinVault === '1234' ? 'predefinito 1234' : 'personalizzato'})`;
       }
       aggiornaStatoBiometriaUI();
 
@@ -3291,6 +3486,7 @@
       aggiornaDataOraHeader();
     }
 
+    // --- EVENTI IMPEGNI & FOGLIO GIORNALIERO ---
     document.getElementById('btnToggleFormImpegno').addEventListener('click', () => {
       espandiSezione('bodyImpegni');
       formImpegnoCompleto.classList.toggle('hidden');
@@ -3377,6 +3573,7 @@
 
     inputDataRiferimento.addEventListener('change', renderImpegni);
 
+    // --- EVENTI DIARIO ---
     document.getElementById('btnToggleFormEvento').addEventListener('click', () => {
       espandiSezione('bodyDiario');
       formEventoAccaduto.classList.toggle('hidden');
@@ -3444,6 +3641,7 @@
       mostraToast(`Allegato aggiunto all'evento: ${allegato.nome}`);
     });
 
+    // --- EVENTI APPUNTI ---
     document.getElementById('btnToggleFormAppunto').addEventListener('click', () => {
       espandiSezione('bodyAppunti');
       formAppunto.classList.toggle('hidden');
@@ -3507,15 +3705,28 @@
       mostraToast(`Allegato aggiunto all'appunto: ${allegato.nome}`);
     });
 
+    // --- EVENTI SCADENZE ---
+    document.getElementById('btnToggleVisPinScadenze').addEventListener('click', () => {
+      inputPinScadenze.type = inputPinScadenze.type === 'password' ? 'text' : 'password';
+    });
+
     document.getElementById('btnSbloccaScadenze').addEventListener('click', () => {
-      const pin = inputPinScadenze.value.trim();
-      if (pin === (state.pinScadenze || '1234')) {
+      const pinInserito = inputPinScadenze.value.trim();
+      const pinAtteso = (state.pinScadenze || localStorage.getItem(PIN_SCADENZE_LOCAL_KEY) || '1234').trim();
+      if (!pinInserito) {
+        mostraToast('Inserisci il PIN Scadenze.');
+        inputPinScadenze.focus();
+        return;
+      }
+      if (pinInserito === pinAtteso) {
         scadenzeSbloccateFlag = true;
         inputPinScadenze.value = '';
+        inputPinScadenze.type = 'password';
         renderScadenze();
         mostraToast('Sezione Scadenze sbloccata.');
       } else {
         mostraToast('PIN Scadenze errato.');
+        inputPinScadenze.select();
       }
     });
 
@@ -3529,25 +3740,35 @@
     document.getElementById('btnSalvaNuovoPinScadenze').addEventListener('click', async () => {
       const nuovoPin = inputNuovoPinScadenze.value.trim();
       if (!nuovoPin) {
-        mostraToast('Inserisci prima il nuovo PIN Scadenze.');
+        mostraToast('Scrivi prima il nuovo PIN nel campo accanto.');
+        inputNuovoPinScadenze.focus();
         return;
       }
       state.pinScadenze = nuovoPin;
+      state.pinScadenzeUpdatedAt = Date.now();
+      localStorage.setItem(PIN_SCADENZE_LOCAL_KEY, nuovoPin);
       inputNuovoPinScadenze.value = '';
       await saveState(true, true);
       renderScadenze();
-      mostraToast('PIN Scadenze modificato e cifrato.');
+      mostraToast(`PIN Scadenze aggiornato a "${nuovoPin}" e cifrato.`);
     });
 
-    function eseguiResetPinScadenze() {
-      chiediConferma('Vuoi resettare il PIN delle Scadenze al valore predefinito "1234"?', async () => {
-        state.pinScadenze = '1234';
-        inputNuovoPinScadenze.value = '';
-        inputPinScadenze.value = '';
-        await saveState(true, true);
-        renderScadenze();
-        mostraToast('PIN Scadenze resettato a "1234".');
-      });
+    inputNuovoPinScadenze.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('btnSalvaNuovoPinScadenze').click();
+      }
+    });
+
+    async function eseguiResetPinScadenze() {
+      state.pinScadenze = '1234';
+      state.pinScadenzeUpdatedAt = Date.now();
+      localStorage.setItem(PIN_SCADENZE_LOCAL_KEY, '1234');
+      inputNuovoPinScadenze.value = '';
+      inputPinScadenze.value = '';
+      await saveState(true, true);
+      renderScadenze();
+      mostraToast('PIN Scadenze reimpostato su "1234".');
     }
 
     document.getElementById('btnResetPinScadenze').addEventListener('click', eseguiResetPinScadenze);
@@ -3625,11 +3846,14 @@
       renderDocumenti();
     });
 
+    // --- EVENTI CASSAFORTE + VOLTO WEBCAM ---
     document.getElementById('btnSbloccaVault').addEventListener('click', () => {
       const pin = inputPinVault.value.trim();
-      if (pin === (state.pinVault || '1234')) {
+      const expected = (state.pinVault || localStorage.getItem(PIN_VAULT_LOCAL_KEY) || '1234').trim();
+      if (pin === expected) {
         vaultSbloccato = true;
         inputPinVault.value = '';
+        fermaWebcamStream();
         renderVault();
       } else {
         mostraToast('PIN Cassaforte errato.');
@@ -3643,6 +3867,74 @@
       }
     });
 
+    btnSbloccaWebcam.addEventListener('click', async () => {
+      const profile = getSavedWebcamFaceProfile();
+      if (!profile) {
+        mostraToast('Nessun volto registrato: sblocca prima con PIN e registra il volto dalla webcam.');
+        return;
+      }
+      await avviaWebcamSuVideo(videoVerifyFace, webcamVerifyBox);
+    });
+
+    btnConfermaVerifyFace.addEventListener('click', () => {
+      const profile = getSavedWebcamFaceProfile();
+      if (!profile || !videoVerifyFace.srcObject) return;
+      const probe = estraiFirmaFaccialeDaVideo(videoVerifyFace);
+      if (probe.std < 12) {
+        mostraToast('Immagine troppo scura o coperta: illumina meglio il viso.');
+        return;
+      }
+      const similarity = calcolaSimilaritaVolto(profile.signature, probe.signature);
+      if (similarity >= 0.72) {
+        vaultSbloccato = true;
+        inputPinVault.value = '';
+        fermaWebcamStream();
+        renderVault();
+        mostraToast(`Volto riconosciuto (${Math.round(similarity * 100)}%)! Cassaforte sbloccata.`);
+      } else {
+        mostraToast(`Volto non riconosciuto (${Math.round(similarity * 100)}%). Riprova centrando il viso nell'ovale.`);
+      }
+    });
+
+    btnChiudiVerifyWebcam.addEventListener('click', fermaWebcamStream);
+
+    btnApriEnrollWebcam.addEventListener('click', async () => {
+      await avviaWebcamSuVideo(videoEnrollFace, webcamEnrollBox);
+    });
+
+    btnScattaSalvaVolto.addEventListener('click', async () => {
+      if (!videoEnrollFace.srcObject) return;
+      const captured = estraiFirmaFaccialeDaVideo(videoEnrollFace);
+      if (captured.std < 12) {
+        mostraToast('Immagine troppo scura: avvicinati a una fonte di luce e riprova.');
+        return;
+      }
+      const profile = {
+        signature: captured.signature,
+        thumb: captured.thumb,
+        savedAt: new Date().toLocaleString('it-IT')
+      };
+      state.webcamFaceProfile = profile;
+      try {
+        localStorage.setItem(WEBCAM_FACE_KEY, JSON.stringify(profile));
+      } catch (e) {}
+      fermaWebcamStream();
+      await saveState(true, true);
+      aggiornaStatoWebcamUI();
+      mostraToast('Volto acquisito dalla webcam e salvato in modo cifrato!');
+    });
+
+    btnChiudiEnrollWebcam.addEventListener('click', fermaWebcamStream);
+
+    btnRimuoviWebcamFace.addEventListener('click', async () => {
+      state.webcamFaceProfile = null;
+      localStorage.removeItem(WEBCAM_FACE_KEY);
+      fermaWebcamStream();
+      await saveState(true, true);
+      aggiornaStatoWebcamUI();
+      mostraToast('Profilo volto webcam rimosso.');
+    });
+
     btnSbloccaBio.addEventListener('click', sbloccaConBiometriaVault);
     btnRegistraBio.addEventListener('click', registraBiometriaVault);
     btnRimuoviBio.addEventListener('click', rimuoviBiometriaVault);
@@ -3654,6 +3946,8 @@
         return;
       }
       state.pinVault = nuovoPin;
+      state.pinVaultUpdatedAt = Date.now();
+      localStorage.setItem(PIN_VAULT_LOCAL_KEY, nuovoPin);
       inputNuovoPinVault.value = '';
       await saveState(true, true);
       renderVault();
@@ -3662,6 +3956,7 @@
 
     document.getElementById('btnBloccaVault').addEventListener('click', () => {
       vaultSbloccato = false;
+      fermaWebcamStream();
       renderVault();
     });
 
@@ -3838,7 +4133,7 @@
     document.getElementById('tilePassword').addEventListener('click', () => {
       espandiSezione('bodyVault');
       inputPinVault.focus();
-      mostraToast('Sblocca la Cassaforte con PIN o Volto / Biometria per aggiungere una password.');
+      mostraToast('Sblocca la Cassaforte con PIN o Volto Webcam per aggiungere una password.');
     });
 
     document.getElementById('btnExportJson').addEventListener('click', async () => {
@@ -3935,14 +4230,16 @@
       pushToFirebase(true);
     });
 
-    document.getElementById('btnResetDati').addEventListener('click', () => {
-      chiediConferma('Vuoi reimpostare tutti i dati ai valori iniziali?', async () => {
-        state = structuredClone(defaultState);
-        chiudiAnteprima();
-        await saveState(true, true);
-        renderAll();
-        mostraToast('Dati reimpostati ai valori iniziali.');
-      });
+    document.getElementById('btnResetDati').addEventListener('click', async () => {
+      state = structuredClone(defaultState);
+      state.pinScadenze = '1234';
+      state.pinVault = '1234';
+      localStorage.setItem(PIN_SCADENZE_LOCAL_KEY, '1234');
+      localStorage.setItem(PIN_VAULT_LOCAL_KEY, '1234');
+      chiudiAnteprima();
+      await saveState(true, true);
+      renderAll();
+      mostraToast('Dati reimpostati ai valori iniziali.');
     });
 
     async function initApp() {
@@ -3975,6 +4272,16 @@
           mostraToast('Inserisci la Chiave Segreta AES-256 in Sicurezza & Cloud per decifrare i dati.');
         }
       }
+
+      const savedPinScad = localStorage.getItem(PIN_SCADENZE_LOCAL_KEY);
+      if (savedPinScad && (!state.pinScadenze || state.pinScadenze === '1234')) {
+        state.pinScadenze = savedPinScad;
+      }
+      const savedPinVault = localStorage.getItem(PIN_VAULT_LOCAL_KEY);
+      if (savedPinVault && (!state.pinVault || state.pinVault === '1234')) {
+        state.pinVault = savedPinVault;
+      }
+      getSavedWebcamFaceProfile();
 
       renderAll();
       avviaPollingCloud();
