@@ -5,28 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OmniDesk E2EE — Agenda, Diario, Appunti &amp; Vault Cifrato</title>
   <style>
+    /* Palette scura ed elegante senza tonalità blu sui pulsanti */
     :root {
-      --bg-main: #182235;
-      --bg-card: #212e46;
-      --bg-card-soft: #2a3a57;
-      --bg-input: #1a253a;
-      --border: #374b70;
-      --border-soft: #2d3e5e;
-      --text-main: #f4f7ff;
-      --text-muted: #b0c0dc;
-      --accent: #6366f1;
-      --accent-hover: #5254e6;
-      --accent-soft: rgba(99, 102, 241, 0.22);
-      --blue-title: #7bb6ff;
-      --blue-soft: rgba(123, 182, 255, 0.18);
-      --ok: #10b981;
-      --ok-soft: rgba(16, 185, 129, 0.18);
-      --warn: #f59e0b;
-      --warn-soft: rgba(245, 158, 11, 0.2);
-      --danger: #ef4444;
-      --danger-soft: rgba(239, 68, 68, 0.2);
-      --pink: #e11d48;
-      --cyan: #06b6d4;
+      --bg-main: #111722;
+      --bg-card: #192232;
+      --bg-card-soft: #262933;
+      --bg-input: #131b29;
+      --border: #2a374e;
+      --border-soft: #222e42;
+      --btn-border: #4a4542;
+      --text-main: #eef3fb;
+      --text-muted: #9fb0ca;
+      --accent: #d99b38;
+      --accent-hover: #e6ab49;
+      --accent-soft: rgba(217, 155, 56, 0.22);
+      --gold: #e2b866;
+      --gold-soft: rgba(226, 184, 102, 0.22);
+      --ok: #34d399;
+      --ok-soft: rgba(52, 211, 153, 0.22);
+      --copper: #d97742;
+      --copper-soft: rgba(217, 119, 66, 0.22);
+      --plum: #b5658b;
+      --plum-soft: rgba(181, 101, 139, 0.22);
+      --warn: #e2b866;
+      --warn-soft: rgba(226, 184, 102, 0.22);
+      --danger: #f87171;
+      --danger-soft: rgba(248, 113, 113, 0.22);
+      --pink: #fb7185;
       --radius: 14px;
       --radius-sm: 9px;
     }
@@ -39,7 +44,7 @@
     body {
       margin: 0;
       padding: 18px;
-      background: radial-gradient(circle at top left, #24334f 0%, var(--bg-main) 60%);
+      background: radial-gradient(circle at top left, #182234 0%, var(--bg-main) 65%);
       color: var(--text-main);
       min-height: 100vh;
     }
@@ -62,7 +67,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      box-shadow: 0 4px 16px rgba(9, 14, 24, 0.22);
+      box-shadow: 0 8px 24px rgba(5, 9, 16, 0.36);
     }
 
     .brand-group {
@@ -76,16 +81,17 @@
       width: 36px;
       height: 36px;
       border-radius: 10px;
-      background: linear-gradient(135deg, #4b91f7, #6366f1);
+      background: linear-gradient(135deg, #d99b38, #c2593f);
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 3px;
       padding: 8px;
       flex-shrink: 0;
+      box-shadow: 0 2px 10px rgba(217, 155, 56, 0.25);
     }
 
     .brand-logo span {
-      background: rgba(255, 255, 255, 0.94);
+      background: #111722;
       border-radius: 2px;
     }
 
@@ -100,7 +106,7 @@
       font-size: 1.05rem;
       font-weight: 700;
       letter-spacing: -0.01em;
-      color: var(--blue-title);
+      color: var(--text-main);
     }
 
     .cloud-pill {
@@ -111,22 +117,22 @@
       border-radius: 999px;
       font-size: 0.75rem;
       font-weight: 600;
-      border: 1px solid rgba(16, 185, 129, 0.42);
+      border: 1px solid rgba(52, 211, 153, 0.45);
       background: var(--ok-soft);
-      color: #6ee7b7;
+      color: var(--ok);
       cursor: pointer;
     }
 
     .cloud-pill.offline {
-      border-color: rgba(245, 158, 11, 0.45);
-      background: var(--warn-soft);
-      color: #fcd34d;
+      border-color: rgba(226, 184, 102, 0.48);
+      background: var(--gold-soft);
+      color: var(--gold);
     }
 
     .cloud-pill.locked {
-      border-color: rgba(239, 68, 68, 0.5);
+      border-color: rgba(248, 113, 113, 0.5);
       background: var(--danger-soft);
-      color: #fca5a5;
+      color: var(--danger);
     }
 
     .cloud-dot {
@@ -160,106 +166,130 @@
     }
 
     .search-input::placeholder {
-      color: #8fa3c4;
+      color: #6e809b;
     }
 
     .search-input:focus {
       outline: none;
-      border-color: var(--blue-title);
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(226, 184, 102, 0.2);
     }
 
+    /* Pulsanti standard: tonalità calda pietra/bronzo ben visibile, mai blu */
     button {
-      border: none;
       border-radius: var(--radius-sm);
       padding: 8px 13px;
       font-size: 0.84rem;
       font-weight: 600;
       cursor: pointer;
-      color: var(--text-main);
-      background: var(--bg-card-soft);
-      border: 1px solid var(--border);
-      transition: background 0.15s ease, border-color 0.15s ease;
+      color: #f6efe4;
+      background: #2b2725;
+      border: 1px solid #595049;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
     }
 
     button:hover:not(:disabled) {
-      background: #334669;
-      border-color: #4b6594;
+      background: #3a3430;
+      border-color: #7a6d62;
+      color: #ffffff;
     }
 
     button:disabled {
-      opacity: 0.5;
+      opacity: 0.45;
       cursor: not-allowed;
     }
 
+    /* Pulsante primario: ambra/oro pieno ad alto contrasto */
     button.btn-primary {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
+      background: #d99b38;
+      border-color: #f0b95a;
+      color: #14110c;
     }
 
     button.btn-primary:hover:not(:disabled) {
-      background: var(--accent-hover);
+      background: #e8ad4a;
+      border-color: #ffd078;
+      color: #0d0b07;
     }
 
+    /* Tonalità rame/terracotta visibile (sostituisce il vecchio blu) */
     button.btn-blue {
-      background: var(--blue-soft);
-      border-color: rgba(123, 182, 255, 0.5);
-      color: #b5d6ff;
+      background: #543326;
+      border-color: #b86b47;
+      color: #ffd8c2;
     }
 
     button.btn-blue:hover:not(:disabled) {
-      background: rgba(123, 182, 255, 0.28);
+      background: #6b4130;
+      border-color: #d4825b;
+      color: #ffffff;
     }
 
+    /* Tonalità smeraldo/salvia visibile per biometria */
     button.btn-bio {
-      background: rgba(16, 185, 129, 0.2);
-      border-color: rgba(16, 185, 129, 0.5);
-      color: #6ee7b7;
+      background: #1f4537;
+      border-color: #34d399;
+      color: #a7f3d0;
     }
 
     button.btn-bio:hover:not(:disabled) {
-      background: rgba(16, 185, 129, 0.32);
+      background: #275947;
+      border-color: #6ee7b7;
+      color: #ffffff;
     }
 
+    /* Tonalità oro caldo visibile per avvisi/reset */
     button.btn-warn {
-      background: var(--warn-soft);
-      border-color: rgba(245, 158, 11, 0.5);
-      color: #fde073;
+      background: #4f3b19;
+      border-color: #e2b866;
+      color: #fde68a;
     }
 
     button.btn-warn:hover:not(:disabled) {
-      background: rgba(245, 158, 11, 0.32);
+      background: #664c20;
+      border-color: #f5d08a;
+      color: #ffffff;
     }
 
+    /* Tonalità corallo/bordeaux visibile per eliminazione */
     button.btn-danger {
-      background: var(--danger-soft);
-      border-color: rgba(239, 68, 68, 0.42);
-      color: #fca5a5;
+      background: #4d2228;
+      border-color: #f87171;
+      color: #fecaca;
     }
 
     button.btn-danger:hover:not(:disabled) {
-      background: rgba(239, 68, 68, 0.32);
+      background: #632a32;
+      border-color: #fca5a5;
+      color: #ffffff;
     }
 
     button.active-filter {
-      background: var(--warn);
-      border-color: var(--warn);
-      color: #111827;
+      background: #e2b866;
+      border-color: #fde68a;
+      color: #14110c;
     }
 
     button.active-time-filter,
     button.active-folder {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
+      background: #d99b38;
+      border-color: #fde68a;
+      color: #14110c;
     }
 
+    /* Pulsante tendina Nascondi/Mostra: tonalità prugna/bronzo ben distinta */
     .collapse-btn {
       padding: 5px 10px;
       font-size: 0.76rem;
-      color: #b5d6ff;
-      background: rgba(123, 182, 255, 0.14);
-      border-color: rgba(123, 182, 255, 0.36);
+      color: #f3d5e3;
+      background: #382532;
+      border-color: #8c5576;
+    }
+
+    .collapse-btn:hover:not(:disabled) {
+      background: #493041;
+      border-color: #b5658b;
+      color: #ffffff;
     }
 
     .section-body.collapsed {
@@ -274,8 +304,9 @@
     }
 
     .security-banner {
-      background: linear-gradient(90deg, rgba(16, 185, 129, 0.18), rgba(99, 102, 241, 0.18));
-      border: 1px solid rgba(16, 185, 129, 0.42);
+      background: linear-gradient(90deg, rgba(217, 155, 56, 0.14), rgba(52, 211, 153, 0.12));
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--ok);
       border-radius: var(--radius);
       padding: 10px 14px;
       display: flex;
@@ -284,12 +315,14 @@
       justify-content: space-between;
       gap: 10px;
       font-size: 0.82rem;
+      color: var(--text-main);
     }
 
     .security-banner.warn {
-      background: var(--warn-soft);
-      border-color: rgba(245, 158, 11, 0.5);
-      color: #fef08a;
+      background: var(--gold-soft);
+      border-color: rgba(226, 184, 102, 0.4);
+      border-left: 3px solid var(--gold);
+      color: #f3d79c;
     }
 
     .bento-card {
@@ -297,7 +330,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 16px;
-      box-shadow: 0 4px 16px rgba(9, 14, 24, 0.2);
+      box-shadow: 0 6px 20px rgba(5, 9, 16, 0.28);
     }
 
     .card-header {
@@ -324,22 +357,22 @@
       margin: 0;
       font-size: 0.98rem;
       font-weight: 700;
-      color: var(--blue-title);
+      color: var(--gold);
     }
 
     .card-subtitle-badge {
       font-size: 0.72rem;
       color: var(--text-muted);
       background: var(--bg-input);
-      border: 1px solid var(--border-soft);
+      border: 1px solid var(--border);
       padding: 2px 8px;
       border-radius: 6px;
     }
 
     .count-badge {
-      background: var(--danger-soft);
-      color: #fecaca;
-      border: 1px solid rgba(239, 68, 68, 0.5);
+      background: var(--gold-soft);
+      color: var(--gold);
+      border: 1px solid rgba(226, 184, 102, 0.42);
       border-radius: 999px;
       padding: 2px 8px;
       font-size: 0.74rem;
@@ -360,9 +393,10 @@
       .quick-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
+    /* Rettangoli Azioni Rapide: riempimento solido per l'intera tessera */
     .quick-tile {
       border-radius: 11px;
-      padding: 14px 10px;
+      padding: 15px 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -370,18 +404,26 @@
       gap: 6px;
       text-align: center;
       font-size: 0.8rem;
-      font-weight: 600;
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      font-weight: 700;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 4px 12px rgba(4, 7, 13, 0.35);
       cursor: pointer;
     }
 
-    .tile-impegno { background: linear-gradient(160deg, #2b3878, #1f2857); }
-    .tile-diario { background: linear-gradient(160deg, #1d4e66, #143647); }
-    .tile-appunti { background: linear-gradient(160deg, #474420, #302e16); }
-    .tile-scadenza { background: linear-gradient(160deg, #573b22, #3b2817); }
-    .tile-vocale { background: linear-gradient(160deg, #592440, #3b172a); }
-    .tile-file { background: linear-gradient(160deg, #20426b, #162e4d); }
-    .tile-password { background: linear-gradient(160deg, #1c4d44, #133630); }
+    .quick-tile:hover:not(:disabled) {
+      filter: brightness(1.12);
+      border-color: rgba(255, 255, 255, 0.55);
+      color: #ffffff;
+    }
+
+    .tile-impegno { background-color: #2f4b82; }
+    .tile-diario { background-color: #24687a; }
+    .tile-appunti { background-color: #7a6623; }
+    .tile-scadenza { background-color: #8f4e24; }
+    .tile-vocale { background-color: #8f294d; }
+    .tile-file { background-color: #364f78; }
+    .tile-password { background-color: #236954; }
 
     .main-bento {
       display: grid;
@@ -410,7 +452,7 @@
       margin-bottom: 12px;
       padding: 8px;
       background: var(--bg-input);
-      border: 1px solid var(--border-soft);
+      border: 1px solid var(--border);
       border-radius: var(--radius-sm);
     }
 
@@ -449,7 +491,7 @@
       margin-bottom: 12px;
       padding: 12px;
       background: var(--bg-input);
-      border: 1px solid var(--border-soft);
+      border: 1px solid var(--border);
       border-radius: var(--radius-sm);
     }
 
@@ -480,6 +522,7 @@
     .attach-picker-row input[type="file"] {
       max-width: 280px;
       font-size: 0.76rem;
+      color: var(--text-main);
     }
 
     .inline-form.hidden { display: none; }
@@ -498,7 +541,14 @@
 
     .inline-form input::placeholder,
     .inline-form textarea::placeholder {
-      color: #8fa3c4;
+      color: #6e809b;
+    }
+
+    .inline-form input:focus,
+    .inline-form select:focus,
+    .inline-form textarea:focus {
+      outline: none;
+      border-color: var(--gold);
     }
 
     .inline-form textarea {
@@ -515,7 +565,7 @@
 
     .row-item {
       background: var(--bg-input);
-      border: 1px solid var(--border-soft);
+      border: 1px solid var(--border);
       border-radius: 11px;
       padding: 12px;
       display: flex;
@@ -525,13 +575,13 @@
     }
 
     .row-item.selected {
-      border-color: var(--blue-title);
-      background: rgba(123, 182, 255, 0.14);
+      border-color: var(--gold);
+      background: rgba(226, 184, 102, 0.08);
     }
 
     .row-item.done .item-title {
       text-decoration: line-through;
-      opacity: 0.65;
+      opacity: 0.6;
     }
 
     .item-main {
@@ -545,7 +595,7 @@
     .item-title {
       font-size: 0.92rem;
       font-weight: 700;
-      color: var(--blue-title);
+      color: var(--text-main);
       word-break: break-word;
     }
 
@@ -558,7 +608,7 @@
 
     .item-body-text {
       font-size: 0.83rem;
-      color: #e4ecfc;
+      color: #d7e1f0;
       margin-top: 6px;
       white-space: pre-wrap;
       line-height: 1.45;
@@ -577,45 +627,45 @@
       font-weight: 600;
       padding: 2px 8px;
       border-radius: 999px;
-      background: var(--bg-card-soft);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
+      background: #2b2725;
+      border: 1px solid #595049;
+      color: #e6dccf;
     }
 
     .pill-tag.ok {
       background: var(--ok-soft);
-      border-color: rgba(16, 185, 129, 0.42);
-      color: #6ee7b7;
+      border-color: rgba(52, 211, 153, 0.4);
+      color: var(--ok);
     }
 
     .pill-tag.cyan {
-      background: rgba(6, 182, 212, 0.18);
-      border-color: rgba(6, 182, 212, 0.42);
-      color: #67e8f9;
+      background: var(--copper-soft);
+      border-color: rgba(217, 119, 66, 0.42);
+      color: #f6b08a;
     }
 
     .pill-tag.amber {
-      background: var(--warn-soft);
-      border-color: rgba(245, 158, 11, 0.42);
-      color: #fde073;
+      background: var(--gold-soft);
+      border-color: rgba(226, 184, 102, 0.42);
+      color: var(--gold);
     }
 
     .pill-tag.file {
-      background: var(--blue-soft);
-      border-color: rgba(123, 182, 255, 0.45);
-      color: #b5d6ff;
+      background: var(--plum-soft);
+      border-color: rgba(181, 101, 139, 0.45);
+      color: #f3c4da;
     }
 
     .pill-tag.pdf {
-      background: rgba(239, 68, 68, 0.18);
-      border-color: rgba(239, 68, 68, 0.42);
-      color: #fecaca;
+      background: var(--danger-soft);
+      border-color: rgba(248, 113, 113, 0.42);
+      color: var(--danger);
     }
 
     .pill-tag.foto {
-      background: rgba(16, 185, 129, 0.18);
-      border-color: rgba(16, 185, 129, 0.42);
-      color: #6ee7b7;
+      background: var(--ok-soft);
+      border-color: rgba(52, 211, 153, 0.4);
+      color: var(--ok);
     }
 
     .item-actions {
@@ -653,7 +703,7 @@
 
     .vault-box {
       background: var(--bg-input);
-      border: 1px solid var(--border-soft);
+      border: 1px solid var(--border);
       border-radius: 11px;
       padding: 16px;
       text-align: center;
@@ -690,7 +740,7 @@
       margin-top: 12px;
       padding: 10px;
       background: var(--bg-input);
-      border: 1px solid var(--border-soft);
+      border: 1px solid var(--border);
       border-radius: 9px;
       display: flex;
       flex-direction: column;
@@ -717,9 +767,9 @@
 
     .voice-btn {
       width: 100%;
-      background: var(--pink);
-      border-color: var(--pink);
-      color: #fff;
+      background: #9e2a52;
+      border-color: #fb7185;
+      color: #ffffff;
       padding: 11px 14px;
       font-size: 0.88rem;
       display: flex;
@@ -729,11 +779,14 @@
     }
 
     .voice-btn:hover:not(:disabled) {
-      background: #be123c;
+      background: #b83260;
+      border-color: #fda4af;
+      color: #ffffff;
     }
 
     .voice-btn.recording {
       background: #dc2626;
+      border-color: #fca5a5;
       animation: pulse 1.2s infinite;
     }
 
@@ -792,12 +845,12 @@
       bottom: 18px;
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-left: 4px solid var(--blue-title);
+      border-left: 4px solid var(--gold);
       color: var(--text-main);
       padding: 11px 14px;
       border-radius: 10px;
       font-size: 0.82rem;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 12px 32px rgba(4, 7, 14, 0.55);
       z-index: 60;
       max-width: 340px;
       display: none;
@@ -806,7 +859,7 @@
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(10, 15, 26, 0.72);
+      background: rgba(6, 10, 17, 0.72);
       display: none;
       align-items: center;
       justify-content: center;
@@ -825,6 +878,7 @@
       padding: 20px;
       max-height: 90vh;
       overflow-y: auto;
+      box-shadow: 0 18px 44px rgba(4, 7, 14, 0.65);
     }
 
     .agenda-sheet {
@@ -840,7 +894,7 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      border-bottom: 2px solid #1d4ed8;
+      border-bottom: 2px solid #b45309;
       padding-bottom: 10px;
       margin-bottom: 14px;
       gap: 10px;
@@ -851,7 +905,7 @@
       margin: 0;
       font-size: 1.15rem;
       font-weight: 800;
-      color: #1e3a8a;
+      color: #78350f;
     }
 
     .agenda-sheet-date {
@@ -873,15 +927,15 @@
       align-items: start;
       padding: 10px 12px;
       border: 1px solid #e2e8f0;
-      border-left: 4px solid #2563eb;
+      border-left: 4px solid #d97706;
       border-radius: 8px;
-      background: #f8fafc;
+      background: #fffbeb;
     }
 
     .agenda-slot-time {
       font-weight: 800;
       font-size: 0.9rem;
-      color: #1d4ed8;
+      color: #b45309;
     }
 
     .agenda-slot-main {
@@ -901,8 +955,8 @@
       font-weight: 700;
       padding: 3px 8px;
       border-radius: 999px;
-      background: #dbeafe;
-      color: #1e40af;
+      background: #fef3c7;
+      color: #92400e;
     }
 
     .agenda-slot-status.done {
@@ -957,14 +1011,14 @@
       background: var(--bg-input);
       border-radius: 999px;
       overflow: hidden;
-      border: 1px solid var(--border-soft);
+      border: 1px solid var(--border);
       margin: 8px 0 12px;
     }
 
     .progress-fill {
       height: 100%;
       width: 12%;
-      background: linear-gradient(90deg, #4b91f7, #6366f1);
+      background: linear-gradient(90deg, var(--accent), var(--ok));
       transition: width 0.25s ease;
     }
 
@@ -974,7 +1028,8 @@
       body { background: #fff; padding: 0; color: #000; }
       .app-shell,
       .status-toast,
-      #modalCloud { display: none !important; }
+      #modalCloud,
+      #modalConfirm { display: none !important; }
       .modal-backdrop.open {
         position: static;
         background: #fff;
@@ -998,6 +1053,7 @@
 </head>
 <body>
   <div class="app-shell">
+    <!-- Barra superiore con stato Cloud/E2EE, ricerca globale, impostazioni e backup JSON -->
     <header class="topbar">
       <div class="brand-group">
         <div class="brand-logo" aria-hidden="true">
@@ -1028,15 +1084,17 @@
       </div>
     </header>
 
+    <!-- Banner di stato cifratura AES-256 -->
     <div class="security-banner warn" id="securityBanner">
       <span id="securityBannerText">⚠️ Imposta una <strong>Chiave Segreta AES-256</strong> (almeno 10 caratteri) in <strong>Sicurezza &amp; Cloud</strong> per cifrare tutti i dati prima dell'invio.</span>
       <button type="button" class="btn-primary" id="btnBannerConfig" style="padding: 5px 10px; font-size: 0.78rem;">Configura Chiave AES-256</button>
     </div>
 
+    <!-- Azioni rapide con rettangoli colorati pieni -->
     <section class="bento-card">
       <div class="card-header" style="margin-bottom: 10px;">
         <div class="card-title-group">
-          <span class="cloud-dot" style="background: var(--blue-title);"></span>
+          <span class="cloud-dot" style="background: var(--gold);"></span>
           <h2 class="card-title">Azioni Rapide (Sezioni Separate)</h2>
           <span class="count-badge" id="conteggioNotificheRapide">0</span>
         </div>
@@ -1082,7 +1140,7 @@
 
     <div class="main-bento">
       <div class="left-stack">
-        <!-- 1. IMPEGNI E APPUNTAMENTI FUTURI (COSE DA RICORDARE) + FOGLIO GIORNALIERO -->
+        <!-- 1. IMPEGNI E APPUNTAMENTI FUTURI + FOGLIO GIORNALIERO -->
         <section class="bento-card" id="sezioneImpegni">
           <div class="card-header">
             <div class="card-title-group">
@@ -1380,8 +1438,8 @@
 
             <div class="filter-buttons" style="margin-bottom: 10px;" id="filtriCartellaDocumenti">
               <button type="button" class="active-folder" data-doc-folder="pdf">📕 Cartella PDF (<span id="countFolderPdf">0</span>)</button>
-              <button type="button" class="data-folder-btn" data-doc-folder="foto">🖼️ Cartella Foto (<span id="countFolderFoto">0</span>)</button>
-              <button type="button" class="data-folder-btn" data-doc-folder="tutti">📂 Tutti (<span id="countFolderTutti">0</span>)</button>
+              <button type="button" data-doc-folder="foto">🖼️ Cartella Foto (<span id="countFolderFoto">0</span>)</button>
+              <button type="button" data-doc-folder="tutti">📂 Tutti (<span id="countFolderTutti">0</span>)</button>
             </div>
 
             <div class="doc-search-box">
@@ -1403,7 +1461,7 @@
     </div>
   </div>
 
-  <!-- RIQUADRO ANTEPRIMA CONTESTUALE (VIENE SPOSTATO NELLA SEZIONE DI ORIGINE) -->
+  <!-- Riquadro anteprima contestuale spostato dinamicamente nella sezione di origine -->
   <div class="preview-panel hidden" id="previewPanel">
     <div class="card-header" style="margin-bottom: 6px;">
       <div>
@@ -1424,7 +1482,7 @@
     </div>
   </div>
 
-  <!-- MODALE FOGLIO GIORNALIERO STAMPABILE -->
+  <!-- Modale Foglio Giornaliero stampabile -->
   <div class="modal-backdrop" id="modalFoglioGiornaliero" role="dialog" aria-modal="true" aria-labelledby="titoloFoglioGiornaliero">
     <div class="modal-card">
       <div class="card-header no-print">
@@ -1440,7 +1498,7 @@
     </div>
   </div>
 
-  <!-- MODALE SICUREZZA & CLOUD E2EE -->
+  <!-- Modale Sicurezza & Cloud E2EE -->
   <div class="modal-backdrop" id="modalCloud" role="dialog" aria-modal="true" aria-labelledby="titoloModalCloud">
     <div class="modal-card">
       <div class="card-header">
@@ -1500,6 +1558,21 @@
           <button type="button" id="btnForzaPushCloud">Cifra e Invia</button>
         </div>
         <button type="button" class="btn-danger" id="btnResetDati">Reset Dati</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modale di conferma interno (evita alert/confirm nativi) -->
+  <div class="modal-backdrop" id="modalConfirm" role="dialog" aria-modal="true" aria-labelledby="titoloModalConfirm">
+    <div class="modal-card" style="max-width: 440px;">
+      <div class="card-header">
+        <h2 class="card-title" id="titoloModalConfirm">Conferma Operazione</h2>
+        <button type="button" id="btnChiudiModalConfirm">✕</button>
+      </div>
+      <div class="item-body-text" id="testoModalConfirm" style="margin-top: 0; margin-bottom: 16px;"></div>
+      <div class="item-actions" style="justify-content: flex-end;">
+        <button type="button" id="btnAnnullaConfirm">Annulla</button>
+        <button type="button" class="btn-warn" id="btnConfermaAzione">Conferma</button>
       </div>
     </div>
   </div>
@@ -1594,6 +1667,7 @@
     let pollTimer = null;
     let isSyncingFromRemote = false;
     let localLockUntil = 0;
+    let pendingConfirmCallback = null;
 
     const inputRicerca = document.getElementById('inputRicerca');
     const inputRicercaDocumenti = document.getElementById('inputRicercaDocumenti');
@@ -1665,6 +1739,28 @@
     const modalFoglioGiornaliero = document.getElementById('modalFoglioGiornaliero');
     const inputDataFoglioGiornaliero = document.getElementById('inputDataFoglioGiornaliero');
     const foglioGiornalieroContenuto = document.getElementById('foglioGiornalieroContenuto');
+
+    const modalConfirm = document.getElementById('modalConfirm');
+    const testoModalConfirm = document.getElementById('testoModalConfirm');
+
+    function chiediConferma(messaggio, onConfirm) {
+      testoModalConfirm.textContent = messaggio;
+      pendingConfirmCallback = onConfirm;
+      modalConfirm.classList.add('open');
+    }
+
+    function chiudiConferma() {
+      pendingConfirmCallback = null;
+      modalConfirm.classList.remove('open');
+    }
+
+    document.getElementById('btnChiudiModalConfirm').addEventListener('click', chiudiConferma);
+    document.getElementById('btnAnnullaConfirm').addEventListener('click', chiudiConferma);
+    document.getElementById('btnConfermaAzione').addEventListener('click', async () => {
+      const cb = pendingConfirmCallback;
+      chiudiConferma();
+      if (typeof cb === 'function') await cb();
+    });
 
     function oggiISO() {
       const d = new Date();
@@ -1774,7 +1870,11 @@
     }
 
     function getSavedBioCredId() {
-      return localStorage.getItem(BIO_CRED_KEY) || '';
+      try {
+        return localStorage.getItem(BIO_CRED_KEY) || '';
+      } catch (e) {
+        return '';
+      }
     }
 
     function isWebAuthnSupported() {
@@ -2436,7 +2536,6 @@
       }
     }
 
-    // --- FOGLIO GIORNALIERO STAMPABILE ORDINATO PER ORARIO ---
     function renderFoglioGiornaliero(dataIso) {
       const targetDate = dataIso || inputDataRiferimento.value || oggiISO();
       inputDataFoglioGiornaliero.value = targetDate;
@@ -2494,7 +2593,6 @@
       modalFoglioGiornaliero.classList.add('open');
     }
 
-    // --- TENDINE NASCONDI / MOSTRA ---
     function espandiSezione(targetId) {
       const bodyEl = document.getElementById(targetId);
       if (!bodyEl) return;
@@ -2518,7 +2616,6 @@
       });
     });
 
-    // --- RENDER 1: IMPEGNI & APPUNTAMENTI (COSE DA RICORDARE) ---
     function renderImpegni() {
       const filtrati = filtraPerPeriodo(state.impegni || [], filtroTemporale, inputDataRiferimento.value).slice().sort((a, b) => {
         if ((a.data || '') !== (b.data || '')) return (a.data || '').localeCompare(b.data || '');
@@ -2628,7 +2725,6 @@
       aggiornaPosizioneAnteprima();
     }
 
-    // --- RENDER 2: DIARIO & EVENTI ACCADUTI ---
     function renderEventiAccaduti() {
       const q = inputRicerca.value.trim();
       const lista = (state.eventiAccaduti || []).filter((ev) => {
@@ -2744,7 +2840,6 @@
       aggiornaPosizioneAnteprima();
     }
 
-    // --- RENDER 3: APPUNTI & NOTE ---
     function renderAppunti() {
       const q = inputRicerca.value.trim();
       const lista = (state.appunti || []).filter((ap) => {
@@ -2858,7 +2953,6 @@
       aggiornaPosizioneAnteprima();
     }
 
-    // --- RENDER 4: SCADENZE CON PIN DEDICATO ---
     function renderScadenze() {
       const pill = document.getElementById('statoScadenzePill');
       if (infoPinScadenzeAttuale) {
@@ -2972,7 +3066,6 @@
       aggiornaPosizioneAnteprima();
     }
 
-    // --- RENDER 5: CASSAFORTE PASSWORD ---
     function renderVault() {
       const pill = document.getElementById('statoVaultPill');
       if (infoPinAttuale) {
@@ -3055,7 +3148,6 @@
       });
     }
 
-    // --- RENDER 6: CARTELLE PDF & FOTO (ALLEGATI MOSTRATI SOLO SE CERCATE) ---
     function renderDocumenti() {
       const allDocs = state.documenti || [];
       const qDoc = inputRicercaDocumenti.value.trim();
@@ -3199,7 +3291,6 @@
       aggiornaDataOraHeader();
     }
 
-    // --- EVENTI IMPEGNI & FOGLIO GIORNALIERO ---
     document.getElementById('btnToggleFormImpegno').addEventListener('click', () => {
       espandiSezione('bodyImpegni');
       formImpegnoCompleto.classList.toggle('hidden');
@@ -3286,7 +3377,6 @@
 
     inputDataRiferimento.addEventListener('change', renderImpegni);
 
-    // --- EVENTI DIARIO ---
     document.getElementById('btnToggleFormEvento').addEventListener('click', () => {
       espandiSezione('bodyDiario');
       formEventoAccaduto.classList.toggle('hidden');
@@ -3354,7 +3444,6 @@
       mostraToast(`Allegato aggiunto all'evento: ${allegato.nome}`);
     });
 
-    // --- EVENTI APPUNTI ---
     document.getElementById('btnToggleFormAppunto').addEventListener('click', () => {
       espandiSezione('bodyAppunti');
       formAppunto.classList.toggle('hidden');
@@ -3418,7 +3507,6 @@
       mostraToast(`Allegato aggiunto all'appunto: ${allegato.nome}`);
     });
 
-    // --- EVENTI SCADENZE ---
     document.getElementById('btnSbloccaScadenze').addEventListener('click', () => {
       const pin = inputPinScadenze.value.trim();
       if (pin === (state.pinScadenze || '1234')) {
@@ -3451,15 +3539,15 @@
       mostraToast('PIN Scadenze modificato e cifrato.');
     });
 
-    async function eseguiResetPinScadenze() {
-      const ok = window.confirm('Vuoi resettare il PIN delle Scadenze al valore predefinito "1234"?');
-      if (!ok) return;
-      state.pinScadenze = '1234';
-      inputNuovoPinScadenze.value = '';
-      inputPinScadenze.value = '';
-      await saveState(true, true);
-      renderScadenze();
-      mostraToast('PIN Scadenze resettato a "1234".');
+    function eseguiResetPinScadenze() {
+      chiediConferma('Vuoi resettare il PIN delle Scadenze al valore predefinito "1234"?', async () => {
+        state.pinScadenze = '1234';
+        inputNuovoPinScadenze.value = '';
+        inputPinScadenze.value = '';
+        await saveState(true, true);
+        renderScadenze();
+        mostraToast('PIN Scadenze resettato a "1234".');
+      });
     }
 
     document.getElementById('btnResetPinScadenze').addEventListener('click', eseguiResetPinScadenze);
@@ -3847,12 +3935,14 @@
       pushToFirebase(true);
     });
 
-    document.getElementById('btnResetDati').addEventListener('click', async () => {
-      state = structuredClone(defaultState);
-      chiudiAnteprima();
-      await saveState(true, true);
-      renderAll();
-      mostraToast('Dati reimpostati ai valori iniziali.');
+    document.getElementById('btnResetDati').addEventListener('click', () => {
+      chiediConferma('Vuoi reimpostare tutti i dati ai valori iniziali?', async () => {
+        state = structuredClone(defaultState);
+        chiudiAnteprima();
+        await saveState(true, true);
+        renderAll();
+        mostraToast('Dati reimpostati ai valori iniziali.');
+      });
     });
 
     async function initApp() {
