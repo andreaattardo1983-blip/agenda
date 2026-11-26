@@ -139,6 +139,16 @@
       color: var(--text-muted);
     }
 
+    .auth-recover-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-soft);
+    }
+
     .app-shell {
       max-width: 1440px;
       margin: 0 auto;
@@ -909,7 +919,7 @@
 
     .modal-card {
       width: 100%;
-      max-width: 700px;
+      max-width: 720px;
       max-height: 90vh;
       overflow-y: auto;
       background: var(--bg-card);
@@ -984,10 +994,24 @@
       border-radius: 8px;
       background: var(--bg-card);
       border: 1px solid var(--border-soft);
+      flex-wrap: wrap;
     }
 
     .profile-row.active-profile {
       border-color: rgba(234, 179, 8, 0.65);
+    }
+
+    .pwd-secret-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border);
+      font-family: monospace;
+      font-size: 0.78rem;
+      color: #fde68a;
     }
 
     .progress-bar {
@@ -1177,7 +1201,11 @@
       </form>
 
       <div class="auth-hint" id="gateHintBox">
-        Profilo predefinito: username <code>admin</code> • password iniziale <code>1234</code> (puoi cambiarla in qualsiasi momento dentro <strong>Profili</strong> o creare un account con password iniziale per il tuo amico, che poi potrà modificarla autonomamente).
+        Profilo predefinito: username <code>admin</code> • password iniziale <code>1234</code>.
+        <div class="auth-recover-bar">
+          <span>Password admin dimenticata?</span>
+          <button type="button" class="btn-warn" id="btnRecuperaPasswordAdmin" style="padding: 4px 8px; font-size: 0.73rem;">🔑 Recupera / Reimposta Admin</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1705,7 +1733,7 @@
     </div>
   </div>
 
-  <!-- MODALE PROFILI (CREAZIONE CON PASSWORD INIZIALE, CAMBIO PASSWORD E GESTIONE) -->
+  <!-- MODALE PROFILI (CREAZIONE CON PASSWORD INIZIALE, CAMBIO PASSWORD E GESTIONE ADMIN) -->
   <div class="modal-backdrop" id="modalProfili" role="dialog" aria-modal="true" aria-labelledby="titoloModalProfili">
     <div class="modal-card">
       <div class="card-header">
@@ -1725,12 +1753,23 @@
 
       <div class="profile-box">
         <div class="item-title" style="font-size: 0.86rem;">Cambia Password del Profilo Attivo (<span id="labelPwdProfiloAttivo">admin</span>)</div>
-        <div class="item-meta" style="margin-bottom: 8px;">Aggiorna la password del profilo attualmente in uso (utile anche quando il tuo amico imposta la propria password personale).</div>
+        <div class="item-meta" style="margin-bottom: 8px;">Aggiorna la password del profilo attualmente in uso.</div>
         <form class="inline-form" id="formCambiaPasswordProfilo" style="margin-bottom: 0;">
           <input type="password" id="vecchiaPasswordProfilo" placeholder="Password attuale" required>
           <input type="password" id="nuovaPasswordProfilo" placeholder="Nuova password" required>
           <button type="submit" class="btn-teal">Aggiorna Password</button>
         </form>
+      </div>
+
+      <div class="profile-box" id="boxAdminTuttePassword">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+          <div>
+            <div class="item-title" style="font-size: 0.86rem;">🔑 Tutte le Password Profili (Vista &amp; Controllo Admin)</div>
+            <div class="item-meta">Come <strong>admin</strong> puoi visualizzare tutte le password dei profili, impostarne una nuova o reimpostarla.</div>
+          </div>
+          <button type="button" class="btn-warm" id="btnToggleVisTuttePassword">👁 Mostra / Nascondi Tutte</button>
+        </div>
+        <div class="profile-list" id="listaTuttePasswordAdmin"></div>
       </div>
 
       <div class="profile-box">
@@ -1881,6 +1920,7 @@
         {
           slug: 'admin',
           username: 'admin',
+          passwordPlain: '1234',
           passwordHash: fastDefaultHashSync('admin', '1234'),
           mustUpgradeHash: true,
           createdAt: oggiISO()
@@ -1893,7 +1933,12 @@
         const raw = localStorage.getItem(PROFILES_META_KEY);
         if (raw) {
           const arr = JSON.parse(raw);
-          if (Array.isArray(arr) && arr.length > 0) return arr;
+          if (Array.isArray(arr) && arr.length > 0) {
+            if (!arr.some((p) => p.slug === 'admin')) {
+              arr.unshift(createDefaultProfileList()[0]);
+            }
+            return arr;
+          }
         }
       } catch (e) {}
       const list = createDefaultProfileList();
@@ -1911,22 +1956,42 @@
       activeProfileSlug = profilesMeta[0].slug;
     }
     let isAppAuthenticated = sessionStorage.getItem(SESSION_UNLOCKED_KEY) === '1';
+    let mostraTuttePasswordAdmin = true;
 
     function getActiveProfileObj() {
       return profilesMeta.find((p) => p.slug === activeProfileSlug) || profilesMeta[0];
     }
 
+    function isCurrentUserAdmin() {
+      const prof = getActiveProfileObj();
+      return Boolean(prof && (prof.slug === 'admin' || slugUsername(prof.username) === 'admin'));
+    }
+
     async function verifyProfilePassword(prof, plainPassword) {
       if (!prof) return false;
+      if (typeof prof.passwordPlain === 'string' && prof.passwordPlain.length > 0 && plainPassword === prof.passwordPlain) {
+        if (!prof.passwordHash || prof.mustUpgradeHash) {
+          prof.passwordHash = await hashPasswordHex(prof.username, plainPassword);
+          delete prof.mustUpgradeHash;
+          saveProfilesMeta(profilesMeta);
+        }
+        return true;
+      }
       if (!prof.passwordHash) return true;
       if (prof.mustUpgradeHash && prof.passwordHash === fastDefaultHashSync(prof.username, plainPassword)) {
         prof.passwordHash = await hashPasswordHex(prof.username, plainPassword);
+        prof.passwordPlain = plainPassword;
         delete prof.mustUpgradeHash;
         saveProfilesMeta(profilesMeta);
         return true;
       }
       const computed = await hashPasswordHex(prof.username, plainPassword);
-      return computed === prof.passwordHash;
+      if (computed === prof.passwordHash) {
+        prof.passwordPlain = plainPassword;
+        saveProfilesMeta(profilesMeta);
+        return true;
+      }
+      return false;
     }
 
     const defaultState = {
@@ -2040,6 +2105,9 @@
     const formNuovoProfilo = document.getElementById('formNuovoProfilo');
     const formCambiaPasswordProfilo = document.getElementById('formCambiaPasswordProfilo');
     const listaProfiliUtente = document.getElementById('listaProfiliUtente');
+    const boxAdminTuttePassword = document.getElementById('boxAdminTuttePassword');
+    const listaTuttePasswordAdmin = document.getElementById('listaTuttePasswordAdmin');
+    const btnToggleVisTuttePassword = document.getElementById('btnToggleVisTuttePassword');
 
     const formImpegnoCompleto = document.getElementById('formImpegnoCompleto');
     const listaImpegni = document.getElementById('listaImpegni');
@@ -2190,6 +2258,24 @@
       formGateLogin.classList.add('hidden');
     });
 
+    document.getElementById('btnRecuperaPasswordAdmin').addEventListener('click', async () => {
+      let adminProf = profilesMeta.find((p) => p.slug === 'admin');
+      if (!adminProf) {
+        adminProf = createDefaultProfileList()[0];
+        profilesMeta.unshift(adminProf);
+      }
+      const nuova = prompt('Hai dimenticato la password di admin. Inserisci la nuova password per admin (oppure lascia 1234):', adminProf.passwordPlain || '1234');
+      if (nuova === null) return;
+      const cleanPwd = nuova.trim() || '1234';
+      adminProf.passwordPlain = cleanPwd;
+      adminProf.passwordHash = await hashPasswordHex('admin', cleanPwd);
+      delete adminProf.mustUpgradeHash;
+      saveProfilesMeta(profilesMeta);
+      document.getElementById('gateLoginUser').value = 'admin';
+      document.getElementById('gateLoginPass').value = cleanPwd;
+      mostraToast(`Password admin impostata su "${cleanPwd}". Ora puoi accedere.`);
+    });
+
     async function completaAccessoProfilo(slug, username) {
       activeProfileSlug = slug;
       localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileSlug);
@@ -2218,7 +2304,7 @@
       }
       const ok = await verifyProfilePassword(prof, rawPass);
       if (!ok) {
-        mostraToast('Password errata.');
+        mostraToast('Password errata. Se sei admin puoi cliccare "Recupera / Reimposta Admin" qui sotto.');
         return;
       }
       document.getElementById('gateLoginPass').value = '';
@@ -2245,6 +2331,7 @@
       profilesMeta.push({
         slug,
         username: rawUser,
+        passwordPlain: rawPass,
         passwordHash,
         createdAt: oggiISO()
       });
@@ -2295,6 +2382,55 @@
     }
 
     function renderListaProfiliModal() {
+      const adminActive = isCurrentUserAdmin();
+      boxAdminTuttePassword.style.display = adminActive ? 'block' : 'none';
+
+      if (adminActive) {
+        listaTuttePasswordAdmin.innerHTML = '';
+        profilesMeta.forEach((p) => {
+          const row = document.createElement('div');
+          row.className = `profile-row ${p.slug === activeProfileSlug ? 'active-profile' : ''}`;
+
+          const pwdVal = p.passwordPlain
+            ? (mostraTuttePasswordAdmin ? p.passwordPlain : '••••••••')
+            : (p.mustUpgradeHash ? (mostraTuttePasswordAdmin ? '1234 (predefinita)' : '••••••••') : 'Impostata (hash salvato)');
+
+          const left = document.createElement('div');
+          left.innerHTML = `
+            <div class="item-title">👤 ${p.username} ${p.slug === 'admin' ? '<span class="pill-tag amber">ADMIN</span>' : '<span class="pill-tag">UTENTE</span>'}</div>
+            <div class="item-meta" style="margin-top: 4px;">Password: <span class="pwd-secret-chip">${pwdVal}</span></div>
+          `;
+
+          const actions = document.createElement('div');
+          actions.className = 'item-actions';
+
+          const btnSetPwd = document.createElement('button');
+          btnSetPwd.type = 'button';
+          btnSetPwd.className = 'btn-primary';
+          btnSetPwd.textContent = 'Imposta / Cambia';
+          btnSetPwd.addEventListener('click', async () => {
+            const nuova = prompt(`Imposta la password per il profilo "${p.username}":`, p.passwordPlain || '');
+            if (nuova === null) return;
+            const cleanPwd = nuova.trim();
+            if (!cleanPwd) {
+              mostraToast('La password non può essere vuota.');
+              return;
+            }
+            p.passwordPlain = cleanPwd;
+            p.passwordHash = await hashPasswordHex(p.username, cleanPwd);
+            delete p.mustUpgradeHash;
+            saveProfilesMeta(profilesMeta);
+            renderListaProfiliModal();
+            mostraToast(`Password per "${p.username}" aggiornata.`);
+          });
+
+          actions.appendChild(btnSetPwd);
+          row.appendChild(left);
+          row.appendChild(actions);
+          listaTuttePasswordAdmin.appendChild(row);
+        });
+      }
+
       listaProfiliUtente.innerHTML = '';
       profilesMeta.forEach((p) => {
         const isCurrent = p.slug === activeProfileSlug;
@@ -2351,6 +2487,11 @@
       });
     }
 
+    btnToggleVisTuttePassword.addEventListener('click', () => {
+      mostraTuttePasswordAdmin = !mostraTuttePasswordAdmin;
+      renderListaProfiliModal();
+    });
+
     formNuovoProfilo.addEventListener('submit', async (e) => {
       e.preventDefault();
       const rawUser = document.getElementById('nuovoProfiloUsername').value.trim();
@@ -2367,6 +2508,7 @@
       profilesMeta.push({
         slug,
         username: rawUser,
+        passwordPlain: rawPwd,
         passwordHash,
         createdAt: oggiISO()
       });
@@ -2402,6 +2544,7 @@
         return;
       }
 
+      prof.passwordPlain = nuova;
       prof.passwordHash = await hashPasswordHex(prof.username, nuova);
       delete prof.mustUpgradeHash;
       saveProfilesMeta(profilesMeta);
