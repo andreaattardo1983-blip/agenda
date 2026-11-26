@@ -87,6 +87,20 @@
       color: var(--text-muted);
     }
 
+    .profile-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      background: rgba(234, 179, 8, 0.14);
+      color: #fde68a;
+      border: 1px solid rgba(234, 179, 8, 0.4);
+      cursor: pointer;
+    }
+
     .cloud-badge {
       display: inline-flex;
       align-items: center;
@@ -332,45 +346,14 @@
       font-size: 1.15rem;
     }
 
-    .tile-impegno {
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      border-color: #38bdf8;
-    }
-
-    .tile-diario {
-      background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
-      border-color: #818cf8;
-    }
-
-    .tile-appunti {
-      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
-      border-color: #fbbf24;
-    }
-
-    .tile-scadenza {
-      background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
-      border-color: #fb923c;
-    }
-
-    .tile-vocale {
-      background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-      border-color: #f87171;
-    }
-
-    .tile-video {
-      background: linear-gradient(135deg, #db2777 0%, #9d174d 100%);
-      border-color: #f472b6;
-    }
-
-    .tile-file {
-      background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
-      border-color: #2dd4bf;
-    }
-
-    .tile-password {
-      background: linear-gradient(135deg, #7e22ce 0%, #581c87 100%);
-      border-color: #c084fc;
-    }
+    .tile-impegno { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border-color: #38bdf8; }
+    .tile-diario { background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); border-color: #818cf8; }
+    .tile-appunti { background: linear-gradient(135deg, #d97706 0%, #b45309 100%); border-color: #fbbf24; }
+    .tile-scadenza { background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%); border-color: #fb923c; }
+    .tile-vocale { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); border-color: #f87171; }
+    .tile-video { background: linear-gradient(135deg, #db2777 0%, #9d174d 100%); border-color: #f472b6; }
+    .tile-file { background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); border-color: #2dd4bf; }
+    .tile-password { background: linear-gradient(135deg, #7e22ce 0%, #581c87 100%); border-color: #c084fc; }
 
     .main-bento {
       display: grid;
@@ -410,9 +393,9 @@
     .filter-buttons button.active-time-filter,
     .filter-buttons button.active-filter,
     .filter-buttons button.active-folder {
-      background: linear-gradient(145deg, rgba(245, 158, 11, 0.38) 0%, rgba(202, 138, 4, 0.26) 100%);
-      border-color: rgba(253, 224, 71, 0.85);
-      color: #ffffff;
+      background: linear-gradient(145deg, rgba(245, 158, 11, 0.36) 0%, rgba(202, 138, 4, 0.24) 100%);
+      border-color: rgba(253, 224, 71, 0.78);
+      color: #fef08a;
     }
 
     .ref-date-wrap {
@@ -725,16 +708,7 @@
       display: none;
     }
 
-    .voice-btn {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 9px 12px;
-    }
-
-    .video-rec-btn {
+    .voice-btn, .video-rec-btn {
       width: 100%;
       display: flex;
       align-items: center;
@@ -826,7 +800,7 @@
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(2, 6, 23, 0.72);
+      background: rgba(2, 6, 23, 0.75);
       display: none;
       align-items: center;
       justify-content: center;
@@ -840,7 +814,7 @@
 
     .modal-card {
       width: 100%;
-      max-width: 680px;
+      max-width: 700px;
       max-height: 90vh;
       overflow-y: auto;
       background: var(--bg-card);
@@ -889,6 +863,36 @@
     .password-input-row {
       display: flex;
       gap: 6px;
+    }
+
+    .profile-box {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .profile-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-top: 8px;
+    }
+
+    .profile-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+    }
+
+    .profile-row.active-profile {
+      border-color: rgba(234, 179, 8, 0.65);
     }
 
     .progress-bar {
@@ -1016,7 +1020,7 @@
         background: #ffffff;
         color: #000000;
       }
-      .app-shell, .status-toast, #modalCloud, .no-print {
+      .app-shell, .status-toast, #modalCloud, #modalProfili, .no-print {
         display: none !important;
       }
       #modalFoglioGiornaliero {
@@ -1045,6 +1049,10 @@
       <div class="brand-block">
         <div class="brand-title-row">
           <h1 class="brand-title">OmniDesk</h1>
+          <button type="button" class="profile-pill" id="btnApriProfili" title="Gestisci o cambia profilo (Username &amp; Password)">
+            <span>👤</span>
+            <span id="testoProfiloAttivo">Profilo: personale</span>
+          </button>
           <button type="button" class="cloud-badge offline" id="badgeCloud" title="Stato sincronizzazione e cifratura">
             <span class="cloud-dot"></span>
             <span id="testoBadgeCloud">Cloud Locale</span>
@@ -1058,6 +1066,7 @@
           <span class="search-icon">🔍</span>
           <input type="search" id="inputRicerca" placeholder="Cerca in agenda, diario, appunti, scadenze, video...">
         </div>
+        <button type="button" id="btnGestisciProfiliTop">Profili</button>
         <button type="button" class="btn-warm" id="btnApriCloud">Sicurezza &amp; Cloud</button>
         <button type="button" class="icon-btn btn-teal" id="btnExportJson" title="Esporta Backup JSON">⬇</button>
         <button type="button" class="icon-btn" id="btnImportJson" title="Importa Backup JSON">⬆</button>
@@ -1450,7 +1459,7 @@
           </div>
         </section>
 
-        <!-- CARTELLA VIDEO (REGISTRAZIONE WEBCAM / CELLULARE + ARCHIVIO VIDEO) -->
+        <!-- CARTELLA VIDEO -->
         <section class="bento-card" id="sezioneCartellaVideo">
           <div class="card-header">
             <div class="card-title-group">
@@ -1536,7 +1545,7 @@
     </div>
   </div>
 
-  <!-- RIQUADRO ANTEPRIMA CONTESTUALE (VIENE SPOSTATO NELLA SEZIONE DI ORIGINE) -->
+  <!-- RIQUADRO ANTEPRIMA CONTESTUALE -->
   <div class="preview-panel hidden" id="previewPanel">
     <div class="card-header" style="margin-bottom: 6px;">
       <div>
@@ -1554,6 +1563,37 @@
       </div>
       <img id="previewImg" alt="Anteprima immagine">
       <iframe id="previewPdf" title="Anteprima PDF"></iframe>
+    </div>
+  </div>
+
+  <!-- MODALE PROFILI (USERNAME & PASSWORD MULTI-PROFILO) -->
+  <div class="modal-backdrop" id="modalProfili" role="dialog" aria-modal="true" aria-labelledby="titoloModalProfili">
+    <div class="modal-card">
+      <div class="card-header">
+        <h2 class="card-title" id="titoloModalProfili">👤 Profili Utente (Username &amp; Password)</h2>
+        <button type="button" id="btnChiudiModalProfili">✕</button>
+      </div>
+
+      <div class="profile-box">
+        <div class="item-title" style="font-size: 0.86rem;">Crea Nuovo Profilo</div>
+        <div class="item-meta" style="margin-bottom: 8px;">Ogni profilo ha uno <strong>username</strong> e una <strong>password</strong> con archivio separato.</div>
+        <form class="inline-form" id="formNuovoProfilo" style="margin-bottom: 0;">
+          <input type="text" id="nuovoProfiloUsername" placeholder="Username (es. marco.rossi)" required>
+          <input type="password" id="nuovoProfiloPassword" placeholder="Password profilo" required>
+          <button type="submit" class="btn-primary">+ Crea Profilo</button>
+        </form>
+      </div>
+
+      <div class="profile-box">
+        <div class="item-title" style="font-size: 0.86rem;">Accedi o Cambia Profilo</div>
+        <div class="item-meta" style="margin-bottom: 8px;">Inserisci username e password per passare a un altro profilo oppure seleziona un profilo salvato.</div>
+        <form class="inline-form" id="formLoginProfilo" style="margin-bottom: 8px;">
+          <input type="text" id="loginProfiloUsername" placeholder="Username" required>
+          <input type="password" id="loginProfiloPassword" placeholder="Password" required>
+          <button type="submit" class="btn-teal">Accedi</button>
+        </form>
+        <div class="profile-list" id="listaProfiliUtente"></div>
+      </div>
     </div>
   </div>
 
@@ -1640,14 +1680,73 @@
   <div class="status-toast" id="statusToast"></div>
 
   <script>
-    const STORAGE_KEY = 'omnidesk_stato_v1';
-    const CLOUD_CFG_KEY = 'omnidesk_cloud_cfg_v2';
+    const BASE_STORAGE_KEY = 'omnidesk_stato_v1';
+    const BASE_CLOUD_CFG_KEY = 'omnidesk_cloud_cfg_v2';
+    const PROFILES_META_KEY = 'omnidesk_profiles_meta_v1';
+    const ACTIVE_PROFILE_KEY = 'omnidesk_active_profile_v1';
     const BIO_CRED_KEY = 'omnidesk_vault_bio_cred_v1';
     const PIN_SCADENZE_LOCAL_KEY = 'omnidesk_pin_scadenze_v1';
     const PIN_VAULT_LOCAL_KEY = 'omnidesk_pin_vault_v1';
     const WEBCAM_FACE_KEY = 'omnidesk_webcam_face_v1';
     const IDB_NAME = 'OmniDeskPersistDB';
     const IDB_STORE = 'snapshots';
+
+    function slugUsername(u) {
+      return (u || 'personale').trim().toLowerCase().replace(/[^a-z0-9._-]/g, '_');
+    }
+
+    function scopedKey(baseKey, profileSlug = activeProfileSlug) {
+      if (!profileSlug || profileSlug === 'personale') return baseKey;
+      return `${baseKey}__${profileSlug}`;
+    }
+
+    async function hashPasswordHex(username, password) {
+      const cleanUser = slugUsername(username);
+      const cleanPwd = password || '';
+      if (window.crypto && window.crypto.subtle) {
+        const enc = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(cleanPwd), 'PBKDF2', false, ['deriveBits']);
+        const bits = await crypto.subtle.deriveBits(
+          { name: 'PBKDF2', salt: enc.encode(`omnidesk-profile:${cleanUser}`), iterations: 100000, hash: 'SHA-256' },
+          keyMaterial,
+          256
+        );
+        return Array.from(new Uint8Array(bits)).map((b) => b.toString(16).padStart(2, '0')).join('');
+      }
+      let h = 2166136261;
+      const s = `${cleanUser}:${cleanPwd}`;
+      for (let i = 0; i < s.length; i++) {
+        h ^= s.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return (h >>> 0).toString(16);
+    }
+
+    function loadProfilesMeta() {
+      try {
+        const raw = localStorage.getItem(PROFILES_META_KEY);
+        if (raw) {
+          const arr = JSON.parse(raw);
+          if (Array.isArray(arr) && arr.length > 0) return arr;
+        }
+      } catch (e) {}
+      return [{ slug: 'personale', username: 'personale', passwordHash: null, createdAt: oggiISO() }];
+    }
+
+    function saveProfilesMeta(list) {
+      localStorage.setItem(PROFILES_META_KEY, JSON.stringify(list));
+    }
+
+    let profilesMeta = loadProfilesMeta();
+    let activeProfileSlug = localStorage.getItem(ACTIVE_PROFILE_KEY) || (profilesMeta[0] && profilesMeta[0].slug) || 'personale';
+    if (!profilesMeta.some((p) => p.slug === activeProfileSlug)) {
+      activeProfileSlug = profilesMeta[0].slug;
+    }
+    localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileSlug);
+
+    function getActiveProfileObj() {
+      return profilesMeta.find((p) => p.slug === activeProfileSlug) || profilesMeta[0];
+    }
 
     const defaultState = {
       impegni: [
@@ -1702,8 +1801,8 @@
       video: [],
       documenti: [],
       deletedIds: {},
-      pinVault: localStorage.getItem(PIN_VAULT_LOCAL_KEY) || '1234',
-      pinScadenze: localStorage.getItem(PIN_SCADENZE_LOCAL_KEY) || '1234',
+      pinVault: '1234',
+      pinScadenze: '1234',
       pinVaultUpdatedAt: 0,
       pinScadenzeUpdatedAt: 0,
       webcamFaceProfile: null,
@@ -1744,10 +1843,16 @@
     const inputRicercaDocumenti = document.getElementById('inputRicercaDocumenti');
     const badgeCloud = document.getElementById('badgeCloud');
     const testoBadgeCloud = document.getElementById('testoBadgeCloud');
+    const testoProfiloAttivo = document.getElementById('testoProfiloAttivo');
     const dataOraHeader = document.getElementById('dataOraHeader');
     const statusToast = document.getElementById('statusToast');
     const securityBanner = document.getElementById('securityBanner');
     const securityBannerText = document.getElementById('securityBannerText');
+
+    const modalProfili = document.getElementById('modalProfili');
+    const formNuovoProfilo = document.getElementById('formNuovoProfilo');
+    const formLoginProfilo = document.getElementById('formLoginProfilo');
+    const listaProfiliUtente = document.getElementById('listaProfiliUtente');
 
     const formImpegnoCompleto = document.getElementById('formImpegnoCompleto');
     const listaImpegni = document.getElementById('listaImpegni');
@@ -1870,6 +1975,156 @@
       return tokens.every((tok) => haystack.includes(tok));
     }
 
+    function aggiornaBadgeProfilo() {
+      const prof = getActiveProfileObj();
+      testoProfiloAttivo.textContent = `Profilo: ${prof ? prof.username : activeProfileSlug}`;
+    }
+
+    function renderListaProfiliModal() {
+      listaProfiliUtente.innerHTML = '';
+      profilesMeta.forEach((p) => {
+        const isCurrent = p.slug === activeProfileSlug;
+        const row = document.createElement('div');
+        row.className = `profile-row ${isCurrent ? 'active-profile' : ''}`;
+
+        const info = document.createElement('div');
+        info.innerHTML = `
+          <div class="item-title">${p.username} ${isCurrent ? '<span class="pill-tag ok">Attivo</span>' : ''}</div>
+          <div class="item-meta">Creato: ${p.createdAt || '—'} ${p.passwordHash ? '• Password impostata' : '• Nessuna password'}</div>
+        `;
+
+        const actions = document.createElement('div');
+        actions.className = 'item-actions';
+
+        if (!isCurrent) {
+          const btnSwitch = document.createElement('button');
+          btnSwitch.type = 'button';
+          btnSwitch.textContent = 'Seleziona';
+          btnSwitch.addEventListener('click', () => {
+            document.getElementById('loginProfiloUsername').value = p.username;
+            document.getElementById('loginProfiloPassword').value = '';
+            document.getElementById('loginProfiloPassword').focus();
+          });
+          actions.appendChild(btnSwitch);
+        }
+
+        if (profilesMeta.length > 1 && !isCurrent) {
+          const btnDel = document.createElement('button');
+          btnDel.type = 'button';
+          btnDel.className = 'btn-danger';
+          btnDel.textContent = 'Elimina';
+          btnDel.addEventListener('click', () => {
+            profilesMeta = profilesMeta.filter((item) => item.slug !== p.slug);
+            saveProfilesMeta(profilesMeta);
+            localStorage.removeItem(scopedKey(BASE_STORAGE_KEY, p.slug));
+            localStorage.removeItem(scopedKey(BASE_CLOUD_CFG_KEY, p.slug));
+            renderListaProfiliModal();
+            mostraToast(`Profilo "${p.username}" eliminato.`);
+          });
+          actions.appendChild(btnDel);
+        }
+
+        row.appendChild(info);
+        row.appendChild(actions);
+        listaProfiliUtente.appendChild(row);
+      });
+    }
+
+    async function passaAProfilo(targetSlug, targetUsername) {
+      await persistLocalEncrypted(state);
+      activeProfileSlug = targetSlug;
+      localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileSlug);
+      vaultSbloccato = false;
+      scadenzeSbloccateFlag = false;
+      chiudiAnteprima();
+      aggiornaBadgeProfilo();
+      await initApp();
+      renderListaProfiliModal();
+      mostraToast(`Passato al profilo "${targetUsername}".`);
+    }
+
+    formNuovoProfilo.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const rawUser = document.getElementById('nuovoProfiloUsername').value.trim();
+      const rawPwd = document.getElementById('nuovoProfiloPassword').value;
+      const slug = slugUsername(rawUser);
+      if (!slug || !rawPwd) return;
+
+      if (profilesMeta.some((p) => p.slug === slug)) {
+        mostraToast('Esiste già un profilo con questo username.');
+        return;
+      }
+
+      const passwordHash = await hashPasswordHex(slug, rawPwd);
+      profilesMeta.push({
+        slug,
+        username: rawUser,
+        passwordHash,
+        createdAt: oggiISO()
+      });
+      saveProfilesMeta(profilesMeta);
+
+      const newProfileState = structuredClone(defaultState);
+      newProfileState.impegni = [];
+      newProfileState.scadenze = [];
+      newProfileState.password = [];
+      newProfileState.updatedAt = Date.now();
+
+      await persistLocalEncrypted(state);
+      activeProfileSlug = slug;
+      localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileSlug);
+      cloudCfg = loadCloudCfg();
+      state = newProfileState;
+      vaultSbloccato = false;
+      scadenzeSbloccateFlag = false;
+      chiudiAnteprima();
+      await saveState(false, true);
+
+      formNuovoProfilo.reset();
+      aggiornaBadgeProfilo();
+      renderAll();
+      renderListaProfiliModal();
+      modalProfili.classList.remove('open');
+      mostraToast(`Profilo "${rawUser}" creato e attivato.`);
+    });
+
+    formLoginProfilo.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const rawUser = document.getElementById('loginProfiloUsername').value.trim();
+      const rawPwd = document.getElementById('loginProfiloPassword').value;
+      const slug = slugUsername(rawUser);
+      const prof = profilesMeta.find((p) => p.slug === slug);
+
+      if (!prof) {
+        mostraToast('Profilo non trovato. Crealo prima qui sopra.');
+        return;
+      }
+
+      if (prof.passwordHash) {
+        const enteredHash = await hashPasswordHex(slug, rawPwd);
+        if (enteredHash !== prof.passwordHash) {
+          mostraToast('Password errata per questo profilo.');
+          return;
+        }
+      }
+
+      formLoginProfilo.reset();
+      modalProfili.classList.remove('open');
+      await passaAProfilo(prof.slug, prof.username);
+    });
+
+    document.getElementById('btnApriProfili').addEventListener('click', () => {
+      renderListaProfiliModal();
+      modalProfili.classList.add('open');
+    });
+    document.getElementById('btnGestisciProfiliTop').addEventListener('click', () => {
+      renderListaProfiliModal();
+      modalProfili.classList.add('open');
+    });
+    document.getElementById('btnChiudiModalProfili').addEventListener('click', () => {
+      modalProfili.classList.remove('open');
+    });
+
     function aggiornaBannerSicurezza() {
       const pwd = (cloudCfg.syncPassword || '').trim();
       if (pwd.length >= 10) {
@@ -1955,7 +2210,7 @@
         return state.webcamFaceProfile;
       }
       try {
-        const raw = localStorage.getItem(WEBCAM_FACE_KEY);
+        const raw = localStorage.getItem(scopedKey(WEBCAM_FACE_KEY));
         if (!raw) return null;
         const parsed = JSON.parse(raw);
         if (parsed && Array.isArray(parsed.signature)) {
@@ -2088,7 +2343,7 @@
     }
 
     function getSavedBioCredId() {
-      return localStorage.getItem(BIO_CRED_KEY) || '';
+      return localStorage.getItem(scopedKey(BIO_CRED_KEY)) || '';
     }
 
     function isWebAuthnSupported() {
@@ -2155,7 +2410,7 @@
         });
 
         if (cred && cred.rawId) {
-          localStorage.setItem(BIO_CRED_KEY, bufToB64(cred.rawId));
+          localStorage.setItem(scopedKey(BIO_CRED_KEY), bufToB64(cred.rawId));
           aggiornaStatoBiometriaUI();
           mostraToast('Biometria di sistema attivata (PIN sempre valido).');
         }
@@ -2196,7 +2451,7 @@
     }
 
     function rimuoviBiometriaVault() {
-      localStorage.removeItem(BIO_CRED_KEY);
+      localStorage.removeItem(scopedKey(BIO_CRED_KEY));
       aggiornaStatoBiometriaUI();
       mostraToast('Biometria di sistema rimossa.');
     }
@@ -2283,8 +2538,8 @@
         const db = await openIDB();
         const tx = db.transaction(IDB_STORE, 'readwrite');
         const store = tx.objectStore(IDB_STORE);
-        store.put({ id: 'state', payload: envelopeObj, savedAt: Date.now() });
-        store.put({ id: 'cloudCfg', payload: cfgObj, savedAt: Date.now() });
+        store.put({ id: scopedKey('state'), payload: envelopeObj, savedAt: Date.now() });
+        store.put({ id: scopedKey('cloudCfg'), payload: cfgObj, savedAt: Date.now() });
       } catch (e) {}
     }
 
@@ -2294,7 +2549,7 @@
         return await new Promise((resolve) => {
           const tx = db.transaction(IDB_STORE, 'readonly');
           const store = tx.objectStore(IDB_STORE);
-          const req = store.get(key);
+          const req = store.get(scopedKey(key));
           req.onsuccess = () => resolve(req.result ? req.result.payload : null);
           req.onerror = () => resolve(null);
         });
@@ -2354,7 +2609,7 @@
       } else {
         merged.pinVault = '1234';
       }
-      localStorage.setItem(PIN_VAULT_LOCAL_KEY, merged.pinVault);
+      localStorage.setItem(scopedKey(PIN_VAULT_LOCAL_KEY), merged.pinVault);
 
       const baseScadTs = Number(base.pinScadenzeUpdatedAt || 0);
       const incScadTs = Number(incoming.pinScadenzeUpdatedAt || 0);
@@ -2367,12 +2622,12 @@
       } else {
         merged.pinScadenze = '1234';
       }
-      localStorage.setItem(PIN_SCADENZE_LOCAL_KEY, merged.pinScadenze);
+      localStorage.setItem(scopedKey(PIN_SCADENZE_LOCAL_KEY), merged.pinScadenze);
 
       if (incoming.webcamFaceProfile && Array.isArray(incoming.webcamFaceProfile.signature)) {
         merged.webcamFaceProfile = incoming.webcamFaceProfile;
         try {
-          localStorage.setItem(WEBCAM_FACE_KEY, JSON.stringify(merged.webcamFaceProfile));
+          localStorage.setItem(scopedKey(WEBCAM_FACE_KEY), JSON.stringify(merged.webcamFaceProfile));
         } catch (e) {}
       } else if (base.webcamFaceProfile && Array.isArray(base.webcamFaceProfile.signature)) {
         merged.webcamFaceProfile = base.webcamFaceProfile;
@@ -2406,7 +2661,7 @@
 
     function loadCloudCfg() {
       try {
-        const raw = localStorage.getItem(CLOUD_CFG_KEY);
+        const raw = localStorage.getItem(scopedKey(BASE_CLOUD_CFG_KEY));
         if (!raw) return { ...defaultCloudCfg };
         return { ...defaultCloudCfg, ...JSON.parse(raw) };
       } catch (e) {
@@ -2415,11 +2670,11 @@
     }
 
     async function persistLocalEncrypted(plainState) {
-      localStorage.setItem(PIN_SCADENZE_LOCAL_KEY, plainState.pinScadenze || '1234');
-      localStorage.setItem(PIN_VAULT_LOCAL_KEY, plainState.pinVault || '1234');
+      localStorage.setItem(scopedKey(PIN_SCADENZE_LOCAL_KEY), plainState.pinScadenze || '1234');
+      localStorage.setItem(scopedKey(PIN_VAULT_LOCAL_KEY), plainState.pinVault || '1234');
       const envelope = await encryptStateEnvelope(plainState, cloudCfg.syncPassword);
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(envelope));
+        localStorage.setItem(scopedKey(BASE_STORAGE_KEY), JSON.stringify(envelope));
       } catch (e) {
         mostraToast('Memoria localStorage piena: rimuovi file/video pesanti o esporta JSON.');
       }
@@ -2445,7 +2700,7 @@
     }
 
     function hashSyncKey(room, password) {
-      const cleanRoom = (room || 'omnidesk-spazio-personale').trim();
+      const cleanRoom = `${activeProfileSlug}_${(room || 'omnidesk-spazio-personale').trim()}`;
       const raw = `${cleanRoom}::${(password || '').trim()}`;
       let h1 = 0x811c9dc5;
       for (let i = 0; i < raw.length; i++) {
@@ -3192,7 +3447,7 @@
 
     function renderScadenze() {
       const pill = document.getElementById('statoScadenzePill');
-      const currentPinScad = (state.pinScadenze || localStorage.getItem(PIN_SCADENZE_LOCAL_KEY) || '1234').trim();
+      const currentPinScad = (state.pinScadenze || localStorage.getItem(scopedKey(PIN_SCADENZE_LOCAL_KEY)) || '1234').trim();
       state.pinScadenze = currentPinScad;
 
       if (infoPinScadenzeAttuale) {
@@ -3310,7 +3565,7 @@
 
     function renderVault() {
       const pill = document.getElementById('statoVaultPill');
-      const currentPinVault = (state.pinVault || localStorage.getItem(PIN_VAULT_LOCAL_KEY) || '1234').trim();
+      const currentPinVault = (state.pinVault || localStorage.getItem(scopedKey(PIN_VAULT_LOCAL_KEY)) || '1234').trim();
       state.pinVault = currentPinVault;
 
       if (infoPinAttuale) {
@@ -3725,6 +3980,7 @@
     }
 
     function renderAll() {
+      aggiornaBadgeProfilo();
       renderImpegni();
       renderEventiAccaduti();
       renderAppunti();
@@ -3964,7 +4220,7 @@
 
     document.getElementById('btnSbloccaScadenze').addEventListener('click', () => {
       const pinInserito = inputPinScadenze.value.trim();
-      const pinAtteso = (state.pinScadenze || localStorage.getItem(PIN_SCADENZE_LOCAL_KEY) || '1234').trim();
+      const pinAtteso = (state.pinScadenze || localStorage.getItem(scopedKey(PIN_SCADENZE_LOCAL_KEY)) || '1234').trim();
       if (!pinInserito) {
         mostraToast('Inserisci il PIN Scadenze.');
         inputPinScadenze.focus();
@@ -3998,7 +4254,7 @@
       }
       state.pinScadenze = nuovoPin;
       state.pinScadenzeUpdatedAt = Date.now();
-      localStorage.setItem(PIN_SCADENZE_LOCAL_KEY, nuovoPin);
+      localStorage.setItem(scopedKey(PIN_SCADENZE_LOCAL_KEY), nuovoPin);
       inputNuovoPinScadenze.value = '';
       inputNuovoPinScadenze.type = 'password';
       await saveState(true, true);
@@ -4016,7 +4272,7 @@
     async function eseguiResetPinScadenze() {
       state.pinScadenze = '1234';
       state.pinScadenzeUpdatedAt = Date.now();
-      localStorage.setItem(PIN_SCADENZE_LOCAL_KEY, '1234');
+      localStorage.setItem(scopedKey(PIN_SCADENZE_LOCAL_KEY), '1234');
       inputNuovoPinScadenze.value = '';
       inputNuovoPinScadenze.type = 'password';
       inputPinScadenze.value = '';
@@ -4103,7 +4359,7 @@
 
     document.getElementById('btnSbloccaVault').addEventListener('click', () => {
       const pin = inputPinVault.value.trim();
-      const expected = (state.pinVault || localStorage.getItem(PIN_VAULT_LOCAL_KEY) || '1234').trim();
+      const expected = (state.pinVault || localStorage.getItem(scopedKey(PIN_VAULT_LOCAL_KEY)) || '1234').trim();
       if (pin === expected) {
         vaultSbloccato = true;
         inputPinVault.value = '';
@@ -4170,7 +4426,7 @@
       };
       state.webcamFaceProfile = profile;
       try {
-        localStorage.setItem(WEBCAM_FACE_KEY, JSON.stringify(profile));
+        localStorage.setItem(scopedKey(WEBCAM_FACE_KEY), JSON.stringify(profile));
       } catch (e) {}
       fermaWebcamStream();
       await saveState(true, true);
@@ -4182,7 +4438,7 @@
 
     btnRimuoviWebcamFace.addEventListener('click', async () => {
       state.webcamFaceProfile = null;
-      localStorage.removeItem(WEBCAM_FACE_KEY);
+      localStorage.removeItem(scopedKey(WEBCAM_FACE_KEY));
       fermaWebcamStream();
       await saveState(true, true);
       aggiornaStatoWebcamUI();
@@ -4201,7 +4457,7 @@
       }
       state.pinVault = nuovoPin;
       state.pinVaultUpdatedAt = Date.now();
-      localStorage.setItem(PIN_VAULT_LOCAL_KEY, nuovoPin);
+      localStorage.setItem(scopedKey(PIN_VAULT_LOCAL_KEY), nuovoPin);
       inputNuovoPinVault.value = '';
       await saveState(true, true);
       renderVault();
@@ -4436,7 +4692,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `omnidesk-e2ee-backup-${oggiISO()}.json`;
+      a.download = `omnidesk-${activeProfileSlug}-e2ee-${oggiISO()}.json`;
       a.click();
       URL.revokeObjectURL(url);
       mostraToast(envelope.__e2ee ? 'Backup JSON cifrato AES-256 esportato.' : 'Backup JSON esportato.');
@@ -4502,7 +4758,7 @@
         projectId: document.getElementById('fbProjectId').value.trim(),
         appId: document.getElementById('fbAppId').value.trim()
       };
-      localStorage.setItem(CLOUD_CFG_KEY, JSON.stringify(cloudCfg));
+      localStorage.setItem(scopedKey(BASE_CLOUD_CFG_KEY), JSON.stringify(cloudCfg));
       await persistLocalEncrypted(state);
       localLockUntil = Date.now() + 8000;
       avviaPollingCloud();
@@ -4529,8 +4785,8 @@
       state = structuredClone(defaultState);
       state.pinScadenze = '1234';
       state.pinVault = '1234';
-      localStorage.setItem(PIN_SCADENZE_LOCAL_KEY, '1234');
-      localStorage.setItem(PIN_VAULT_LOCAL_KEY, '1234');
+      localStorage.setItem(scopedKey(PIN_SCADENZE_LOCAL_KEY), '1234');
+      localStorage.setItem(scopedKey(PIN_VAULT_LOCAL_KEY), '1234');
       chiudiAnteprima();
       await saveState(true, true);
       renderAll();
@@ -4542,15 +4798,17 @@
       inputDataRiferimento.value = today;
       inputDataFoglioGiornaliero.value = today;
 
+      cloudCfg = loadCloudCfg();
       const idbCfg = await readIDBBackup('cloudCfg');
       if (idbCfg && typeof idbCfg === 'object') {
         cloudCfg = { ...defaultCloudCfg, ...cloudCfg, ...idbCfg };
-        localStorage.setItem(CLOUD_CFG_KEY, JSON.stringify(cloudCfg));
+        localStorage.setItem(scopedKey(BASE_CLOUD_CFG_KEY), JSON.stringify(cloudCfg));
       }
 
+      state = structuredClone(defaultState);
       let rawLocal = null;
       try {
-        const s = localStorage.getItem(STORAGE_KEY);
+        const s = localStorage.getItem(scopedKey(BASE_STORAGE_KEY));
         if (s) rawLocal = JSON.parse(s);
       } catch (e) {}
 
@@ -4568,17 +4826,18 @@
         }
       }
 
-      const savedPinScad = localStorage.getItem(PIN_SCADENZE_LOCAL_KEY);
+      const savedPinScad = localStorage.getItem(scopedKey(PIN_SCADENZE_LOCAL_KEY));
       if (savedPinScad && (!state.pinScadenze || state.pinScadenze === '1234')) {
         state.pinScadenze = savedPinScad;
       }
-      const savedPinVault = localStorage.getItem(PIN_VAULT_LOCAL_KEY);
+      const savedPinVault = localStorage.getItem(scopedKey(PIN_VAULT_LOCAL_KEY));
       if (savedPinVault && (!state.pinVault || state.pinVault === '1234')) {
         state.pinVault = savedPinVault;
       }
       getSavedWebcamFaceProfile();
 
       renderAll();
+      renderListaProfiliModal();
       avviaPollingCloud();
     }
 
