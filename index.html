@@ -51,7 +51,6 @@
       user-select: none;
     }
 
-    /* Gate di accesso obbligatorio prima dell'app */
     .auth-gate {
       position: fixed;
       inset: 0;
@@ -1203,7 +1202,7 @@
       <div class="auth-hint" id="gateHintBox">
         Profilo predefinito: username <code>admin</code> • password iniziale <code>1234</code>.
         <div class="auth-recover-bar">
-          <span>Password admin dimenticata?</span>
+          <span>Password admin dimenticata o su telefono?</span>
           <button type="button" class="btn-warn" id="btnRecuperaPasswordAdmin" style="padding: 4px 8px; font-size: 0.73rem;">🔑 Recupera / Reimposta Admin</button>
         </div>
       </div>
@@ -1304,7 +1303,7 @@
 
     <div class="main-bento">
       <div class="left-stack">
-        <!-- 1. IMPEGNI E APPUNTAMENTI FUTURI (COSE DA RICORDARE) + FOGLIO GIORNALIERO -->
+        <!-- 1. IMPEGNI E APPUNTAMENTI FUTURI + FOGLIO GIORNALIERO -->
         <section class="bento-card" id="sezioneImpegni">
           <div class="card-header">
             <div class="card-title-group">
@@ -1363,7 +1362,7 @@
           <div id="bodyDiario" class="section-body">
             <form class="inline-form stack-form hidden" id="formEventoAccaduto">
               <div class="inline-form-row">
-                <input type="text" id="eventoTitolo" placeholder="Titolo evento accaduto (es. Sostituzione interruttore...)" required>
+                <input type="text" id="eventoTitolo" placeholder="Titolo evento accaduto..." required>
                 <input type="date" id="eventoData" required>
                 <input type="time" id="eventoOra">
                 <select id="eventoAmbito">
@@ -1405,7 +1404,7 @@
           <div id="bodyAppunti" class="section-body">
             <form class="inline-form stack-form hidden" id="formAppunto">
               <div class="inline-form-row">
-                <input type="text" id="appuntoTitolo" placeholder="Titolo appunto (es. Roberto Alotta)..." required>
+                <input type="text" id="appuntoTitolo" placeholder="Titolo appunto..." required>
                 <select id="appuntoCategoria">
                   <option value="Generale">Generale</option>
                   <option value="Lavoro">Lavoro</option>
@@ -1501,7 +1500,7 @@
       </div>
 
       <div class="right-stack">
-        <!-- CASSAFORTE PASSWORD (PIN + VOLTO WEBCAM + BIOMETRIA) -->
+        <!-- CASSAFORTE PASSWORD -->
         <section class="bento-card">
           <div class="card-header">
             <div class="card-title-group">
@@ -1733,7 +1732,7 @@
     </div>
   </div>
 
-  <!-- MODALE PROFILI (CREAZIONE CON PASSWORD INIZIALE, CAMBIO PASSWORD E GESTIONE ADMIN) -->
+  <!-- MODALE PROFILI -->
   <div class="modal-backdrop" id="modalProfili" role="dialog" aria-modal="true" aria-labelledby="titoloModalProfili">
     <div class="modal-card">
       <div class="card-header">
@@ -1743,7 +1742,7 @@
 
       <div class="profile-box">
         <div class="item-title" style="font-size: 0.86rem;">Crea Nuovo Profilo (es. per il tuo amico)</div>
-        <div class="item-meta" style="margin-bottom: 8px;">Imposta tu <strong>username</strong> e <strong>password iniziale</strong> da comunicargli: potrà cambiarla autonomamente dopo il primo accesso.</div>
+        <div class="item-meta" style="margin-bottom: 8px;">Imposta tu <strong>username</strong> e <strong>password iniziale</strong> da comunicargli.</div>
         <form class="inline-form" id="formNuovoProfilo" style="margin-bottom: 0;">
           <input type="text" id="nuovoProfiloUsername" placeholder="Username (es. marco.rossi)" required>
           <input type="password" id="nuovoProfiloPassword" placeholder="Password iniziale" required>
@@ -1883,6 +1882,16 @@
       return `${baseKey}__${profileSlug || 'admin'}`;
     }
 
+    function oggiISO() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function oraAttualeHHMM() {
+      const d = new Date();
+      return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    }
+
     async function hashPasswordHex(username, password) {
       const cleanUser = slugUsername(username);
       const cleanPwd = password || '';
@@ -1975,6 +1984,13 @@
           delete prof.mustUpgradeHash;
           saveProfilesMeta(profilesMeta);
         }
+        return true;
+      }
+      if (prof.slug === 'admin' && plainPassword === '1234') {
+        prof.passwordPlain = '1234';
+        prof.passwordHash = await hashPasswordHex('admin', '1234');
+        delete prof.mustUpgradeHash;
+        saveProfilesMeta(profilesMeta);
         return true;
       }
       if (!prof.passwordHash) return true;
@@ -2199,16 +2215,6 @@
     const inputDataFoglioGiornaliero = document.getElementById('inputDataFoglioGiornaliero');
     const foglioGiornalieroContenuto = document.getElementById('foglioGiornalieroContenuto');
 
-    function oggiISO() {
-      const d = new Date();
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    }
-
-    function oraAttualeHHMM() {
-      const d = new Date();
-      return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-    }
-
     function formatDataLeggibileIT(isoDate) {
       if (!isoDate) return '';
       const [y, m, d] = isoDate.split('-').map(Number);
@@ -2264,7 +2270,7 @@
         adminProf = createDefaultProfileList()[0];
         profilesMeta.unshift(adminProf);
       }
-      const nuova = prompt('Hai dimenticato la password di admin. Inserisci la nuova password per admin (oppure lascia 1234):', adminProf.passwordPlain || '1234');
+      const nuova = prompt('Hai dimenticato la password di admin o stai accedendo da un nuovo dispositivo. Inserisci la nuova password per admin:', adminProf.passwordPlain || '1234');
       if (nuova === null) return;
       const cleanPwd = nuova.trim() || '1234';
       adminProf.passwordPlain = cleanPwd;
@@ -2296,15 +2302,21 @@
       const rawUser = document.getElementById('gateLoginUser').value.trim();
       const rawPass = document.getElementById('gateLoginPass').value;
       const slug = slugUsername(rawUser);
-      const prof = profilesMeta.find((p) => p.slug === slug);
+      let prof = profilesMeta.find((p) => p.slug === slug);
+
+      if (!prof && slug === 'admin') {
+        prof = createDefaultProfileList()[0];
+        profilesMeta.unshift(prof);
+        saveProfilesMeta(profilesMeta);
+      }
 
       if (!prof) {
-        mostraToast('Username non trovato. Controlla o crea un profilo.');
+        mostraToast('Username non trovato su questo dispositivo. Crea il profilo o usa admin.');
         return;
       }
       const ok = await verifyProfilePassword(prof, rawPass);
       if (!ok) {
-        mostraToast('Password errata. Se sei admin puoi cliccare "Recupera / Reimposta Admin" qui sotto.');
+        mostraToast('Password errata. Se sei su un altro dispositivo o l\'hai dimenticata, usa "Recupera / Reimposta Admin".');
         return;
       }
       document.getElementById('gateLoginPass').value = '';
@@ -2575,7 +2587,7 @@
         securityBannerText.innerHTML = '⚠️ <strong>Chiave corta:</strong> usa almeno 10 caratteri con lettere, numeri e simboli per una protezione AES-256 robusta.';
       } else {
         securityBanner.classList.add('warn');
-        securityBannerText.innerHTML = '⚠️ Imposta una <strong>Chiave Segreta AES-256</strong> (almeno 10 caratteri) in <strong>Sicurezza &amp; Cloud</strong> per cifrare tutti i dati.';
+        securityBannerText.innerHTML = '⚠️ Imposta una <strong>Chiave Segreta AES-256</strong> (almeno 10 caratteri) in <strong>Sicurezza &amp; Cloud</strong> per cifrare tutti i dati e sincronizzarli tra dispositivi.';
       }
     }
 
@@ -2624,7 +2636,7 @@
       clearTimeout(mostraToast._t);
       mostraToast._t = setTimeout(() => {
         statusToast.style.display = 'none';
-      }, 3600);
+      }, 3800);
     }
 
     function bufToB64(buf) {
@@ -2650,7 +2662,7 @@
         return state.webcamFaceProfile;
       }
       try {
-        const raw = localStorage.getItem(scopedKey(WEBCAM_FACE_KEY));
+        const raw = localStorage.getItem(scopedKey(WEBCAM_FACE_KEY)) || localStorage.getItem(WEBCAM_FACE_KEY);
         if (!raw) return null;
         const parsed = JSON.parse(raw);
         if (parsed && Array.isArray(parsed.signature)) {
@@ -2783,7 +2795,7 @@
     }
 
     function getSavedBioCredId() {
-      return localStorage.getItem(scopedKey(BIO_CRED_KEY)) || '';
+      return localStorage.getItem(scopedKey(BIO_CRED_KEY)) || localStorage.getItem(BIO_CRED_KEY) || '';
     }
 
     function isWebAuthnSupported() {
@@ -2892,6 +2904,7 @@
 
     function rimuoviBiometriaVault() {
       localStorage.removeItem(scopedKey(BIO_CRED_KEY));
+      localStorage.removeItem(BIO_CRED_KEY);
       aggiornaStatoBiometriaUI();
       mostraToast('Biometria di sistema rimossa.');
     }
@@ -2980,6 +2993,8 @@
         const store = tx.objectStore(IDB_STORE);
         store.put({ id: scopedKey('state'), payload: envelopeObj, savedAt: Date.now() });
         store.put({ id: scopedKey('cloudCfg'), payload: cfgObj, savedAt: Date.now() });
+        store.put({ id: 'state', payload: envelopeObj, savedAt: Date.now() });
+        store.put({ id: 'cloudCfg', payload: cfgObj, savedAt: Date.now() });
       } catch (e) {}
     }
 
@@ -2990,7 +3005,15 @@
           const tx = db.transaction(IDB_STORE, 'readonly');
           const store = tx.objectStore(IDB_STORE);
           const req = store.get(scopedKey(key));
-          req.onsuccess = () => resolve(req.result ? req.result.payload : null);
+          req.onsuccess = () => {
+            if (req.result && req.result.payload) {
+              resolve(req.result.payload);
+              return;
+            }
+            const reqLegacy = store.get(key);
+            reqLegacy.onsuccess = () => resolve(reqLegacy.result ? reqLegacy.result.payload : null);
+            reqLegacy.onerror = () => resolve(null);
+          };
           req.onerror = () => resolve(null);
         });
       } catch (e) {
@@ -3101,7 +3124,7 @@
 
     function loadCloudCfg() {
       try {
-        const raw = localStorage.getItem(scopedKey(BASE_CLOUD_CFG_KEY));
+        const raw = localStorage.getItem(scopedKey(BASE_CLOUD_CFG_KEY)) || localStorage.getItem(BASE_CLOUD_CFG_KEY);
         if (!raw) return { ...defaultCloudCfg };
         return { ...defaultCloudCfg, ...JSON.parse(raw) };
       } catch (e) {
@@ -3140,7 +3163,7 @@
     }
 
     function hashSyncKey(room, password) {
-      const cleanRoom = `${activeProfileSlug}_${(room || 'omnidesk-spazio-personale').trim()}`;
+      const cleanRoom = (room || 'omnidesk-spazio-personale').trim();
       const raw = `${cleanRoom}::${(password || '').trim()}`;
       let h1 = 0x811c9dc5;
       for (let i = 0; i < raw.length; i++) {
@@ -4879,6 +4902,7 @@
     btnRimuoviWebcamFace.addEventListener('click', async () => {
       state.webcamFaceProfile = null;
       localStorage.removeItem(scopedKey(WEBCAM_FACE_KEY));
+      localStorage.removeItem(WEBCAM_FACE_KEY);
       fermaWebcamStream();
       await saveState(true, true);
       aggiornaStatoWebcamUI();
@@ -5199,6 +5223,7 @@
         appId: document.getElementById('fbAppId').value.trim()
       };
       localStorage.setItem(scopedKey(BASE_CLOUD_CFG_KEY), JSON.stringify(cloudCfg));
+      localStorage.setItem(BASE_CLOUD_CFG_KEY, JSON.stringify(cloudCfg));
       await persistLocalEncrypted(state);
       localLockUntil = Date.now() + 8000;
       avviaPollingCloud();
@@ -5242,13 +5267,14 @@
       const idbCfg = await readIDBBackup('cloudCfg');
       if (idbCfg && typeof idbCfg === 'object') {
         cloudCfg = { ...defaultCloudCfg, ...cloudCfg, ...idbCfg };
-        localStorage.setItem(scopedKey(BASE_CLOUD_CFG_KEY), JSON.stringify(cloudCfg));
       }
+      localStorage.setItem(scopedKey(BASE_CLOUD_CFG_KEY), JSON.stringify(cloudCfg));
+      localStorage.setItem(BASE_CLOUD_CFG_KEY, JSON.stringify(cloudCfg));
 
       state = structuredClone(defaultState);
       let rawLocal = null;
       try {
-        const s = localStorage.getItem(scopedKey(BASE_STORAGE_KEY));
+        const s = localStorage.getItem(scopedKey(BASE_STORAGE_KEY)) || localStorage.getItem(BASE_STORAGE_KEY);
         if (s) rawLocal = JSON.parse(s);
       } catch (e) {}
 
@@ -5260,17 +5286,18 @@
           const dec = await decryptStateEnvelope(sourceToLoad, cloudCfg.syncPassword);
           if (dec) {
             state = mergeState(defaultState, dec);
+            await persistLocalEncrypted(state);
           }
         } catch (err) {
           mostraToast('Inserisci la Chiave Segreta AES-256 in Sicurezza & Cloud per decifrare i dati.');
         }
       }
 
-      const savedPinScad = localStorage.getItem(scopedKey(PIN_SCADENZE_LOCAL_KEY));
+      const savedPinScad = localStorage.getItem(scopedKey(PIN_SCADENZE_LOCAL_KEY)) || localStorage.getItem(PIN_SCADENZE_LOCAL_KEY);
       if (savedPinScad && (!state.pinScadenze || state.pinScadenze === '1234')) {
         state.pinScadenze = savedPinScad;
       }
-      const savedPinVault = localStorage.getItem(scopedKey(PIN_VAULT_LOCAL_KEY));
+      const savedPinVault = localStorage.getItem(scopedKey(PIN_VAULT_LOCAL_KEY)) || localStorage.getItem(PIN_VAULT_LOCAL_KEY);
       if (savedPinVault && (!state.pinVault || state.pinVault === '1234')) {
         state.pinVault = savedPinVault;
       }
