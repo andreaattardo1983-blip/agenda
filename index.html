@@ -20,7 +20,6 @@
       --warn: #f59e0b;
       --danger: #ef4444;
       --gold-title: #eab308;
-      /* Dorato morbido, satinato e meno invadente */
       --gold-btn-bg: linear-gradient(145deg, rgba(245, 158, 11, 0.22) 0%, rgba(202, 138, 4, 0.14) 100%);
       --gold-btn-hover: linear-gradient(145deg, rgba(245, 158, 11, 0.34) 0%, rgba(202, 138, 4, 0.22) 100%);
       --gold-btn-border: rgba(234, 179, 8, 0.45);
@@ -40,6 +39,104 @@
       color: var(--text-main);
       line-height: 1.45;
       min-height: 100vh;
+    }
+
+    body.auth-locked {
+      overflow: hidden;
+    }
+
+    body.auth-locked .app-shell {
+      filter: blur(6px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* Gate di accesso obbligatorio prima dell'app */
+    .auth-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: radial-gradient(circle at top, rgba(30, 41, 59, 0.94), rgba(2, 6, 23, 0.97));
+    }
+
+    .auth-gate.open {
+      display: flex;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .auth-title {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #fde68a;
+    }
+
+    .auth-sub {
+      margin: 4px 0 0;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .auth-tabs button.active-tab {
+      background: linear-gradient(145deg, rgba(245, 158, 11, 0.36) 0%, rgba(202, 138, 4, 0.24) 100%);
+      border-color: rgba(253, 224, 71, 0.8);
+      color: #fef08a;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .auth-form input {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-radius: 8px;
+      padding: 9px 11px;
+      font-size: 0.86rem;
+      outline: none;
+    }
+
+    .auth-form input:focus {
+      border-color: var(--accent);
+    }
+
+    .auth-hint {
+      margin-top: 12px;
+      padding: 9px 11px;
+      border-radius: 9px;
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid var(--border-soft);
+      font-size: 0.75rem;
+      color: var(--text-muted);
     }
 
     .app-shell {
@@ -174,7 +271,6 @@
       pointer-events: none;
     }
 
-    /* Pulsanti standard dorati tenui e riposanti, esclusi i comandi rapidi (.quick-tile) */
     button:not(.quick-tile) {
       font-family: inherit;
       cursor: pointer;
@@ -295,7 +391,6 @@
       font-weight: 700;
     }
 
-    /* Comandi Rapidi: rettangoli pieni con colori distinti */
     .quick-grid {
       display: grid;
       grid-template-columns: repeat(8, minmax(0, 1fr));
@@ -1020,7 +1115,7 @@
         background: #ffffff;
         color: #000000;
       }
-      .app-shell, .status-toast, #modalCloud, #modalProfili, .no-print {
+      .app-shell, .status-toast, #modalCloud, #modalProfili, .auth-gate, .no-print {
         display: none !important;
       }
       #modalFoglioGiornaliero {
@@ -1043,15 +1138,58 @@
     }
   </style>
 </head>
-<body>
+<body class="auth-locked">
+  <!-- SCHERMATA OBBLIGATORIA DI ACCESSO PRIMA DELL'APPLICAZIONE -->
+  <div class="auth-gate open" id="authGate" role="dialog" aria-modal="true" aria-labelledby="titoloAuthGate">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h2 class="auth-title" id="titoloAuthGate">🔐 Accesso OmniDesk</h2>
+        <p class="auth-sub">Inserisci username e password per entrare nell'applicazione</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button type="button" class="active-tab" id="tabGateLogin">Accedi</button>
+        <button type="button" id="tabGateCreate">Crea Profilo Amico</button>
+      </div>
+
+      <form class="auth-form" id="formGateLogin">
+        <div class="field-group" style="margin-bottom: 0;">
+          <label for="gateLoginUser">Username</label>
+          <input type="text" id="gateLoginUser" placeholder="Inserisci username" required autocomplete="username">
+        </div>
+        <div class="field-group" style="margin-bottom: 0;">
+          <label for="gateLoginPass">Password</label>
+          <input type="password" id="gateLoginPass" placeholder="Inserisci password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn-primary" style="margin-top: 4px; padding: 9px 12px;">Entra in OmniDesk</button>
+      </form>
+
+      <form class="auth-form hidden" id="formGateCreate">
+        <div class="field-group" style="margin-bottom: 0;">
+          <label for="gateCreateUser">Nuovo Username (es. nome.amico)</label>
+          <input type="text" id="gateCreateUser" placeholder="es. luca.bianchi" required>
+        </div>
+        <div class="field-group" style="margin-bottom: 0;">
+          <label for="gateCreatePass">Password iniziale (che potrai dare tu)</label>
+          <input type="password" id="gateCreatePass" placeholder="Password iniziale profilo" required>
+        </div>
+        <button type="submit" class="btn-teal" style="margin-top: 4px; padding: 9px 12px;">Crea Profilo ed Entra</button>
+      </form>
+
+      <div class="auth-hint" id="gateHintBox">
+        Profilo predefinito: username <code>admin</code> • password iniziale <code>1234</code> (puoi cambiarla in qualsiasi momento dentro <strong>Profili</strong> o creare un account con password iniziale per il tuo amico, che poi potrà modificarla autonomamente).
+      </div>
+    </div>
+  </div>
+
   <div class="app-shell">
     <header class="topbar">
       <div class="brand-block">
         <div class="brand-title-row">
           <h1 class="brand-title">OmniDesk</h1>
-          <button type="button" class="profile-pill" id="btnApriProfili" title="Gestisci o cambia profilo (Username &amp; Password)">
+          <button type="button" class="profile-pill" id="btnApriProfili" title="Gestisci profilo, cambia password o crea account">
             <span>👤</span>
-            <span id="testoProfiloAttivo">Profilo: personale</span>
+            <span id="testoProfiloAttivo">Profilo: admin</span>
           </button>
           <button type="button" class="cloud-badge offline" id="badgeCloud" title="Stato sincronizzazione e cifratura">
             <span class="cloud-dot"></span>
@@ -1066,7 +1204,8 @@
           <span class="search-icon">🔍</span>
           <input type="search" id="inputRicerca" placeholder="Cerca in agenda, diario, appunti, scadenze, video...">
         </div>
-        <button type="button" id="btnGestisciProfiliTop">Profili</button>
+        <button type="button" id="btnGestisciProfiliTop">Profili &amp; Password</button>
+        <button type="button" class="btn-danger" id="btnEsciApp" title="Blocca e torna alla schermata di login">Esci</button>
         <button type="button" class="btn-warm" id="btnApriCloud">Sicurezza &amp; Cloud</button>
         <button type="button" class="icon-btn btn-teal" id="btnExportJson" title="Esporta Backup JSON">⬇</button>
         <button type="button" class="icon-btn" id="btnImportJson" title="Importa Backup JSON">⬆</button>
@@ -1566,32 +1705,37 @@
     </div>
   </div>
 
-  <!-- MODALE PROFILI (USERNAME & PASSWORD MULTI-PROFILO) -->
+  <!-- MODALE PROFILI (CREAZIONE CON PASSWORD INIZIALE, CAMBIO PASSWORD E GESTIONE) -->
   <div class="modal-backdrop" id="modalProfili" role="dialog" aria-modal="true" aria-labelledby="titoloModalProfili">
     <div class="modal-card">
       <div class="card-header">
-        <h2 class="card-title" id="titoloModalProfili">👤 Profili Utente (Username &amp; Password)</h2>
+        <h2 class="card-title" id="titoloModalProfili">👤 Profili &amp; Password Utente</h2>
         <button type="button" id="btnChiudiModalProfili">✕</button>
       </div>
 
       <div class="profile-box">
-        <div class="item-title" style="font-size: 0.86rem;">Crea Nuovo Profilo</div>
-        <div class="item-meta" style="margin-bottom: 8px;">Ogni profilo ha uno <strong>username</strong> e una <strong>password</strong> con archivio separato.</div>
+        <div class="item-title" style="font-size: 0.86rem;">Crea Nuovo Profilo (es. per il tuo amico)</div>
+        <div class="item-meta" style="margin-bottom: 8px;">Imposta tu <strong>username</strong> e <strong>password iniziale</strong> da comunicargli: potrà cambiarla autonomamente dopo il primo accesso.</div>
         <form class="inline-form" id="formNuovoProfilo" style="margin-bottom: 0;">
           <input type="text" id="nuovoProfiloUsername" placeholder="Username (es. marco.rossi)" required>
-          <input type="password" id="nuovoProfiloPassword" placeholder="Password profilo" required>
+          <input type="password" id="nuovoProfiloPassword" placeholder="Password iniziale" required>
           <button type="submit" class="btn-primary">+ Crea Profilo</button>
         </form>
       </div>
 
       <div class="profile-box">
-        <div class="item-title" style="font-size: 0.86rem;">Accedi o Cambia Profilo</div>
-        <div class="item-meta" style="margin-bottom: 8px;">Inserisci username e password per passare a un altro profilo oppure seleziona un profilo salvato.</div>
-        <form class="inline-form" id="formLoginProfilo" style="margin-bottom: 8px;">
-          <input type="text" id="loginProfiloUsername" placeholder="Username" required>
-          <input type="password" id="loginProfiloPassword" placeholder="Password" required>
-          <button type="submit" class="btn-teal">Accedi</button>
+        <div class="item-title" style="font-size: 0.86rem;">Cambia Password del Profilo Attivo (<span id="labelPwdProfiloAttivo">admin</span>)</div>
+        <div class="item-meta" style="margin-bottom: 8px;">Aggiorna la password del profilo attualmente in uso (utile anche quando il tuo amico imposta la propria password personale).</div>
+        <form class="inline-form" id="formCambiaPasswordProfilo" style="margin-bottom: 0;">
+          <input type="password" id="vecchiaPasswordProfilo" placeholder="Password attuale" required>
+          <input type="password" id="nuovaPasswordProfilo" placeholder="Nuova password" required>
+          <button type="submit" class="btn-teal">Aggiorna Password</button>
         </form>
+      </div>
+
+      <div class="profile-box">
+        <div class="item-title" style="font-size: 0.86rem;">Profili Salvati su Questo Dispositivo</div>
+        <div class="item-meta" style="margin-bottom: 8px;">Per passare a un altro profilo viene richiesta la relativa password.</div>
         <div class="profile-list" id="listaProfiliUtente"></div>
       </div>
     </div>
@@ -1684,6 +1828,7 @@
     const BASE_CLOUD_CFG_KEY = 'omnidesk_cloud_cfg_v2';
     const PROFILES_META_KEY = 'omnidesk_profiles_meta_v1';
     const ACTIVE_PROFILE_KEY = 'omnidesk_active_profile_v1';
+    const SESSION_UNLOCKED_KEY = 'omnidesk_session_unlocked_v1';
     const BIO_CRED_KEY = 'omnidesk_vault_bio_cred_v1';
     const PIN_SCADENZE_LOCAL_KEY = 'omnidesk_pin_scadenze_v1';
     const PIN_VAULT_LOCAL_KEY = 'omnidesk_pin_vault_v1';
@@ -1692,12 +1837,11 @@
     const IDB_STORE = 'snapshots';
 
     function slugUsername(u) {
-      return (u || 'personale').trim().toLowerCase().replace(/[^a-z0-9._-]/g, '_');
+      return (u || 'admin').trim().toLowerCase().replace(/[^a-z0-9._-]/g, '_');
     }
 
     function scopedKey(baseKey, profileSlug = activeProfileSlug) {
-      if (!profileSlug || profileSlug === 'personale') return baseKey;
-      return `${baseKey}__${profileSlug}`;
+      return `${baseKey}__${profileSlug || 'admin'}`;
     }
 
     async function hashPasswordHex(username, password) {
@@ -1707,7 +1851,7 @@
         const enc = new TextEncoder();
         const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(cleanPwd), 'PBKDF2', false, ['deriveBits']);
         const bits = await crypto.subtle.deriveBits(
-          { name: 'PBKDF2', salt: enc.encode(`omnidesk-profile:${cleanUser}`), iterations: 100000, hash: 'SHA-256' },
+          { name: 'PBKDF2', salt: enc.encode(`omnidesk-auth:${cleanUser}`), iterations: 100000, hash: 'SHA-256' },
           keyMaterial,
           256
         );
@@ -1722,6 +1866,28 @@
       return (h >>> 0).toString(16);
     }
 
+    function fastDefaultHashSync(username, password) {
+      const s = `${slugUsername(username)}:${password}`;
+      let h = 2166136261;
+      for (let i = 0; i < s.length; i++) {
+        h ^= s.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return 'init_' + (h >>> 0).toString(16);
+    }
+
+    function createDefaultProfileList() {
+      return [
+        {
+          slug: 'admin',
+          username: 'admin',
+          passwordHash: fastDefaultHashSync('admin', '1234'),
+          mustUpgradeHash: true,
+          createdAt: oggiISO()
+        }
+      ];
+    }
+
     function loadProfilesMeta() {
       try {
         const raw = localStorage.getItem(PROFILES_META_KEY);
@@ -1730,7 +1896,9 @@
           if (Array.isArray(arr) && arr.length > 0) return arr;
         }
       } catch (e) {}
-      return [{ slug: 'personale', username: 'personale', passwordHash: null, createdAt: oggiISO() }];
+      const list = createDefaultProfileList();
+      saveProfilesMeta(list);
+      return list;
     }
 
     function saveProfilesMeta(list) {
@@ -1738,14 +1906,27 @@
     }
 
     let profilesMeta = loadProfilesMeta();
-    let activeProfileSlug = localStorage.getItem(ACTIVE_PROFILE_KEY) || (profilesMeta[0] && profilesMeta[0].slug) || 'personale';
+    let activeProfileSlug = localStorage.getItem(ACTIVE_PROFILE_KEY) || profilesMeta[0].slug;
     if (!profilesMeta.some((p) => p.slug === activeProfileSlug)) {
       activeProfileSlug = profilesMeta[0].slug;
     }
-    localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileSlug);
+    let isAppAuthenticated = sessionStorage.getItem(SESSION_UNLOCKED_KEY) === '1';
 
     function getActiveProfileObj() {
       return profilesMeta.find((p) => p.slug === activeProfileSlug) || profilesMeta[0];
+    }
+
+    async function verifyProfilePassword(prof, plainPassword) {
+      if (!prof) return false;
+      if (!prof.passwordHash) return true;
+      if (prof.mustUpgradeHash && prof.passwordHash === fastDefaultHashSync(prof.username, plainPassword)) {
+        prof.passwordHash = await hashPasswordHex(prof.username, plainPassword);
+        delete prof.mustUpgradeHash;
+        saveProfilesMeta(profilesMeta);
+        return true;
+      }
+      const computed = await hashPasswordHex(prof.username, plainPassword);
+      return computed === prof.passwordHash;
     }
 
     const defaultState = {
@@ -1839,6 +2020,12 @@
     let localLockUntil = 0;
     let activeWebcamStream = null;
 
+    const authGate = document.getElementById('authGate');
+    const tabGateLogin = document.getElementById('tabGateLogin');
+    const tabGateCreate = document.getElementById('tabGateCreate');
+    const formGateLogin = document.getElementById('formGateLogin');
+    const formGateCreate = document.getElementById('formGateCreate');
+
     const inputRicerca = document.getElementById('inputRicerca');
     const inputRicercaDocumenti = document.getElementById('inputRicercaDocumenti');
     const badgeCloud = document.getElementById('badgeCloud');
@@ -1851,7 +2038,7 @@
 
     const modalProfili = document.getElementById('modalProfili');
     const formNuovoProfilo = document.getElementById('formNuovoProfilo');
-    const formLoginProfilo = document.getElementById('formLoginProfilo');
+    const formCambiaPasswordProfilo = document.getElementById('formCambiaPasswordProfilo');
     const listaProfiliUtente = document.getElementById('listaProfiliUtente');
 
     const formImpegnoCompleto = document.getElementById('formImpegnoCompleto');
@@ -1975,9 +2162,136 @@
       return tokens.every((tok) => haystack.includes(tok));
     }
 
+    function aggiornaStatoGateAccesso() {
+      if (isAppAuthenticated) {
+        authGate.classList.remove('open');
+        document.body.classList.remove('auth-locked');
+      } else {
+        authGate.classList.add('open');
+        document.body.classList.add('auth-locked');
+        const prof = getActiveProfileObj();
+        if (prof && !document.getElementById('gateLoginUser').value) {
+          document.getElementById('gateLoginUser').value = prof.username;
+        }
+      }
+    }
+
+    tabGateLogin.addEventListener('click', () => {
+      tabGateLogin.classList.add('active-tab');
+      tabGateCreate.classList.remove('active-tab');
+      formGateLogin.classList.remove('hidden');
+      formGateCreate.classList.add('hidden');
+    });
+
+    tabGateCreate.addEventListener('click', () => {
+      tabGateCreate.classList.add('active-tab');
+      tabGateLogin.classList.remove('active-tab');
+      formGateCreate.classList.remove('hidden');
+      formGateLogin.classList.add('hidden');
+    });
+
+    async function completaAccessoProfilo(slug, username) {
+      activeProfileSlug = slug;
+      localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileSlug);
+      isAppAuthenticated = true;
+      sessionStorage.setItem(SESSION_UNLOCKED_KEY, '1');
+      vaultSbloccato = false;
+      scadenzeSbloccateFlag = false;
+      chiudiAnteprima();
+      aggiornaStatoGateAccesso();
+      aggiornaBadgeProfilo();
+      await initApp();
+      renderListaProfiliModal();
+      mostraToast(`Accesso effettuato come "${username}".`);
+    }
+
+    formGateLogin.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const rawUser = document.getElementById('gateLoginUser').value.trim();
+      const rawPass = document.getElementById('gateLoginPass').value;
+      const slug = slugUsername(rawUser);
+      const prof = profilesMeta.find((p) => p.slug === slug);
+
+      if (!prof) {
+        mostraToast('Username non trovato. Controlla o crea un profilo.');
+        return;
+      }
+      const ok = await verifyProfilePassword(prof, rawPass);
+      if (!ok) {
+        mostraToast('Password errata.');
+        return;
+      }
+      document.getElementById('gateLoginPass').value = '';
+      await completaAccessoProfilo(prof.slug, prof.username);
+    });
+
+    formGateCreate.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const rawUser = document.getElementById('gateCreateUser').value.trim();
+      const rawPass = document.getElementById('gateCreatePass').value;
+      const slug = slugUsername(rawUser);
+      if (!slug || !rawPass) return;
+
+      if (profilesMeta.some((p) => p.slug === slug)) {
+        mostraToast('Esiste già un profilo con questo username.');
+        return;
+      }
+
+      if (isAppAuthenticated) {
+        await persistLocalEncrypted(state);
+      }
+
+      const passwordHash = await hashPasswordHex(slug, rawPass);
+      profilesMeta.push({
+        slug,
+        username: rawUser,
+        passwordHash,
+        createdAt: oggiISO()
+      });
+      saveProfilesMeta(profilesMeta);
+
+      activeProfileSlug = slug;
+      localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileSlug);
+      cloudCfg = loadCloudCfg();
+      state = structuredClone(defaultState);
+      state.impegni = [];
+      state.scadenze = [];
+      state.password = [];
+      state.updatedAt = Date.now();
+      await saveState(false, true);
+
+      formGateCreate.reset();
+      tabGateLogin.click();
+      isAppAuthenticated = true;
+      sessionStorage.setItem(SESSION_UNLOCKED_KEY, '1');
+      vaultSbloccato = false;
+      scadenzeSbloccateFlag = false;
+      chiudiAnteprima();
+      aggiornaStatoGateAccesso();
+      aggiornaBadgeProfilo();
+      renderAll();
+      renderListaProfiliModal();
+      mostraToast(`Profilo "${rawUser}" creato con password iniziale.`);
+    });
+
+    document.getElementById('btnEsciApp').addEventListener('click', async () => {
+      await persistLocalEncrypted(state);
+      vaultSbloccato = false;
+      scadenzeSbloccateFlag = false;
+      fermaWebcamStream();
+      isAppAuthenticated = false;
+      sessionStorage.removeItem(SESSION_UNLOCKED_KEY);
+      document.getElementById('gateLoginPass').value = '';
+      aggiornaStatoGateAccesso();
+      mostraToast('Sessione bloccata. Inserisci username e password per rientrare.');
+    });
+
     function aggiornaBadgeProfilo() {
       const prof = getActiveProfileObj();
-      testoProfiloAttivo.textContent = `Profilo: ${prof ? prof.username : activeProfileSlug}`;
+      const nome = prof ? prof.username : activeProfileSlug;
+      testoProfiloAttivo.textContent = `Profilo: ${nome}`;
+      const lbl = document.getElementById('labelPwdProfiloAttivo');
+      if (lbl) lbl.textContent = nome;
     }
 
     function renderListaProfiliModal() {
@@ -1990,7 +2304,7 @@
         const info = document.createElement('div');
         info.innerHTML = `
           <div class="item-title">${p.username} ${isCurrent ? '<span class="pill-tag ok">Attivo</span>' : ''}</div>
-          <div class="item-meta">Creato: ${p.createdAt || '—'} ${p.passwordHash ? '• Password impostata' : '• Nessuna password'}</div>
+          <div class="item-meta">Creato: ${p.createdAt || '—'} • Password protetta</div>
         `;
 
         const actions = document.createElement('div');
@@ -1999,11 +2313,18 @@
         if (!isCurrent) {
           const btnSwitch = document.createElement('button');
           btnSwitch.type = 'button';
-          btnSwitch.textContent = 'Seleziona';
-          btnSwitch.addEventListener('click', () => {
-            document.getElementById('loginProfiloUsername').value = p.username;
-            document.getElementById('loginProfiloPassword').value = '';
-            document.getElementById('loginProfiloPassword').focus();
+          btnSwitch.textContent = 'Cambia qui';
+          btnSwitch.addEventListener('click', async () => {
+            const pwd = prompt(`Inserisci la password per il profilo "${p.username}":`);
+            if (pwd === null) return;
+            const ok = await verifyProfilePassword(p, pwd);
+            if (!ok) {
+              mostraToast('Password errata per questo profilo.');
+              return;
+            }
+            await persistLocalEncrypted(state);
+            modalProfili.classList.remove('open');
+            await completaAccessoProfilo(p.slug, p.username);
           });
           actions.appendChild(btnSwitch);
         }
@@ -2028,19 +2349,6 @@
         row.appendChild(actions);
         listaProfiliUtente.appendChild(row);
       });
-    }
-
-    async function passaAProfilo(targetSlug, targetUsername) {
-      await persistLocalEncrypted(state);
-      activeProfileSlug = targetSlug;
-      localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileSlug);
-      vaultSbloccato = false;
-      scadenzeSbloccateFlag = false;
-      chiudiAnteprima();
-      aggiornaBadgeProfilo();
-      await initApp();
-      renderListaProfiliModal();
-      mostraToast(`Passato al profilo "${targetUsername}".`);
     }
 
     formNuovoProfilo.addEventListener('submit', async (e) => {
@@ -2069,48 +2377,37 @@
       newProfileState.scadenze = [];
       newProfileState.password = [];
       newProfileState.updatedAt = Date.now();
-
-      await persistLocalEncrypted(state);
+      const prevSlug = activeProfileSlug;
       activeProfileSlug = slug;
-      localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileSlug);
-      cloudCfg = loadCloudCfg();
-      state = newProfileState;
-      vaultSbloccato = false;
-      scadenzeSbloccateFlag = false;
-      chiudiAnteprima();
-      await saveState(false, true);
+      const tempCloud = loadCloudCfg();
+      const env = await encryptStateEnvelope(newProfileState, tempCloud.syncPassword);
+      localStorage.setItem(scopedKey(BASE_STORAGE_KEY, slug), JSON.stringify(env));
+      activeProfileSlug = prevSlug;
 
       formNuovoProfilo.reset();
-      aggiornaBadgeProfilo();
-      renderAll();
       renderListaProfiliModal();
-      modalProfili.classList.remove('open');
-      mostraToast(`Profilo "${rawUser}" creato e attivato.`);
+      mostraToast(`Profilo "${rawUser}" creato! Puoi dargli username "${rawUser}" e password iniziale.`);
     });
 
-    formLoginProfilo.addEventListener('submit', async (e) => {
+    formCambiaPasswordProfilo.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const rawUser = document.getElementById('loginProfiloUsername').value.trim();
-      const rawPwd = document.getElementById('loginProfiloPassword').value;
-      const slug = slugUsername(rawUser);
-      const prof = profilesMeta.find((p) => p.slug === slug);
+      const vecchia = document.getElementById('vecchiaPasswordProfilo').value;
+      const nuova = document.getElementById('nuovaPasswordProfilo').value;
+      const prof = getActiveProfileObj();
+      if (!prof || !nuova) return;
 
-      if (!prof) {
-        mostraToast('Profilo non trovato. Crealo prima qui sopra.');
+      const ok = await verifyProfilePassword(prof, vecchia);
+      if (!ok) {
+        mostraToast('La password attuale non corrisponde.');
         return;
       }
 
-      if (prof.passwordHash) {
-        const enteredHash = await hashPasswordHex(slug, rawPwd);
-        if (enteredHash !== prof.passwordHash) {
-          mostraToast('Password errata per questo profilo.');
-          return;
-        }
-      }
-
-      formLoginProfilo.reset();
-      modalProfili.classList.remove('open');
-      await passaAProfilo(prof.slug, prof.username);
+      prof.passwordHash = await hashPasswordHex(prof.username, nuova);
+      delete prof.mustUpgradeHash;
+      saveProfilesMeta(profilesMeta);
+      formCambiaPasswordProfilo.reset();
+      renderListaProfiliModal();
+      mostraToast(`Password aggiornata per il profilo "${prof.username}".`);
     });
 
     document.getElementById('btnApriProfili').addEventListener('click', () => {
@@ -4841,6 +5138,7 @@
       avviaPollingCloud();
     }
 
+    aggiornaStatoGateAccesso();
     initApp();
   </script>
 </body>
